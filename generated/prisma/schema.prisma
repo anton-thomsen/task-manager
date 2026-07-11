@@ -1,0 +1,78 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TaskStatus {
+  Inbox
+  Review
+  Ongoing
+  Finished
+}
+
+model Client {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  tasks Task[]
+}
+
+model Label {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  color String
+  tasks Task[]
+}
+
+model Task {
+  id                 Int        @id @default(autoincrement())
+  title              String
+  description        String?
+  status             TaskStatus @default(Inbox)
+  deadline           DateTime?
+  estimateMinMinutes Int?
+  estimateMaxMinutes Int?
+  archivedAt         DateTime?
+  clientId           Int?
+  client             Client?    @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  labelId            Int?
+  label              Label?     @relation(fields: [labelId], references: [id], onDelete: SetNull)
+  subtasks           Subtask[]
+  logs               TaskLog[]
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+
+  @@index([status])
+  @@index([clientId])
+  @@index([labelId])
+}
+
+model Subtask {
+  id               Int        @id @default(autoincrement())
+  taskId           Int
+  task             Task       @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  title            String
+  status           TaskStatus @default(Inbox)
+  estimatedMinutes Int?
+  createdAt        DateTime   @default(now())
+
+  @@index([taskId])
+}
+
+model TaskLog {
+  id           Int      @id @default(autoincrement())
+  taskId       Int
+  task         Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  note         String
+  minutesSpent Int?
+  createdAt    DateTime @default(now())
+
+  @@index([taskId])
+}

@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@theme {
+	--font-sans:
+		var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif,
+		"Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+.pin-board-bg {
+	background-color: #f4f3ee;
+	background-image:
+		radial-gradient(
+			circle at 1px 1px,
+			rgba(205, 197, 182, 0.45) 1px,
+			transparent 0
+		),
+		radial-gradient(
+			circle at 8px 8px,
+			rgba(215, 207, 193, 0.3) 1px,
+			transparent 0
+		);
+	background-size: 18px 18px;
+}
+
+.display-font {
+	font-family: Georgia, "Times New Roman", serif;
+	letter-spacing: -0.035em;
+}
+
+button,
+select,
+summary,
+a {
+	touch-action: manipulation;
+}
+
+button:focus-visible,
+select:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+a:focus-visible,
+summary:focus-visible {
+	outline: 3px solid #047857;
+	outline-offset: 2px;
+}
