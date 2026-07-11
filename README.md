@@ -1,17 +1,43 @@
-# Task manager
-This is a task manager to help me keep track of my tasks.
+# Task Manager
 
-This is using the T3 app for the structure of the application. 
+A small, focused task manager for keeping client work visible and moving.
 
-## What's next? How do I make an app with this?
+![Task board with work organized across four status lanes](public/screenshots/task-board.png)
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+## Features
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Tailwind CSS](https://tailwindcss.com)
+- Drag tasks between Inbox, Review, Ongoing, and Finished
+- Organize work by client and label
+- Track deadlines, estimates, subtasks, and work logs
+- Search, restore, or permanently delete archived tasks
+- Keyboard, touch, mobile, and reduced-motion support
 
-## How do I deploy this?
+## Task details
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+Each task has its own workspace with sortable subtasks and a combined activity log.
+
+![Task details with subtasks grouped by status](public/screenshots/task-detail.png)
+
+## Archive
+
+![Searchable archived task list](public/screenshots/archived-tasks.png)
+
+## Mobile
+
+<img src="public/screenshots/task-board-mobile.png" alt="Task board on a mobile viewport" width="390">
+
+## Run locally
+
+```bash
+pnpm install
+cp .env.example .env
+./start-database.sh
+pnpm exec prisma migrate deploy
+pnpm dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+## Stack
+
+Next.js, React, TypeScript, Tailwind CSS, Prisma, PostgreSQL, and dnd-kit.
