@@ -1,7 +1,8 @@
-import { TaskCard, type TaskCardValue } from "~/components/task-card";
+import Link from "next/link";
+import { TaskBoard } from "~/components/task-board";
+import type { TaskCardValue } from "~/components/task-card";
 import { TaskForm } from "~/components/task-form";
 import { isOverdue } from "~/lib/format";
-import { type TaskStatus, taskStatuses } from "~/lib/tasks";
 import { int4IdSchema } from "~/lib/validation";
 import { db } from "~/server/db";
 
@@ -11,45 +12,6 @@ function selectedId(value: string | string[] | undefined): number | undefined {
 	const raw = Array.isArray(value) ? value[0] : value;
 	const parsed = int4IdSchema.safeParse(raw);
 	return parsed.success ? parsed.data : undefined;
-}
-
-function TaskColumn({
-	status,
-	tasks,
-	clients,
-	labels,
-}: {
-	status: TaskStatus;
-	tasks: TaskCardValue[];
-	clients: { id: number; name: string }[];
-	labels: { id: number; name: string; color: string }[];
-}) {
-	const columnTasks = tasks.filter((task) => task.status === status);
-	return (
-		<section className="min-h-80 w-[19rem] shrink-0 rounded-2xl border-2 border-stone-900 bg-[#d8ddc2] p-3 shadow-[5px_5px_0_#1c1917] lg:w-auto">
-			<div className="mb-3 flex items-center justify-between border-stone-900 border-b pb-2">
-				<h2 className="display-font font-bold text-xl">{status}</h2>
-				<span className="rounded-full bg-stone-900 px-2 py-0.5 font-bold text-white text-xs">
-					{columnTasks.length}
-				</span>
-			</div>
-			<div className="space-y-3">
-				{columnTasks.map((task) => (
-					<TaskCard
-						clients={clients}
-						key={task.id}
-						labels={labels}
-						task={task}
-					/>
-				))}
-				{columnTasks.length === 0 ? (
-					<p className="rounded-xl border border-stone-600 border-dashed p-5 text-center text-sm text-stone-600">
-						Clear for now
-					</p>
-				) : null}
-			</div>
-		</section>
-	);
 }
 
 export default async function HomePage({
@@ -69,10 +31,7 @@ export default async function HomePage({
 				clientId,
 				labelId,
 			},
-			orderBy: [
-				{ deadline: { sort: "asc", nulls: "last" } },
-				{ createdAt: "desc" },
-			],
+			orderBy: [{ status: "asc" }, { sortOrder: "asc" }, { id: "asc" }],
 			include: {
 				client: true,
 				label: true,
@@ -111,7 +70,7 @@ export default async function HomePage({
 	return (
 		<main className="mx-auto max-w-[100rem] p-4 sm:p-7">
 			<header className="mb-7 border-stone-900 border-b-2 pb-5">
-				<p className="mb-1 font-bold text-emerald-800 text-xs uppercase tracking-[0.22em]">
+				<p className="pixel-accent mb-2 text-[0.58rem] text-emerald-800 uppercase">
 					Agency workbench
 				</p>
 				<div className="flex flex-wrap items-end justify-between gap-4">
@@ -123,7 +82,15 @@ export default async function HomePage({
 							Keep client work small, visible, and moving.
 						</p>
 					</div>
-					<TaskForm clients={clients} labels={labels} />
+					<div className="flex items-center gap-3">
+						<Link
+							className="font-semibold text-sm underline underline-offset-4"
+							href="/archived"
+						>
+							Archived
+						</Link>
+						<TaskForm clients={clients} labels={labels} />
+					</div>
 				</div>
 			</header>
 
@@ -161,16 +128,6 @@ export default async function HomePage({
 						))}
 					</select>
 				</label>
-				<label className="flex items-center gap-2 px-1 pb-1.5 text-sm">
-					<input
-						className="size-4 accent-emerald-700"
-						defaultChecked={showArchived}
-						name="archived"
-						type="checkbox"
-						value="1"
-					/>
-					Show archived
-				</label>
 				<button
 					className="rounded-md border border-stone-900 bg-stone-900 px-4 py-1.5 font-bold text-sm text-white"
 					type="submit"
@@ -185,19 +142,28 @@ export default async function HomePage({
 						Clear
 					</a>
 				) : null}
+				<div className="min-w-0 grow" />
+				<div className="flex items-center gap-3 pb-1.5">
+					<label className="flex items-center gap-2 text-sm">
+						<input
+							className="size-4 accent-emerald-700"
+							defaultChecked={showArchived}
+							name="archived"
+							type="checkbox"
+							value="1"
+						/>
+						Show archived
+					</label>
+					<Link
+						className="font-semibold text-sm underline underline-offset-4"
+						href="/archived"
+					>
+						View all →
+					</Link>
+				</div>
 			</form>
 
-			<section className="flex gap-5 overflow-x-auto pb-7 lg:grid lg:grid-cols-4 lg:overflow-visible">
-				{taskStatuses.map((status) => (
-					<TaskColumn
-						clients={clients}
-						key={status}
-						labels={labels}
-						status={status}
-						tasks={taskValues}
-					/>
-				))}
-			</section>
+			<TaskBoard clients={clients} labels={labels} tasks={taskValues} />
 		</main>
 	);
 }

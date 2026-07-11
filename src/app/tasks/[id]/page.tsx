@@ -14,13 +14,17 @@ import { db } from "~/server/db";
 
 export default async function TaskDetailPage({
 	params,
+	searchParams,
 }: {
 	params: Promise<{ id: string }>;
+	searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
 	const { id: rawId } = await params;
 	const parsedId = int4IdSchema.safeParse(rawId);
 	if (!parsedId.success) notFound();
 	const id = parsedId.data;
+	const query = await searchParams;
+	const tab = query.tab === "log" ? "log" : "tasks";
 
 	const [task, clients, labels] = await Promise.all([
 		db.task.findUnique({
@@ -28,7 +32,9 @@ export default async function TaskDetailPage({
 			include: {
 				client: true,
 				label: true,
-				subtasks: { orderBy: { createdAt: "asc" } },
+				subtasks: {
+					orderBy: [{ status: "asc" }, { sortOrder: "asc" }, { id: "asc" }],
+				},
 				logs: { orderBy: { createdAt: "desc" } },
 			},
 		}),
@@ -57,6 +63,10 @@ export default async function TaskDetailPage({
 		clientId: task.clientId,
 		labelId: task.labelId,
 	};
+	const finishedSubtasks = task.subtasks.filter(
+		(subtask) => subtask.status === "Finished",
+	);
+	const feedCount = task.logs.length + finishedSubtasks.length;
 
 	return (
 		<main className="mx-auto max-w-6xl p-4 sm:p-8">
@@ -110,15 +120,44 @@ export default async function TaskDetailPage({
 				</div>
 			</header>
 
-			<div className="mt-6 grid items-start gap-6 lg:grid-cols-2">
-				<SubtaskList subtasks={task.subtasks} taskId={task.id} />
-				<WorkLog
-					logs={task.logs.map((log) => ({
-						...log,
-						createdAt: log.createdAt.toISOString(),
-					}))}
-					taskId={task.id}
-				/>
+			<nav
+				aria-label="Task detail views"
+				className="mt-7 flex border-stone-900 border-b-2"
+			>
+				<Link
+					className={`px-5 py-2 font-bold text-sm ${tab === "tasks" ? "bg-stone-900 text-white" : "hover:bg-stone-200"}`}
+					href={`/tasks/${task.id}`}
+				>
+					Tasks
+				</Link>
+				<Link
+					className={`flex items-center gap-2 px-5 py-2 font-bold text-sm ${tab === "log" ? "bg-stone-900 text-white" : "hover:bg-stone-200"}`}
+					href={`/tasks/${task.id}?tab=log`}
+				>
+					Work log{" "}
+					<span className="rounded-full bg-emerald-700 px-2 py-0.5 text-white text-xs">
+						{feedCount}
+					</span>
+				</Link>
+			</nav>
+
+			<div className="mt-6">
+				{tab === "tasks" ? (
+					<SubtaskList subtasks={task.subtasks} taskId={task.id} />
+				) : (
+					<WorkLog
+						finishedSubtasks={finishedSubtasks.map((subtask) => ({
+							id: subtask.id,
+							title: subtask.title,
+							createdAt: subtask.createdAt.toISOString(),
+						}))}
+						logs={task.logs.map((log) => ({
+							...log,
+							createdAt: log.createdAt.toISOString(),
+						}))}
+						taskId={task.id}
+					/>
+				)}
 			</div>
 		</main>
 	);

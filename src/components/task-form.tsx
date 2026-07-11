@@ -1,5 +1,6 @@
 "use client";
 
+import { Pencil } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { minutesAsHours } from "~/lib/format";
@@ -26,10 +27,27 @@ type TaskFormProps = {
 	labels: LabelOption[];
 	task?: TaskFormValue;
 	triggerLabel?: string;
+	triggerVariant?: "default" | "card";
 };
 
 const inputClass =
 	"w-full rounded-md border border-stone-900 bg-white px-3 py-2 text-sm";
+const createPixels = [
+	"north",
+	"ember",
+	"moss",
+	"ivory",
+	"west",
+	"spark",
+	"fern",
+	"paper",
+	"east",
+	"flash",
+	"leaf",
+	"chalk",
+	"south",
+	"glint",
+] as const;
 
 function mergeById<T extends { id: number }>(server: T[], local: T[]): T[] {
 	const merged = new Map(server.map((option) => [option.id, option]));
@@ -42,6 +60,7 @@ export function TaskForm({
 	labels,
 	task,
 	triggerLabel,
+	triggerVariant = "default",
 }: TaskFormProps) {
 	const dialogRef = useRef<HTMLDialogElement>(null);
 	const [locallyAddedClients, setLocallyAddedClients] = useState<TaskOption[]>(
@@ -65,6 +84,10 @@ export function TaskForm({
 	const [isSaving, setIsSaving] = useState(false);
 	const [isAddingClient, setIsAddingClient] = useState(false);
 	const [isAddingLabel, setIsAddingLabel] = useState(false);
+	const [animationCenter, setAnimationCenter] = useState<{
+		x: number;
+		y: number;
+	} | null>(null);
 	const clientOptions = mergeById(clients, locallyAddedClients);
 	const labelOptions = mergeById(labels, locallyAddedLabels);
 
@@ -84,6 +107,12 @@ export function TaskForm({
 			}),
 		);
 	}, [labels]);
+
+	useEffect(() => {
+		if (!animationCenter) return;
+		const timer = window.setTimeout(() => setAnimationCenter(null), 1400);
+		return () => window.clearTimeout(timer);
+	}, [animationCenter]);
 
 	const isEditing = task !== undefined;
 	const maxEstimate = Number(maxHours);
@@ -124,11 +153,21 @@ export function TaskForm({
 				return;
 			}
 			if (!isEditing) {
+				const rect = dialogRef.current?.getBoundingClientRect();
 				form.reset();
 				setMinHours("");
 				setMaxHours("");
 				setMinEstimateChanged(false);
 				setMaxEstimateChanged(false);
+				if (
+					rect &&
+					!window.matchMedia("(prefers-reduced-motion: reduce)").matches
+				) {
+					setAnimationCenter({
+						x: rect.left + rect.width / 2,
+						y: rect.top + rect.height / 2,
+					});
+				}
 			}
 			dialogRef.current?.close();
 		} catch {
@@ -171,15 +210,23 @@ export function TaskForm({
 	return (
 		<>
 			<button
+				aria-label={triggerVariant === "card" ? "Edit task" : undefined}
 				className={
-					isEditing
-						? "rounded border border-stone-900 bg-white px-2 py-1 font-semibold text-xs hover:bg-stone-100"
-						: "rounded-lg border border-emerald-950 bg-emerald-700 px-4 py-2 font-bold text-sm text-white shadow-[2px_2px_0_#052e16] hover:bg-emerald-800"
+					triggerVariant === "card"
+						? "ghost-icon-button"
+						: isEditing
+							? "rounded border border-stone-900 bg-white px-2 py-1 font-semibold text-xs hover:bg-stone-100"
+							: "rounded-lg border border-emerald-950 bg-emerald-700 px-4 py-2 font-bold text-sm text-white shadow-[2px_2px_0_#052e16] hover:bg-emerald-800"
 				}
 				onClick={() => dialogRef.current?.showModal()}
+				title={triggerVariant === "card" ? "Edit task" : undefined}
 				type="button"
 			>
-				{triggerLabel ?? (isEditing ? "Edit" : "Create task")}
+				{triggerVariant === "card" ? (
+					<Pencil aria-hidden="true" size={16} strokeWidth={2} />
+				) : (
+					(triggerLabel ?? (isEditing ? "Edit" : "Create task"))
+				)}
 			</button>
 
 			<dialog
@@ -190,7 +237,7 @@ export function TaskForm({
 				<form className="space-y-5 p-5 sm:p-7" onSubmit={handleSubmit}>
 					<div className="flex items-start justify-between gap-4">
 						<div>
-							<p className="font-bold text-emerald-800 text-xs uppercase tracking-[0.18em]">
+							<p className="pixel-accent text-[0.55rem] text-emerald-800 uppercase">
 								Task editor
 							</p>
 							<h2
@@ -236,7 +283,7 @@ export function TaskForm({
 						<label className="space-y-1 font-semibold text-sm">
 							<span>Status</span>
 							<select
-								className={inputClass}
+								className={`${inputClass} interactive-field`}
 								defaultValue={task?.status ?? "Inbox"}
 								name="status"
 							>
@@ -248,7 +295,7 @@ export function TaskForm({
 						<label className="space-y-1 font-semibold text-sm">
 							<span>Deadline</span>
 							<input
-								className={inputClass}
+								className={`${inputClass} interactive-field`}
 								defaultValue={task?.deadline ?? ""}
 								name="deadline"
 								type="date"
@@ -257,7 +304,7 @@ export function TaskForm({
 						<label className="space-y-1 font-semibold text-sm">
 							<span>Client</span>
 							<select
-								className={inputClass}
+								className={`${inputClass} interactive-field`}
 								defaultValue={task?.clientId ?? ""}
 								name="clientId"
 							>
@@ -272,7 +319,7 @@ export function TaskForm({
 						<label className="space-y-1 font-semibold text-sm">
 							<span>Label</span>
 							<select
-								className={inputClass}
+								className={`${inputClass} interactive-field`}
 								defaultValue={task?.labelId ?? ""}
 								name="labelId"
 							>
@@ -416,6 +463,35 @@ export function TaskForm({
 					</div>
 				</form>
 			</dialog>
+			{animationCenter ? (
+				<button
+					aria-label="Skip create animation"
+					className="pixel-create-overlay"
+					onClick={() => setAnimationCenter(null)}
+					style={
+						{
+							"--star-x": `${animationCenter.x}px`,
+							"--star-y": `${animationCenter.y}px`,
+						} as React.CSSProperties
+					}
+					type="button"
+				>
+					{createPixels.map((pixel, index) => (
+						<span
+							className="create-pixel"
+							key={pixel}
+							style={
+								{
+									"--pixel-index": index,
+									"--pixel-x": `${((index * 37) % 110) - 55}px`,
+									"--pixel-y": `${((index * 53) % 90) - 45}px`,
+								} as React.CSSProperties
+							}
+						/>
+					))}
+					<span className="pixel-star" />
+				</button>
+			) : null}
 		</>
 	);
 }

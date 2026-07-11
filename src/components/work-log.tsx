@@ -12,8 +12,38 @@ type Log = {
 	createdAt: string;
 };
 
-export function WorkLog({ logs, taskId }: { logs: Log[]; taskId: number }) {
+type FinishedSubtask = {
+	id: number;
+	title: string;
+	createdAt: string;
+};
+
+export function WorkLog({
+	logs,
+	finishedSubtasks,
+	taskId,
+}: {
+	logs: Log[];
+	finishedSubtasks: FinishedSubtask[];
+	taskId: number;
+}) {
 	const [error, setError] = useState<string | null>(null);
+	const feed = [
+		...logs.map((log) => ({
+			kind: "log" as const,
+			id: log.id,
+			text: log.note,
+			minutesSpent: log.minutesSpent,
+			createdAt: log.createdAt,
+		})),
+		...finishedSubtasks.map((subtask) => ({
+			kind: "subtask" as const,
+			id: subtask.id,
+			text: subtask.title,
+			minutesSpent: null,
+			createdAt: subtask.createdAt,
+		})),
+	].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 
 	async function submit(formData: FormData) {
 		setError(null);
@@ -62,21 +92,24 @@ export function WorkLog({ logs, taskId }: { logs: Log[]; taskId: number }) {
 				</p>
 			) : null}
 			<div className="space-y-2">
-				{logs.length === 0 ? (
+				{feed.length === 0 ? (
 					<p className="rounded-lg border border-stone-500 border-dashed bg-white/40 p-4 text-center text-sm text-stone-600">
 						No work logged yet.
 					</p>
 				) : null}
-				{logs.map((log) => (
+				{feed.map((item) => (
 					<article
-						className="rounded-lg border border-stone-900 bg-[#fffdf6] p-3"
-						key={log.id}
+						className={`rounded-lg border border-stone-900 p-3 ${item.kind === "subtask" ? "bg-emerald-50" : "bg-[#fffdf6]"}`}
+						key={`${item.kind}-${item.id}`}
 					>
 						<p className="mb-1 text-stone-500 text-xs">
-							<LocalizedTime iso={log.createdAt} />
-							{log.minutesSpent ? ` · ${log.minutesSpent}m` : ""}
+							<LocalizedTime iso={item.createdAt} />
+							{item.minutesSpent ? ` · ${item.minutesSpent}m` : ""}
 						</p>
-						<p className="whitespace-pre-wrap text-sm">{log.note}</p>
+						<p className="whitespace-pre-wrap text-sm">
+							{item.kind === "subtask" ? "✓ Subtask finished · " : ""}
+							{item.text}
+						</p>
 					</article>
 				))}
 			</div>

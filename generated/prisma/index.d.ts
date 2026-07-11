@@ -3504,6 +3504,7 @@ export namespace Prisma {
     id: number | null
     estimateMinMinutes: number | null
     estimateMaxMinutes: number | null
+    sortOrder: number | null
     clientId: number | null
     labelId: number | null
   }
@@ -3512,6 +3513,7 @@ export namespace Prisma {
     id: number | null
     estimateMinMinutes: number | null
     estimateMaxMinutes: number | null
+    sortOrder: number | null
     clientId: number | null
     labelId: number | null
   }
@@ -3525,6 +3527,7 @@ export namespace Prisma {
     estimateMinMinutes: number | null
     estimateMaxMinutes: number | null
     archivedAt: Date | null
+    sortOrder: number | null
     clientId: number | null
     labelId: number | null
     createdAt: Date | null
@@ -3540,6 +3543,7 @@ export namespace Prisma {
     estimateMinMinutes: number | null
     estimateMaxMinutes: number | null
     archivedAt: Date | null
+    sortOrder: number | null
     clientId: number | null
     labelId: number | null
     createdAt: Date | null
@@ -3555,6 +3559,7 @@ export namespace Prisma {
     estimateMinMinutes: number
     estimateMaxMinutes: number
     archivedAt: number
+    sortOrder: number
     clientId: number
     labelId: number
     createdAt: number
@@ -3567,6 +3572,7 @@ export namespace Prisma {
     id?: true
     estimateMinMinutes?: true
     estimateMaxMinutes?: true
+    sortOrder?: true
     clientId?: true
     labelId?: true
   }
@@ -3575,6 +3581,7 @@ export namespace Prisma {
     id?: true
     estimateMinMinutes?: true
     estimateMaxMinutes?: true
+    sortOrder?: true
     clientId?: true
     labelId?: true
   }
@@ -3588,6 +3595,7 @@ export namespace Prisma {
     estimateMinMinutes?: true
     estimateMaxMinutes?: true
     archivedAt?: true
+    sortOrder?: true
     clientId?: true
     labelId?: true
     createdAt?: true
@@ -3603,6 +3611,7 @@ export namespace Prisma {
     estimateMinMinutes?: true
     estimateMaxMinutes?: true
     archivedAt?: true
+    sortOrder?: true
     clientId?: true
     labelId?: true
     createdAt?: true
@@ -3618,6 +3627,7 @@ export namespace Prisma {
     estimateMinMinutes?: true
     estimateMaxMinutes?: true
     archivedAt?: true
+    sortOrder?: true
     clientId?: true
     labelId?: true
     createdAt?: true
@@ -3720,6 +3730,7 @@ export namespace Prisma {
     estimateMinMinutes: number | null
     estimateMaxMinutes: number | null
     archivedAt: Date | null
+    sortOrder: number
     clientId: number | null
     labelId: number | null
     createdAt: Date
@@ -3754,6 +3765,7 @@ export namespace Prisma {
     estimateMinMinutes?: boolean
     estimateMaxMinutes?: boolean
     archivedAt?: boolean
+    sortOrder?: boolean
     clientId?: boolean
     labelId?: boolean
     createdAt?: boolean
@@ -3774,6 +3786,7 @@ export namespace Prisma {
     estimateMinMinutes?: boolean
     estimateMaxMinutes?: boolean
     archivedAt?: boolean
+    sortOrder?: boolean
     clientId?: boolean
     labelId?: boolean
     createdAt?: boolean
@@ -3791,6 +3804,7 @@ export namespace Prisma {
     estimateMinMinutes?: boolean
     estimateMaxMinutes?: boolean
     archivedAt?: boolean
+    sortOrder?: boolean
     clientId?: boolean
     labelId?: boolean
     createdAt?: boolean
@@ -3808,13 +3822,14 @@ export namespace Prisma {
     estimateMinMinutes?: boolean
     estimateMaxMinutes?: boolean
     archivedAt?: boolean
+    sortOrder?: boolean
     clientId?: boolean
     labelId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type TaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "status" | "deadline" | "estimateMinMinutes" | "estimateMaxMinutes" | "archivedAt" | "clientId" | "labelId" | "createdAt" | "updatedAt", ExtArgs["result"]["task"]>
+  export type TaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "status" | "deadline" | "estimateMinMinutes" | "estimateMaxMinutes" | "archivedAt" | "sortOrder" | "clientId" | "labelId" | "createdAt" | "updatedAt", ExtArgs["result"]["task"]>
   export type TaskInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     client?: boolean | Task$clientArgs<ExtArgs>
     label?: boolean | Task$labelArgs<ExtArgs>
@@ -3848,6 +3863,7 @@ export namespace Prisma {
       estimateMinMinutes: number | null
       estimateMaxMinutes: number | null
       archivedAt: Date | null
+      sortOrder: number
       clientId: number | null
       labelId: number | null
       createdAt: Date
@@ -4287,6 +4303,7 @@ export namespace Prisma {
     readonly estimateMinMinutes: FieldRef<"Task", 'Int'>
     readonly estimateMaxMinutes: FieldRef<"Task", 'Int'>
     readonly archivedAt: FieldRef<"Task", 'DateTime'>
+    readonly sortOrder: FieldRef<"Task", 'Int'>
     readonly clientId: FieldRef<"Task", 'Int'>
     readonly labelId: FieldRef<"Task", 'Int'>
     readonly createdAt: FieldRef<"Task", 'DateTime'>
@@ -4807,12 +4824,14 @@ export namespace Prisma {
     id: number | null
     taskId: number | null
     estimatedMinutes: number | null
+    sortOrder: number | null
   }
 
   export type SubtaskSumAggregateOutputType = {
     id: number | null
     taskId: number | null
     estimatedMinutes: number | null
+    sortOrder: number | null
   }
 
   export type SubtaskMinAggregateOutputType = {
@@ -4821,6 +4840,7 @@ export namespace Prisma {
     title: string | null
     status: $Enums.TaskStatus | null
     estimatedMinutes: number | null
+    sortOrder: number | null
     createdAt: Date | null
   }
 
@@ -4830,6 +4850,7 @@ export namespace Prisma {
     title: string | null
     status: $Enums.TaskStatus | null
     estimatedMinutes: number | null
+    sortOrder: number | null
     createdAt: Date | null
   }
 
@@ -4839,6 +4860,7 @@ export namespace Prisma {
     title: number
     status: number
     estimatedMinutes: number
+    sortOrder: number
     createdAt: number
     _all: number
   }
@@ -4848,12 +4870,14 @@ export namespace Prisma {
     id?: true
     taskId?: true
     estimatedMinutes?: true
+    sortOrder?: true
   }
 
   export type SubtaskSumAggregateInputType = {
     id?: true
     taskId?: true
     estimatedMinutes?: true
+    sortOrder?: true
   }
 
   export type SubtaskMinAggregateInputType = {
@@ -4862,6 +4886,7 @@ export namespace Prisma {
     title?: true
     status?: true
     estimatedMinutes?: true
+    sortOrder?: true
     createdAt?: true
   }
 
@@ -4871,6 +4896,7 @@ export namespace Prisma {
     title?: true
     status?: true
     estimatedMinutes?: true
+    sortOrder?: true
     createdAt?: true
   }
 
@@ -4880,6 +4906,7 @@ export namespace Prisma {
     title?: true
     status?: true
     estimatedMinutes?: true
+    sortOrder?: true
     createdAt?: true
     _all?: true
   }
@@ -4976,6 +5003,7 @@ export namespace Prisma {
     title: string
     status: $Enums.TaskStatus
     estimatedMinutes: number | null
+    sortOrder: number
     createdAt: Date
     _count: SubtaskCountAggregateOutputType | null
     _avg: SubtaskAvgAggregateOutputType | null
@@ -5004,6 +5032,7 @@ export namespace Prisma {
     title?: boolean
     status?: boolean
     estimatedMinutes?: boolean
+    sortOrder?: boolean
     createdAt?: boolean
     task?: boolean | TaskDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["subtask"]>
@@ -5014,6 +5043,7 @@ export namespace Prisma {
     title?: boolean
     status?: boolean
     estimatedMinutes?: boolean
+    sortOrder?: boolean
     createdAt?: boolean
     task?: boolean | TaskDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["subtask"]>
@@ -5024,6 +5054,7 @@ export namespace Prisma {
     title?: boolean
     status?: boolean
     estimatedMinutes?: boolean
+    sortOrder?: boolean
     createdAt?: boolean
     task?: boolean | TaskDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["subtask"]>
@@ -5034,10 +5065,11 @@ export namespace Prisma {
     title?: boolean
     status?: boolean
     estimatedMinutes?: boolean
+    sortOrder?: boolean
     createdAt?: boolean
   }
 
-  export type SubtaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "taskId" | "title" | "status" | "estimatedMinutes" | "createdAt", ExtArgs["result"]["subtask"]>
+  export type SubtaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "taskId" | "title" | "status" | "estimatedMinutes" | "sortOrder" | "createdAt", ExtArgs["result"]["subtask"]>
   export type SubtaskInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     task?: boolean | TaskDefaultArgs<ExtArgs>
   }
@@ -5059,6 +5091,7 @@ export namespace Prisma {
       title: string
       status: $Enums.TaskStatus
       estimatedMinutes: number | null
+      sortOrder: number
       createdAt: Date
     }, ExtArgs["result"]["subtask"]>
     composites: {}
@@ -5489,6 +5522,7 @@ export namespace Prisma {
     readonly title: FieldRef<"Subtask", 'String'>
     readonly status: FieldRef<"Subtask", 'TaskStatus'>
     readonly estimatedMinutes: FieldRef<"Subtask", 'Int'>
+    readonly sortOrder: FieldRef<"Subtask", 'Int'>
     readonly createdAt: FieldRef<"Subtask", 'DateTime'>
   }
     
@@ -7044,6 +7078,7 @@ export namespace Prisma {
     estimateMinMinutes: 'estimateMinMinutes',
     estimateMaxMinutes: 'estimateMaxMinutes',
     archivedAt: 'archivedAt',
+    sortOrder: 'sortOrder',
     clientId: 'clientId',
     labelId: 'labelId',
     createdAt: 'createdAt',
@@ -7059,6 +7094,7 @@ export namespace Prisma {
     title: 'title',
     status: 'status',
     estimatedMinutes: 'estimatedMinutes',
+    sortOrder: 'sortOrder',
     createdAt: 'createdAt'
   };
 
@@ -7279,6 +7315,7 @@ export namespace Prisma {
     estimateMinMinutes?: IntNullableFilter<"Task"> | number | null
     estimateMaxMinutes?: IntNullableFilter<"Task"> | number | null
     archivedAt?: DateTimeNullableFilter<"Task"> | Date | string | null
+    sortOrder?: IntFilter<"Task"> | number
     clientId?: IntNullableFilter<"Task"> | number | null
     labelId?: IntNullableFilter<"Task"> | number | null
     createdAt?: DateTimeFilter<"Task"> | Date | string
@@ -7298,6 +7335,7 @@ export namespace Prisma {
     estimateMinMinutes?: SortOrderInput | SortOrder
     estimateMaxMinutes?: SortOrderInput | SortOrder
     archivedAt?: SortOrderInput | SortOrder
+    sortOrder?: SortOrder
     clientId?: SortOrderInput | SortOrder
     labelId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -7320,6 +7358,7 @@ export namespace Prisma {
     estimateMinMinutes?: IntNullableFilter<"Task"> | number | null
     estimateMaxMinutes?: IntNullableFilter<"Task"> | number | null
     archivedAt?: DateTimeNullableFilter<"Task"> | Date | string | null
+    sortOrder?: IntFilter<"Task"> | number
     clientId?: IntNullableFilter<"Task"> | number | null
     labelId?: IntNullableFilter<"Task"> | number | null
     createdAt?: DateTimeFilter<"Task"> | Date | string
@@ -7339,6 +7378,7 @@ export namespace Prisma {
     estimateMinMinutes?: SortOrderInput | SortOrder
     estimateMaxMinutes?: SortOrderInput | SortOrder
     archivedAt?: SortOrderInput | SortOrder
+    sortOrder?: SortOrder
     clientId?: SortOrderInput | SortOrder
     labelId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -7362,6 +7402,7 @@ export namespace Prisma {
     estimateMinMinutes?: IntNullableWithAggregatesFilter<"Task"> | number | null
     estimateMaxMinutes?: IntNullableWithAggregatesFilter<"Task"> | number | null
     archivedAt?: DateTimeNullableWithAggregatesFilter<"Task"> | Date | string | null
+    sortOrder?: IntWithAggregatesFilter<"Task"> | number
     clientId?: IntNullableWithAggregatesFilter<"Task"> | number | null
     labelId?: IntNullableWithAggregatesFilter<"Task"> | number | null
     createdAt?: DateTimeWithAggregatesFilter<"Task"> | Date | string
@@ -7377,6 +7418,7 @@ export namespace Prisma {
     title?: StringFilter<"Subtask"> | string
     status?: EnumTaskStatusFilter<"Subtask"> | $Enums.TaskStatus
     estimatedMinutes?: IntNullableFilter<"Subtask"> | number | null
+    sortOrder?: IntFilter<"Subtask"> | number
     createdAt?: DateTimeFilter<"Subtask"> | Date | string
     task?: XOR<TaskScalarRelationFilter, TaskWhereInput>
   }
@@ -7387,6 +7429,7 @@ export namespace Prisma {
     title?: SortOrder
     status?: SortOrder
     estimatedMinutes?: SortOrderInput | SortOrder
+    sortOrder?: SortOrder
     createdAt?: SortOrder
     task?: TaskOrderByWithRelationInput
   }
@@ -7400,6 +7443,7 @@ export namespace Prisma {
     title?: StringFilter<"Subtask"> | string
     status?: EnumTaskStatusFilter<"Subtask"> | $Enums.TaskStatus
     estimatedMinutes?: IntNullableFilter<"Subtask"> | number | null
+    sortOrder?: IntFilter<"Subtask"> | number
     createdAt?: DateTimeFilter<"Subtask"> | Date | string
     task?: XOR<TaskScalarRelationFilter, TaskWhereInput>
   }, "id">
@@ -7410,6 +7454,7 @@ export namespace Prisma {
     title?: SortOrder
     status?: SortOrder
     estimatedMinutes?: SortOrderInput | SortOrder
+    sortOrder?: SortOrder
     createdAt?: SortOrder
     _count?: SubtaskCountOrderByAggregateInput
     _avg?: SubtaskAvgOrderByAggregateInput
@@ -7427,6 +7472,7 @@ export namespace Prisma {
     title?: StringWithAggregatesFilter<"Subtask"> | string
     status?: EnumTaskStatusWithAggregatesFilter<"Subtask"> | $Enums.TaskStatus
     estimatedMinutes?: IntNullableWithAggregatesFilter<"Subtask"> | number | null
+    sortOrder?: IntWithAggregatesFilter<"Subtask"> | number
     createdAt?: DateTimeWithAggregatesFilter<"Subtask"> | Date | string
   }
 
@@ -7574,6 +7620,7 @@ export namespace Prisma {
     estimateMinMinutes?: number | null
     estimateMaxMinutes?: number | null
     archivedAt?: Date | string | null
+    sortOrder?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     client?: ClientCreateNestedOneWithoutTasksInput
@@ -7591,6 +7638,7 @@ export namespace Prisma {
     estimateMinMinutes?: number | null
     estimateMaxMinutes?: number | null
     archivedAt?: Date | string | null
+    sortOrder?: number
     clientId?: number | null
     labelId?: number | null
     createdAt?: Date | string
@@ -7607,6 +7655,7 @@ export namespace Prisma {
     estimateMinMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     estimateMaxMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     client?: ClientUpdateOneWithoutTasksNestedInput
@@ -7624,6 +7673,7 @@ export namespace Prisma {
     estimateMinMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     estimateMaxMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
     clientId?: NullableIntFieldUpdateOperationsInput | number | null
     labelId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7641,6 +7691,7 @@ export namespace Prisma {
     estimateMinMinutes?: number | null
     estimateMaxMinutes?: number | null
     archivedAt?: Date | string | null
+    sortOrder?: number
     clientId?: number | null
     labelId?: number | null
     createdAt?: Date | string
@@ -7655,6 +7706,7 @@ export namespace Prisma {
     estimateMinMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     estimateMaxMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -7668,6 +7720,7 @@ export namespace Prisma {
     estimateMinMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     estimateMaxMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
     clientId?: NullableIntFieldUpdateOperationsInput | number | null
     labelId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7678,6 +7731,7 @@ export namespace Prisma {
     title: string
     status?: $Enums.TaskStatus
     estimatedMinutes?: number | null
+    sortOrder?: number
     createdAt?: Date | string
     task: TaskCreateNestedOneWithoutSubtasksInput
   }
@@ -7688,6 +7742,7 @@ export namespace Prisma {
     title: string
     status?: $Enums.TaskStatus
     estimatedMinutes?: number | null
+    sortOrder?: number
     createdAt?: Date | string
   }
 
@@ -7695,6 +7750,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     estimatedMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     task?: TaskUpdateOneRequiredWithoutSubtasksNestedInput
   }
@@ -7705,6 +7761,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     estimatedMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -7714,6 +7771,7 @@ export namespace Prisma {
     title: string
     status?: $Enums.TaskStatus
     estimatedMinutes?: number | null
+    sortOrder?: number
     createdAt?: Date | string
   }
 
@@ -7721,6 +7779,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     estimatedMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -7730,6 +7789,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     estimatedMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -8003,6 +8063,7 @@ export namespace Prisma {
     estimateMinMinutes?: SortOrder
     estimateMaxMinutes?: SortOrder
     archivedAt?: SortOrder
+    sortOrder?: SortOrder
     clientId?: SortOrder
     labelId?: SortOrder
     createdAt?: SortOrder
@@ -8013,6 +8074,7 @@ export namespace Prisma {
     id?: SortOrder
     estimateMinMinutes?: SortOrder
     estimateMaxMinutes?: SortOrder
+    sortOrder?: SortOrder
     clientId?: SortOrder
     labelId?: SortOrder
   }
@@ -8026,6 +8088,7 @@ export namespace Prisma {
     estimateMinMinutes?: SortOrder
     estimateMaxMinutes?: SortOrder
     archivedAt?: SortOrder
+    sortOrder?: SortOrder
     clientId?: SortOrder
     labelId?: SortOrder
     createdAt?: SortOrder
@@ -8041,6 +8104,7 @@ export namespace Prisma {
     estimateMinMinutes?: SortOrder
     estimateMaxMinutes?: SortOrder
     archivedAt?: SortOrder
+    sortOrder?: SortOrder
     clientId?: SortOrder
     labelId?: SortOrder
     createdAt?: SortOrder
@@ -8051,6 +8115,7 @@ export namespace Prisma {
     id?: SortOrder
     estimateMinMinutes?: SortOrder
     estimateMaxMinutes?: SortOrder
+    sortOrder?: SortOrder
     clientId?: SortOrder
     labelId?: SortOrder
   }
@@ -8138,6 +8203,7 @@ export namespace Prisma {
     title?: SortOrder
     status?: SortOrder
     estimatedMinutes?: SortOrder
+    sortOrder?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -8145,6 +8211,7 @@ export namespace Prisma {
     id?: SortOrder
     taskId?: SortOrder
     estimatedMinutes?: SortOrder
+    sortOrder?: SortOrder
   }
 
   export type SubtaskMaxOrderByAggregateInput = {
@@ -8153,6 +8220,7 @@ export namespace Prisma {
     title?: SortOrder
     status?: SortOrder
     estimatedMinutes?: SortOrder
+    sortOrder?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -8162,6 +8230,7 @@ export namespace Prisma {
     title?: SortOrder
     status?: SortOrder
     estimatedMinutes?: SortOrder
+    sortOrder?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -8169,6 +8238,7 @@ export namespace Prisma {
     id?: SortOrder
     taskId?: SortOrder
     estimatedMinutes?: SortOrder
+    sortOrder?: SortOrder
   }
 
   export type TaskLogCountOrderByAggregateInput = {
@@ -8684,6 +8754,7 @@ export namespace Prisma {
     estimateMinMinutes?: number | null
     estimateMaxMinutes?: number | null
     archivedAt?: Date | string | null
+    sortOrder?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     label?: LabelCreateNestedOneWithoutTasksInput
@@ -8700,6 +8771,7 @@ export namespace Prisma {
     estimateMinMinutes?: number | null
     estimateMaxMinutes?: number | null
     archivedAt?: Date | string | null
+    sortOrder?: number
     labelId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -8745,6 +8817,7 @@ export namespace Prisma {
     estimateMinMinutes?: IntNullableFilter<"Task"> | number | null
     estimateMaxMinutes?: IntNullableFilter<"Task"> | number | null
     archivedAt?: DateTimeNullableFilter<"Task"> | Date | string | null
+    sortOrder?: IntFilter<"Task"> | number
     clientId?: IntNullableFilter<"Task"> | number | null
     labelId?: IntNullableFilter<"Task"> | number | null
     createdAt?: DateTimeFilter<"Task"> | Date | string
@@ -8759,6 +8832,7 @@ export namespace Prisma {
     estimateMinMinutes?: number | null
     estimateMaxMinutes?: number | null
     archivedAt?: Date | string | null
+    sortOrder?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     client?: ClientCreateNestedOneWithoutTasksInput
@@ -8775,6 +8849,7 @@ export namespace Prisma {
     estimateMinMinutes?: number | null
     estimateMaxMinutes?: number | null
     archivedAt?: Date | string | null
+    sortOrder?: number
     clientId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -8842,6 +8917,7 @@ export namespace Prisma {
     title: string
     status?: $Enums.TaskStatus
     estimatedMinutes?: number | null
+    sortOrder?: number
     createdAt?: Date | string
   }
 
@@ -8850,6 +8926,7 @@ export namespace Prisma {
     title: string
     status?: $Enums.TaskStatus
     estimatedMinutes?: number | null
+    sortOrder?: number
     createdAt?: Date | string
   }
 
@@ -8953,6 +9030,7 @@ export namespace Prisma {
     title?: StringFilter<"Subtask"> | string
     status?: EnumTaskStatusFilter<"Subtask"> | $Enums.TaskStatus
     estimatedMinutes?: IntNullableFilter<"Subtask"> | number | null
+    sortOrder?: IntFilter<"Subtask"> | number
     createdAt?: DateTimeFilter<"Subtask"> | Date | string
   }
 
@@ -8991,6 +9069,7 @@ export namespace Prisma {
     estimateMinMinutes?: number | null
     estimateMaxMinutes?: number | null
     archivedAt?: Date | string | null
+    sortOrder?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     client?: ClientCreateNestedOneWithoutTasksInput
@@ -9007,6 +9086,7 @@ export namespace Prisma {
     estimateMinMinutes?: number | null
     estimateMaxMinutes?: number | null
     archivedAt?: Date | string | null
+    sortOrder?: number
     clientId?: number | null
     labelId?: number | null
     createdAt?: Date | string
@@ -9038,6 +9118,7 @@ export namespace Prisma {
     estimateMinMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     estimateMaxMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     client?: ClientUpdateOneWithoutTasksNestedInput
@@ -9054,6 +9135,7 @@ export namespace Prisma {
     estimateMinMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     estimateMaxMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
     clientId?: NullableIntFieldUpdateOperationsInput | number | null
     labelId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9069,6 +9151,7 @@ export namespace Prisma {
     estimateMinMinutes?: number | null
     estimateMaxMinutes?: number | null
     archivedAt?: Date | string | null
+    sortOrder?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     client?: ClientCreateNestedOneWithoutTasksInput
@@ -9085,6 +9168,7 @@ export namespace Prisma {
     estimateMinMinutes?: number | null
     estimateMaxMinutes?: number | null
     archivedAt?: Date | string | null
+    sortOrder?: number
     clientId?: number | null
     labelId?: number | null
     createdAt?: Date | string
@@ -9116,6 +9200,7 @@ export namespace Prisma {
     estimateMinMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     estimateMaxMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     client?: ClientUpdateOneWithoutTasksNestedInput
@@ -9132,6 +9217,7 @@ export namespace Prisma {
     estimateMinMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     estimateMaxMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
     clientId?: NullableIntFieldUpdateOperationsInput | number | null
     labelId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9148,6 +9234,7 @@ export namespace Prisma {
     estimateMinMinutes?: number | null
     estimateMaxMinutes?: number | null
     archivedAt?: Date | string | null
+    sortOrder?: number
     labelId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -9161,6 +9248,7 @@ export namespace Prisma {
     estimateMinMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     estimateMaxMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     label?: LabelUpdateOneWithoutTasksNestedInput
@@ -9177,6 +9265,7 @@ export namespace Prisma {
     estimateMinMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     estimateMaxMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
     labelId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9193,6 +9282,7 @@ export namespace Prisma {
     estimateMinMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     estimateMaxMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
     labelId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9207,6 +9297,7 @@ export namespace Prisma {
     estimateMinMinutes?: number | null
     estimateMaxMinutes?: number | null
     archivedAt?: Date | string | null
+    sortOrder?: number
     clientId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -9220,6 +9311,7 @@ export namespace Prisma {
     estimateMinMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     estimateMaxMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     client?: ClientUpdateOneWithoutTasksNestedInput
@@ -9236,6 +9328,7 @@ export namespace Prisma {
     estimateMinMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     estimateMaxMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
     clientId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9252,6 +9345,7 @@ export namespace Prisma {
     estimateMinMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     estimateMaxMinutes?: NullableIntFieldUpdateOperationsInput | number | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
     clientId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9262,6 +9356,7 @@ export namespace Prisma {
     title: string
     status?: $Enums.TaskStatus
     estimatedMinutes?: number | null
+    sortOrder?: number
     createdAt?: Date | string
   }
 
@@ -9276,6 +9371,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     estimatedMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -9284,6 +9380,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     estimatedMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -9292,6 +9389,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     estimatedMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

@@ -100,13 +100,72 @@ export async function createTask(formData: FormData): Promise<ActionResult> {
 			};
 		}
 		await verifyRelations(parsed.clientId, parsed.labelId);
+		const lastTask = await db.task.findFirst({
+			where: { status: parsed.status, archivedAt: null },
+			orderBy: { sortOrder: "desc" },
+			select: { sortOrder: true },
+		});
 		await db.task.create({
-			data: { ...parsed, description: nullableText(parsed.description) },
+			data: {
+				...parsed,
+				description: nullableText(parsed.description),
+				sortOrder: (lastTask?.sortOrder ?? 0) + 1024,
+			},
+		});
+		revalidatePath("/");
+		revalidatePath("/archived");
+		return { ok: true };
+	} catch (error) {
+		return actionError(error, "The task could not be created.");
+	}
+}
+
+const moveTaskSchema = z.object({
+	id: int4IdSchema,
+	status: z.enum(taskStatuses),
+	beforeId: int4IdSchema.nullable(),
+});
+
+export async function moveTask(
+	idInput: number,
+	statusInput: string,
+	beforeIdInput: number | null,
+): Promise<ActionResult> {
+	try {
+		const { id, status, beforeId } = moveTaskSchema.parse({
+			id: idInput,
+			status: statusInput,
+			beforeId: beforeIdInput,
+		});
+		await db.$transaction(async (tx) => {
+			const task = await tx.task.findUnique({
+				where: { id },
+				select: { archivedAt: true },
+			});
+			if (!task || task.archivedAt) throw new Error("Task not found.");
+			const lane = await tx.task.findMany({
+				where: { status, archivedAt: null, id: { not: id } },
+				orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
+				select: { id: true },
+			});
+			const beforeIndex = beforeId
+				? lane.findIndex((item) => item.id === beforeId)
+				: -1;
+			lane.splice(beforeIndex >= 0 ? beforeIndex : lane.length, 0, { id });
+			for (const [index, item] of lane.entries()) {
+				await tx.task.update({
+					where: { id: item.id },
+					data: {
+						status: item.id === id ? status : undefined,
+						sortOrder: (index + 1) * 1024,
+					},
+				});
+			}
 		});
 		revalidatePath("/");
 		return { ok: true };
 	} catch (error) {
-		return actionError(error, "The task could not be created.");
+		return actionError(error, "The task could not be moved.");
 	}
 }
 
@@ -174,6 +233,7 @@ export async function deleteTask(idInput: number): Promise<ActionResult> {
 		if (!existing) return { ok: false, error: "Task not found." };
 		await db.task.delete({ where: { id } });
 		revalidatePath("/");
+		revalidatePath("/archived");
 		return { ok: true };
 	} catch (error) {
 		return actionError(error, "The task could not be deleted.");
@@ -197,6 +257,7 @@ export async function setArchived(
 			data: { archivedAt: archived ? new Date() : null },
 		});
 		revalidatePath("/");
+		revalidatePath("/archived");
 		revalidatePath(`/tasks/${id}`);
 		return { ok: true };
 	} catch (error) {

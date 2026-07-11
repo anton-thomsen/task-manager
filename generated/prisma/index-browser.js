@@ -141,6 +141,7 @@ exports.Prisma.TaskScalarFieldEnum = {
   estimateMinMinutes: 'estimateMinMinutes',
   estimateMaxMinutes: 'estimateMaxMinutes',
   archivedAt: 'archivedAt',
+  sortOrder: 'sortOrder',
   clientId: 'clientId',
   labelId: 'labelId',
   createdAt: 'createdAt',
@@ -153,6 +154,7 @@ exports.Prisma.SubtaskScalarFieldEnum = {
   title: 'title',
   status: 'status',
   estimatedMinutes: 'estimatedMinutes',
+  sortOrder: 'sortOrder',
   createdAt: 'createdAt'
 };
 

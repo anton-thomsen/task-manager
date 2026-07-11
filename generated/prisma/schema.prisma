@@ -40,6 +40,7 @@ model Task {
   estimateMinMinutes Int?
   estimateMaxMinutes Int?
   archivedAt         DateTime?
+  sortOrder          Int        @default(0)
   clientId           Int?
   client             Client?    @relation(fields: [clientId], references: [id], onDelete: SetNull)
   labelId            Int?
@@ -49,7 +50,7 @@ model Task {
   createdAt          DateTime   @default(now())
   updatedAt          DateTime   @updatedAt
 
-  @@index([status])
+  @@index([status, sortOrder])
   @@index([clientId])
   @@index([labelId])
 }
@@ -61,9 +62,10 @@ model Subtask {
   title            String
   status           TaskStatus @default(Inbox)
   estimatedMinutes Int?
+  sortOrder        Int        @default(0)
   createdAt        DateTime   @default(now())
 
-  @@index([taskId])
+  @@index([taskId, status, sortOrder])
 }
 
 model TaskLog {

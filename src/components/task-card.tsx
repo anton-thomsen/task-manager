@@ -1,5 +1,6 @@
 "use client";
 
+import { Archive, ArchiveRestore, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRef, useState } from "react";
 
@@ -28,6 +29,9 @@ export function TaskCard({ clients, labels, task }: TaskCardProps) {
 	const deleteDialogRef = useRef<HTMLDialogElement>(null);
 	const [isWorking, setIsWorking] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const [exitAnimation, setExitAnimation] = useState<
+		"archive" | "delete" | null
+	>(null);
 	const estimate = formatEstimateRange(
 		task.estimateMinMinutes,
 		task.estimateMaxMinutes,
@@ -36,10 +40,12 @@ export function TaskCard({ clients, labels, task }: TaskCardProps) {
 	async function archive(archived: boolean): Promise<boolean> {
 		setIsWorking(true);
 		setError(null);
+		if (archived) setExitAnimation("archive");
 		try {
 			const result = await setArchived(task.id, archived);
 			if (!result.ok) {
 				setError(result.error);
+				setExitAnimation(null);
 				return false;
 			}
 			return true;
@@ -51,10 +57,12 @@ export function TaskCard({ clients, labels, task }: TaskCardProps) {
 	async function remove() {
 		setIsWorking(true);
 		setError(null);
+		setExitAnimation("delete");
 		try {
 			const result = await deleteTask(task.id);
 			if (!result.ok) {
 				setError(result.error);
+				setExitAnimation(null);
 				return;
 			}
 			deleteDialogRef.current?.close();
@@ -65,7 +73,7 @@ export function TaskCard({ clients, labels, task }: TaskCardProps) {
 
 	return (
 		<article
-			className={`space-y-2 rounded-xl border-2 border-stone-900 p-3 shadow-[3px_3px_0_#1c1917] ${task.archivedAt ? "bg-stone-200 opacity-70" : "bg-[#fffdf6]"}`}
+			className={`space-y-2 rounded-xl border-2 border-stone-900 p-3 shadow-[3px_3px_0_#1c1917] ${task.archivedAt ? "bg-stone-200 opacity-70" : "bg-[#fffdf6]"} ${exitAnimation === "archive" ? "pixel-archive" : ""} ${exitAnimation === "delete" ? "pixel-delete" : ""}`}
 		>
 			<div className="flex items-start justify-between gap-2">
 				<Link
@@ -102,22 +110,35 @@ export function TaskCard({ clients, labels, task }: TaskCardProps) {
 				) : null}
 			</div>
 			<div className="flex flex-wrap gap-1.5 pt-1">
-				<TaskForm clients={clients} labels={labels} task={task} />
+				<TaskForm
+					clients={clients}
+					labels={labels}
+					task={task}
+					triggerVariant="card"
+				/>
 				<button
-					className="rounded border border-stone-900 bg-white px-2 py-1 font-semibold text-xs hover:bg-stone-100"
+					aria-label={task.archivedAt ? "Restore task" : "Archive task"}
+					className="ghost-icon-button"
 					disabled={isWorking}
 					onClick={() => archive(!task.archivedAt)}
+					title={task.archivedAt ? "Restore task" : "Archive task"}
 					type="button"
 				>
-					{task.archivedAt ? "Restore" : "Archive"}
+					{task.archivedAt ? (
+						<ArchiveRestore aria-hidden="true" size={16} />
+					) : (
+						<Archive aria-hidden="true" size={16} />
+					)}
 				</button>
 				<button
-					className="rounded border border-red-950 bg-red-600 px-2 py-1 font-semibold text-white text-xs hover:bg-red-700"
+					aria-label="Delete task"
+					className="ghost-icon-button text-red-700 hover:bg-red-100 hover:text-red-800"
 					disabled={isWorking}
 					onClick={() => deleteDialogRef.current?.showModal()}
+					title="Delete task"
 					type="button"
 				>
-					Delete
+					<Trash2 aria-hidden="true" size={16} />
 				</button>
 			</div>
 			{error ? (
