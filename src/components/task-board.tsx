@@ -1,11 +1,13 @@
 "use client";
 
 import {
+	type CollisionDetection,
 	closestCorners,
 	DndContext,
 	type DragEndEvent,
 	KeyboardSensor,
 	PointerSensor,
+	pointerWithin,
 	useSensor,
 	useSensors,
 } from "@dnd-kit/core";
@@ -19,6 +21,25 @@ import { DropLane, SortableItem } from "./sortable-lane";
 import { TaskCard, type TaskCardValue } from "./task-card";
 
 type Move = { id: number; status: TaskStatus; beforeId: number | null };
+
+const taskBoardCollisionDetection: CollisionDetection = (args) => {
+	if (args.pointerCoordinates === null) return closestCorners(args);
+
+	const taskCollisions = pointerWithin({
+		...args,
+		droppableContainers: args.droppableContainers.filter(
+			({ data }) => data.current?.type === "task",
+		),
+	});
+	if (taskCollisions.length > 0) return taskCollisions;
+
+	return pointerWithin({
+		...args,
+		droppableContainers: args.droppableContainers.filter(
+			({ data }) => data.current?.type === "lane",
+		),
+	});
+};
 
 function applyMove(tasks: TaskCardValue[], move: Move): TaskCardValue[] {
 	const moving = tasks.find(({ id }) => id === move.id);
@@ -96,7 +117,7 @@ export function TaskBoard({
 				</p>
 			) : null}
 			<DndContext
-				collisionDetection={closestCorners}
+				collisionDetection={taskBoardCollisionDetection}
 				onDragEnd={handleDragEnd}
 				sensors={sensors}
 			>

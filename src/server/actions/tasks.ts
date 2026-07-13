@@ -8,21 +8,20 @@ import {
 	type ActionResult,
 	actionError,
 	int4IdSchema,
+	optionalDateSchema,
 	optionalPositiveInt,
+	taskDescriptionSchema,
+	taskTitleSchema,
 } from "~/lib/validation";
+import { requireSession } from "~/server/auth";
 import { db } from "~/server/db";
-
-const optionalDate = z.preprocess(
-	(value) =>
-		value === "" || value === null || value === undefined ? undefined : value,
-	z.coerce.date().optional(),
-);
+import { createTaskAtLaneEnd } from "~/server/task-creation";
 
 const taskFields = {
-	title: z.string().trim().min(1, "A title is required.").max(200),
-	description: z.string().trim().max(2000).optional(),
+	title: taskTitleSchema,
+	description: taskDescriptionSchema,
 	status: z.enum(taskStatuses),
-	deadline: optionalDate,
+	deadline: optionalDateSchema,
 	estimateMinMinutes: optionalPositiveInt(300),
 	estimateMaxMinutes: optionalPositiveInt(300),
 	clientId: optionalPositiveInt(2_147_483_647),
@@ -89,6 +88,7 @@ function estimatesAreValid(min: number | null, max: number | null): boolean {
 }
 
 export async function createTask(formData: FormData): Promise<ActionResult> {
+	await requireSession();
 	try {
 		const parsed = createTaskSchema.parse(taskInput(formData));
 		const min = parsed.estimateMinMinutes ?? null;
@@ -100,17 +100,9 @@ export async function createTask(formData: FormData): Promise<ActionResult> {
 			};
 		}
 		await verifyRelations(parsed.clientId, parsed.labelId);
-		const lastTask = await db.task.findFirst({
-			where: { status: parsed.status, archivedAt: null },
-			orderBy: { sortOrder: "desc" },
-			select: { sortOrder: true },
-		});
-		await db.task.create({
-			data: {
-				...parsed,
-				description: nullableText(parsed.description),
-				sortOrder: (lastTask?.sortOrder ?? 0) + 1024,
-			},
+		await createTaskAtLaneEnd({
+			...parsed,
+			description: nullableText(parsed.description),
 		});
 		revalidatePath("/");
 		revalidatePath("/archived");
@@ -131,6 +123,7 @@ export async function moveTask(
 	statusInput: string,
 	beforeIdInput: number | null,
 ): Promise<ActionResult> {
+	await requireSession();
 	try {
 		const { id, status, beforeId } = moveTaskSchema.parse({
 			id: idInput,
@@ -170,6 +163,7 @@ export async function moveTask(
 }
 
 export async function updateTask(formData: FormData): Promise<ActionResult> {
+	await requireSession();
 	try {
 		const parsed = updateTaskSchema.parse({
 			...taskInput(formData),
@@ -224,6 +218,7 @@ export async function updateTask(formData: FormData): Promise<ActionResult> {
 }
 
 export async function deleteTask(idInput: number): Promise<ActionResult> {
+	await requireSession();
 	try {
 		const id = int4IdSchema.parse(idInput);
 		const existing = await db.task.findUnique({
@@ -244,6 +239,7 @@ export async function setArchived(
 	idInput: number,
 	archivedInput: boolean,
 ): Promise<ActionResult> {
+	await requireSession();
 	try {
 		const id = int4IdSchema.parse(idInput);
 		const archived = z.boolean().parse(archivedInput);

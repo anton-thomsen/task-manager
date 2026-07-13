@@ -5,6 +5,7 @@ import { z } from "zod";
 
 import { taskStatuses } from "~/lib/tasks";
 import { int4IdSchema, optionalPositiveInt } from "~/lib/validation";
+import { requireSession } from "~/server/auth";
 import { db } from "~/server/db";
 
 const createSubtaskSchema = z.object({
@@ -14,6 +15,7 @@ const createSubtaskSchema = z.object({
 });
 
 export async function createSubtask(formData: FormData): Promise<void> {
+	await requireSession();
 	const parsed = createSubtaskSchema.parse({
 		taskId: formData.get("taskId")?.toString(),
 		title: formData.get("title")?.toString(),
@@ -47,6 +49,7 @@ export async function moveSubtask(
 	statusInput: string,
 	beforeIdInput: number | null,
 ): Promise<void> {
+	await requireSession();
 	const { id, status, beforeId } = moveSubtaskSchema.parse({
 		id: idInput,
 		status: statusInput,
@@ -86,6 +89,7 @@ export async function updateSubtaskStatus(
 	idInput: number,
 	statusInput: string,
 ): Promise<void> {
+	await requireSession();
 	const id = int4IdSchema.parse(idInput);
 	const status = z.enum(taskStatuses).parse(statusInput);
 	const subtask = await db.subtask.findUnique({
@@ -100,6 +104,7 @@ export async function updateSubtaskStatus(
 }
 
 export async function deleteSubtask(idInput: number): Promise<void> {
+	await requireSession();
 	const id = int4IdSchema.parse(idInput);
 	const subtask = await db.subtask.findUnique({
 		where: { id },

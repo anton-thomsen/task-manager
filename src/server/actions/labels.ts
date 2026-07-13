@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 import type { LabelOption } from "~/lib/tasks";
+import { requireSession } from "~/server/auth";
 import { db } from "~/server/db";
 
 const labelSchema = z.object({
@@ -15,6 +16,7 @@ export async function createLabel(
 	nameInput: string,
 	colorInput: string,
 ): Promise<LabelOption> {
+	await requireSession();
 	const { name, color } = labelSchema.parse({
 		name: nameInput,
 		color: colorInput,

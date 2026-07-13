@@ -25,6 +25,7 @@ export function DropLane({
 	return (
 		<div
 			className={`${className ?? ""} ${isOver ? "ring-2 ring-emerald-600 ring-offset-2" : ""}`}
+			data-testid={id}
 			ref={setNodeRef}
 		>
 			<SortableContext items={items} strategy={verticalListSortingStrategy}>
@@ -56,6 +57,7 @@ export function SortableItem({
 	return (
 		<div
 			className={isDragging ? "dnd-lift z-10 opacity-60" : ""}
+			data-testid={id}
 			ref={setNodeRef}
 			style={{ transform: CSS.Transform.toString(transform), transition }}
 			{...attributes}

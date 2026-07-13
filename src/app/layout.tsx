@@ -1,12 +1,20 @@
 import "~/styles/globals.css";
 
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Press_Start_2P } from "next/font/google";
 
 export const metadata: Metadata = {
 	title: "Task Manager",
 	description: "A client-aware task manager for focused agency work.",
-	icons: [{ rel: "icon", url: "/favicon.ico" }],
+	icons: {
+		apple: [{ sizes: "192x192", type: "image/png", url: "/icon-192.png" }],
+		icon: [{ sizes: "192x192", type: "image/png", url: "/icon-192.png" }],
+	},
+};
+
+export const viewport: Viewport = {
+	themeColor: "#047857",
+	width: "device-width",
 };
 
 const geist = Geist({

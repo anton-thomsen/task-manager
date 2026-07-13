@@ -7,10 +7,15 @@ export const env = createEnv({
 	 * isn't built with invalid env vars.
 	 */
 	server: {
+		AUTH_ALLOW_SIGNUP: z.enum(["true", "false"]).default("false"),
+		BETTER_AUTH_SECRET: z.string().min(32),
+		BETTER_AUTH_URL: z.string().url(),
+		CALENDAR_FEED_TOKEN: z.string().min(32),
 		DATABASE_URL: z.string().url(),
 		NODE_ENV: z
 			.enum(["development", "test", "production"])
 			.default("development"),
+		TASKS_API_TOKEN: z.string().min(32),
 	},
 
 	/**
@@ -28,7 +33,12 @@ export const env = createEnv({
 	 */
 	runtimeEnv: {
 		DATABASE_URL: process.env.DATABASE_URL,
+		AUTH_ALLOW_SIGNUP: process.env.AUTH_ALLOW_SIGNUP,
+		BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
+		BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,
+		CALENDAR_FEED_TOKEN: process.env.CALENDAR_FEED_TOKEN,
 		NODE_ENV: process.env.NODE_ENV,
+		TASKS_API_TOKEN: process.env.TASKS_API_TOKEN,
 		// NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 	},
 	/**

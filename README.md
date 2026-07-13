@@ -38,6 +38,19 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+## End-to-end tests
+
+With the local PostgreSQL container running:
+
+```bash
+pnpm exec playwright install chromium
+pnpm test:e2e
+```
+
+The Playwright suite uses a separate `task_manager_e2e` PostgreSQL schema. It
+resets only that schema, starts the app on port 3100 with test-only credentials,
+performs real pointer input, and verifies the result after a page reload.
+
 ## Stack
 
 Next.js, React, TypeScript, Tailwind CSS, Prisma, PostgreSQL, and dnd-kit.

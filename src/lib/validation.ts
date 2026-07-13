@@ -6,6 +6,20 @@ export const int4IdSchema = z.coerce
 	.positive()
 	.max(2_147_483_647);
 
+export const taskTitleSchema = z
+	.string()
+	.trim()
+	.min(1, "A title is required.")
+	.max(200);
+
+export const taskDescriptionSchema = z.string().trim().max(2000).optional();
+
+export const optionalDateSchema = z.preprocess(
+	(value) =>
+		value === "" || value === null || value === undefined ? undefined : value,
+	z.coerce.date().optional(),
+);
+
 export function optionalPositiveInt(max: number) {
 	return z.preprocess(
 		(value) =>

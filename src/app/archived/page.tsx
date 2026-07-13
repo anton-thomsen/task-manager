@@ -5,6 +5,7 @@ import {
 	type ArchivedTaskValue,
 } from "~/components/archived-task-row";
 import { int4IdSchema } from "~/lib/validation";
+import { requireSession } from "~/server/auth";
 import { db } from "~/server/db";
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
@@ -23,6 +24,7 @@ export default async function ArchivedPage({
 }: {
 	searchParams: SearchParams;
 }) {
+	await requireSession();
 	const params = await searchParams;
 	const q = scalar(params.q).trim().slice(0, 100);
 	const clientId = selectedId(params.client);

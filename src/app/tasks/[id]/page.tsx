@@ -10,6 +10,7 @@ import {
 	formatMinutes,
 } from "~/lib/format";
 import { int4IdSchema } from "~/lib/validation";
+import { requireSession } from "~/server/auth";
 import { db } from "~/server/db";
 
 export default async function TaskDetailPage({
@@ -19,6 +20,7 @@ export default async function TaskDetailPage({
 	params: Promise<{ id: string }>;
 	searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
+	await requireSession();
 	const { id: rawId } = await params;
 	const parsedId = int4IdSchema.safeParse(rawId);
 	if (!parsedId.success) notFound();

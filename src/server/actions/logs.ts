@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 import { int4IdSchema, optionalPositiveInt } from "~/lib/validation";
+import { requireSession } from "~/server/auth";
 import { db } from "~/server/db";
 
 const logSchema = z.object({
@@ -13,6 +14,7 @@ const logSchema = z.object({
 });
 
 export async function addLog(formData: FormData): Promise<void> {
+	await requireSession();
 	const parsed = logSchema.parse({
 		taskId: formData.get("taskId")?.toString(),
 		note: formData.get("note")?.toString(),

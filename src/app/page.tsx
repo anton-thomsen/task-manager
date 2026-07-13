@@ -1,9 +1,11 @@
 import Link from "next/link";
+import { SignOutButton } from "~/components/sign-out-button";
 import { TaskBoard } from "~/components/task-board";
 import type { TaskCardValue } from "~/components/task-card";
 import { TaskForm } from "~/components/task-form";
 import { isOverdue } from "~/lib/format";
 import { int4IdSchema } from "~/lib/validation";
+import { requireSession } from "~/server/auth";
 import { db } from "~/server/db";
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
@@ -19,6 +21,7 @@ export default async function HomePage({
 }: {
 	searchParams: SearchParams;
 }) {
+	await requireSession();
 	const filters = await searchParams;
 	const clientId = selectedId(filters.client);
 	const labelId = selectedId(filters.label);
@@ -89,6 +92,7 @@ export default async function HomePage({
 						>
 							Archived
 						</Link>
+						<SignOutButton />
 						<TaskForm clients={clients} labels={labels} />
 					</div>
 				</div>
