@@ -5,8 +5,9 @@ import { z } from "zod";
 
 import { taskStatuses } from "~/lib/tasks";
 import { int4IdSchema, optionalPositiveNumber } from "~/lib/validation";
-import { requireSession } from "~/server/auth";
+import { requireMember, type SessionMember } from "~/server/auth";
 import { db } from "~/server/db";
+import { requireTaskAccess, taskWhereFor } from "~/server/task-access";
 
 const createSubtaskSchema = z.object({
 	taskId: int4IdSchema,
@@ -17,18 +18,26 @@ const createSubtaskSchema = z.object({
 	),
 });
 
+async function requireSubtaskAccess(
+	member: SessionMember,
+	subtaskId: number,
+): Promise<{ id: number; taskId: number }> {
+	const subtask = await db.subtask.findFirst({
+		where: { id: subtaskId, task: taskWhereFor(member) },
+		select: { id: true, taskId: true },
+	});
+	if (!subtask) throw new Error("Subtask not found.");
+	return subtask;
+}
+
 export async function createSubtask(formData: FormData): Promise<void> {
-	await requireSession();
+	const member = await requireMember();
 	const parsed = createSubtaskSchema.parse({
 		taskId: formData.get("taskId")?.toString(),
 		title: formData.get("title")?.toString(),
 		estimatedHours: formData.get("estimatedHours")?.toString(),
 	});
-	const task = await db.task.findUnique({
-		where: { id: parsed.taskId },
-		select: { id: true },
-	});
-	if (!task) throw new Error("Task not found.");
+	await requireTaskAccess(member, parsed.taskId);
 	const lastSubtask = await db.subtask.findFirst({
 		where: { taskId: parsed.taskId, status: "Inbox" },
 		orderBy: { sortOrder: "desc" },
@@ -52,16 +61,17 @@ export async function moveSubtask(
 	statusInput: string,
 	beforeIdInput: number | null,
 ): Promise<void> {
-	await requireSession();
+	const member = await requireMember();
 	const { id, status, beforeId } = moveSubtaskSchema.parse({
 		id: idInput,
 		status: statusInput,
 		beforeId: beforeIdInput,
 	});
+	await requireSubtaskAccess(member, id);
 	const taskId = await db.$transaction(async (tx) => {
 		const subtask = await tx.subtask.findUnique({
 			where: { id },
-			select: { taskId: true },
+			select: { taskId: true, status: true },
 		});
 		if (!subtask) throw new Error("Subtask not found.");
 		const lane = await tx.subtask.findMany({
@@ -78,6 +88,9 @@ export async function moveSubtask(
 				where: { id: item.id },
 				data: {
 					status: item.id === id ? status : undefined,
+					...(item.id === id && status !== subtask.status
+						? { completedById: status === "Finished" ? member.userId : null }
+						: {}),
 					sortOrder: (index + 1) * 1024,
 				},
 			});
@@ -92,28 +105,26 @@ export async function updateSubtaskStatus(
 	idInput: number,
 	statusInput: string,
 ): Promise<void> {
-	await requireSession();
+	const member = await requireMember();
 	const id = int4IdSchema.parse(idInput);
 	const status = z.enum(taskStatuses).parse(statusInput);
-	const subtask = await db.subtask.findUnique({
-		where: { id },
-		select: { taskId: true },
-	});
-	if (!subtask) throw new Error("Subtask not found.");
+	const subtask = await requireSubtaskAccess(member, id);
 
-	await db.subtask.update({ where: { id }, data: { status } });
+	await db.subtask.update({
+		where: { id },
+		data: {
+			status,
+			completedById: status === "Finished" ? member.userId : null,
+		},
+	});
 	revalidatePath(`/tasks/${subtask.taskId}`);
 	revalidatePath("/");
 }
 
 export async function deleteSubtask(idInput: number): Promise<void> {
-	await requireSession();
+	const member = await requireMember();
 	const id = int4IdSchema.parse(idInput);
-	const subtask = await db.subtask.findUnique({
-		where: { id },
-		select: { taskId: true },
-	});
-	if (!subtask) throw new Error("Subtask not found.");
+	const subtask = await requireSubtaskAccess(member, id);
 
 	await db.subtask.delete({ where: { id } });
 	revalidatePath(`/tasks/${subtask.taskId}`);

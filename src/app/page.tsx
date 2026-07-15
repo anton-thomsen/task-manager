@@ -5,8 +5,9 @@ import type { TaskCardValue } from "~/components/task-card";
 import { TaskForm } from "~/components/task-form";
 import { isOverdue } from "~/lib/format";
 import { int4IdSchema } from "~/lib/validation";
-import { requireSession } from "~/server/auth";
+import { requireMember } from "~/server/auth";
 import { db } from "~/server/db";
+import { taskWhereFor } from "~/server/task-access";
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
@@ -21,7 +22,7 @@ export default async function HomePage({
 }: {
 	searchParams: SearchParams;
 }) {
-	await requireSession();
+	const member = await requireMember();
 	const filters = await searchParams;
 	const clientId = selectedId(filters.client);
 	const labelId = selectedId(filters.label);
@@ -30,6 +31,7 @@ export default async function HomePage({
 	const [tasks, clients, labels] = await Promise.all([
 		db.task.findMany({
 			where: {
+				AND: [taskWhereFor(member)],
 				archivedAt: showArchived ? undefined : null,
 				clientId,
 				labelId,
@@ -42,8 +44,14 @@ export default async function HomePage({
 				_count: { select: { logs: true } },
 			},
 		}),
-		db.client.findMany({ orderBy: { name: "asc" } }),
-		db.label.findMany({ orderBy: { name: "asc" } }),
+		db.client.findMany({
+			where: { organizationId: member.orgId },
+			orderBy: { name: "asc" },
+		}),
+		db.label.findMany({
+			where: { organizationId: member.orgId },
+			orderBy: { name: "asc" },
+		}),
 	]);
 
 	const taskValues: TaskCardValue[] = tasks.map((task) => {
@@ -91,6 +99,12 @@ export default async function HomePage({
 							href="/archived"
 						>
 							Archived
+						</Link>
+						<Link
+							className="font-semibold text-sm underline underline-offset-4"
+							href="/settings"
+						>
+							Settings
 						</Link>
 						<SignOutButton />
 						<TaskForm clients={clients} labels={labels} />

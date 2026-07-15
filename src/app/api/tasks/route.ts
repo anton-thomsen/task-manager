@@ -1,9 +1,8 @@
 import { z } from "zod";
 
-import { env } from "~/env";
 import { taskDescriptionSchema, taskTitleSchema } from "~/lib/validation";
 import { createTaskAtLaneEnd } from "~/server/task-creation";
-import { tokensMatch } from "~/server/token-auth";
+import { memberFromToken } from "~/server/token-auth";
 
 export const runtime = "nodejs";
 
@@ -54,9 +53,8 @@ async function readLimitedBody(request: Request): Promise<string | null> {
 export async function POST(request: Request) {
 	const authorization = request.headers.get("authorization");
 	if (!authorization?.startsWith("Bearer ")) return unauthorized();
-	if (!tokensMatch(authorization.slice(7), env.TASKS_API_TOKEN)) {
-		return unauthorized();
-	}
+	const member = await memberFromToken(authorization.slice(7), "apiToken");
+	if (!member) return unauthorized();
 
 	const declaredLength = Number(request.headers.get("content-length"));
 	if (Number.isFinite(declaredLength) && declaredLength > maxBodyBytes) {
@@ -92,10 +90,13 @@ export async function POST(request: Request) {
 		);
 	}
 
-	const task = await createTaskAtLaneEnd({
-		deadline: parsed.data.deadline,
-		description: parsed.data.description || null,
-		title: parsed.data.title,
-	});
+	const task = await createTaskAtLaneEnd(
+		{ orgId: member.orgId, userId: member.userId },
+		{
+			deadline: parsed.data.deadline,
+			description: parsed.data.description || null,
+			title: parsed.data.title,
+		},
+	);
 	return Response.json({ id: task.id, title: task.title }, { status: 201 });
 }

@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 import type { LabelOption } from "~/lib/tasks";
-import { requireSession } from "~/server/auth";
+import { requireMember } from "~/server/auth";
 import { db } from "~/server/db";
 
 const labelSchema = z.object({
@@ -16,16 +16,18 @@ export async function createLabel(
 	nameInput: string,
 	colorInput: string,
 ): Promise<LabelOption> {
-	await requireSession();
+	const member = await requireMember();
 	const { name, color } = labelSchema.parse({
 		name: nameInput,
 		color: colorInput,
 	});
 	const label = await db.label.upsert({
-		where: { name },
-		create: { name, color },
+		where: {
+			organizationId_name: { organizationId: member.orgId, name },
+		},
+		create: { organizationId: member.orgId, name, color },
 		update: { color },
 	});
 	revalidatePath("/");
-	return label;
+	return { id: label.id, name: label.name, color: label.color };
 }

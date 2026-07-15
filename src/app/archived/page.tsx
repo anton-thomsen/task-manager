@@ -5,8 +5,9 @@ import {
 	type ArchivedTaskValue,
 } from "~/components/archived-task-row";
 import { int4IdSchema } from "~/lib/validation";
-import { requireSession } from "~/server/auth";
+import { requireMember } from "~/server/auth";
 import { db } from "~/server/db";
+import { taskWhereFor } from "~/server/task-access";
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
@@ -24,7 +25,7 @@ export default async function ArchivedPage({
 }: {
 	searchParams: SearchParams;
 }) {
-	await requireSession();
+	const member = await requireMember();
 	const params = await searchParams;
 	const q = scalar(params.q).trim().slice(0, 100);
 	const clientId = selectedId(params.client);
@@ -36,17 +37,27 @@ export default async function ArchivedPage({
 	const [tasks, clients, labels] = await Promise.all([
 		db.task.findMany({
 			where: {
+				AND: [
+					taskWhereFor(member),
+					...(q
+						? [
+								{
+									OR: [
+										{ title: { contains: q, mode: "insensitive" as const } },
+										{
+											description: {
+												contains: q,
+												mode: "insensitive" as const,
+											},
+										},
+									],
+								},
+							]
+						: []),
+				],
 				archivedAt: { not: null },
 				clientId,
 				labelId,
-				...(q
-					? {
-							OR: [
-								{ title: { contains: q, mode: "insensitive" } },
-								{ description: { contains: q, mode: "insensitive" } },
-							],
-						}
-					: {}),
 			},
 			orderBy: { archivedAt: "desc" },
 			skip: (page - 1) * take,
@@ -58,8 +69,14 @@ export default async function ArchivedPage({
 				logs: { select: { hoursSpent: true } },
 			},
 		}),
-		db.client.findMany({ orderBy: { name: "asc" } }),
-		db.label.findMany({ orderBy: { name: "asc" } }),
+		db.client.findMany({
+			where: { organizationId: member.orgId },
+			orderBy: { name: "asc" },
+		}),
+		db.label.findMany({
+			where: { organizationId: member.orgId },
+			orderBy: { name: "asc" },
+		}),
 	]);
 	const hasMore = tasks.length > take;
 	const values: ArchivedTaskValue[] = tasks.slice(0, take).map((task) => ({

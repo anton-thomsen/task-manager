@@ -1,7 +1,7 @@
 import { QuickAddForm } from "~/components/quick-add-form";
-import { requireSession } from "~/server/auth";
+import { requireMember } from "~/server/auth";
 
 export default async function QuickAddPage() {
-	await requireSession();
+	await requireMember();
 	return <QuickAddForm />;
 }
