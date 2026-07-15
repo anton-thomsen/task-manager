@@ -5,6 +5,10 @@ import { z } from "zod";
 import { taskStatuses } from "~/lib/tasks";
 import { int4IdSchema } from "~/lib/validation";
 import type { SessionMember } from "~/server/auth";
+import {
+	scheduleAssigneeSync,
+	scheduleTaskSync,
+} from "~/server/calendar-sync";
 import { db } from "~/server/db";
 import {
 	resolveClientId,
@@ -91,10 +95,11 @@ async function requireVisibleTask(
 async function createTaskFromContract(
 	member: SessionMember,
 	input: CreateTaskInput,
+	assigneeIds: string[] = [],
 ) {
 	const clientId = await resolveClientId(member.orgId, input.client);
 	const labelId = await resolveLabelId(member.orgId, input.label);
-	return createTaskAtLaneEnd(
+	const task = await createTaskAtLaneEnd(
 		{ orgId: member.orgId, userId: member.userId },
 		{
 			title: input.title,
@@ -108,7 +113,10 @@ async function createTaskFromContract(
 			clientId,
 			labelId,
 		},
+		assigneeIds,
 	);
+	if (task.deadline) scheduleTaskSync(task.id);
+	return task;
 }
 
 export function registerTools(server: McpServer): void {
@@ -237,6 +245,16 @@ export function registerTools(server: McpServer): void {
 					});
 					taskId = args.task_id;
 					title = existing.title;
+					await db.taskAssignee.upsert({
+						where: { taskId_userId: { taskId, userId: target.userId } },
+						create: {
+							taskId,
+							userId: target.userId,
+							assignedById: member.userId,
+						},
+						update: {},
+					});
+					scheduleAssigneeSync(taskId, [target.userId], []);
 				} else {
 					if (
 						args.title === undefined ||
@@ -249,27 +267,22 @@ export function registerTools(server: McpServer): void {
 							"To create and delegate in one step, title, deadline, client, estimate, and label are all required (ask the user for any you are missing). Alternatively pass task_id for an existing task.",
 						);
 					}
-					const task = await createTaskFromContract(member, {
-						title: args.title,
-						description: args.description,
-						deadline: args.deadline,
-						client: args.client,
-						estimate: args.estimate,
-						label: args.label,
-						status: "Inbox",
-					});
+					const task = await createTaskFromContract(
+						member,
+						{
+							title: args.title,
+							description: args.description,
+							deadline: args.deadline,
+							client: args.client,
+							estimate: args.estimate,
+							label: args.label,
+							status: "Inbox",
+						},
+						[target.userId],
+					);
 					taskId = task.id;
 					title = task.title;
 				}
-				await db.taskAssignee.upsert({
-					where: { taskId_userId: { taskId, userId: target.userId } },
-					create: {
-						taskId,
-						userId: target.userId,
-						assignedById: member.userId,
-					},
-					update: {},
-				});
 				return jsonResult({
 					id: taskId,
 					title,
