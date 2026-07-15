@@ -23,9 +23,9 @@
     <div class="hero-content flex-col items-start text-left w-full py-8">
       <div class="flex flex-wrap items-center gap-3">
         <h1 class="min-w-0 text-3xl lg:text-4xl font-bold leading-normal">Task Manager: Agency Workflow Upgrade</h1>
-        <span class="badge badge-primary badge-lg">Plan for review</span>
+        <span class="badge badge-primary badge-lg">Historical plan</span>
       </div>
-      <p class="max-w-3xl opacity-80">Turn the current single-board prototype into a client-aware task manager: per-task actions (edit / delete / archive), a task detail page with a work log and subtasks, labels with board filtering, client grouping for agency work, and deadlines + time estimates with a hard "split anything over 5 hours" rule.</p>
+      <p class="max-w-3xl opacity-80">Turn the current single-board prototype into a client-aware task manager: per-task actions (edit / delete / archive), a task detail page with a rich manual work log and subtasks, labels with board filtering, client grouping for agency work, and deadlines + decimal-hour estimates. Top-level estimates can cover large projects; only subtasks keep a 5-hour cap.</p>
       <div class="stats stats-vertical sm:stats-horizontal shadow mt-2">
         <div class="stat py-3">
           <div class="stat-title">Phases</div>
@@ -39,13 +39,13 @@
         </div>
         <div class="stat py-3">
           <div class="stat-title">New models</div>
-          <div class="stat-value text-2xl">4</div>
-          <div class="stat-desc">Client, Label, Subtask, TaskLog</div>
+          <div class="stat-value text-2xl">5</div>
+          <div class="stat-desc">Client, Label, Subtask, TaskLog, WorkLogImage</div>
         </div>
         <div class="stat py-3">
           <div class="stat-title">Decisions</div>
           <div class="stat-value text-2xl">4/4</div>
-          <div class="stat-desc">resolved - building now</div>
+          <div class="stat-desc">resolved in the original plan</div>
         </div>
       </div>
     </div>
@@ -53,11 +53,11 @@
 
   <!-- ============ CURRENT STATE ============ -->
   <section class="space-y-4">
-    <h2 class="text-2xl font-bold">1 &middot; Where the code is today</h2>
+    <h2 class="text-2xl font-bold">1 &middot; Original baseline at planning time</h2>
     <div class="grid gap-4 lg:grid-cols-2">
       <div class="card card-border bg-base-100">
         <div class="card-body">
-          <h3 class="card-title text-base">Stack &amp; files (verified)</h3>
+          <h3 class="card-title text-base">Original stack &amp; files</h3>
           <ul class="list-disc pl-5 space-y-1 text-sm opacity-90">
             <li><b>T3 stack</b>: Next.js 15 (App Router, server actions), Prisma 6 + Postgres, Tailwind v4, Zod, Biome, pnpm.</li>
             <li><code>prisma/schema.prisma</code> - <code>Task</code> model: <code>id, title, description?, status, createdAt, updatedAt</code>. Status enum: Inbox / Review / Ongoing / Finished.</li>
@@ -70,7 +70,7 @@
       </div>
       <div class="card card-border bg-base-100 border-warning/40">
         <div class="card-body">
-          <h3 class="card-title text-base">Existing bug to fix first</h3>
+          <h3 class="card-title text-base">Original bug addressed by the plan</h3>
           <div role="alert" class="alert alert-warning alert-soft text-sm">
             <span><code>src/app/page.tsx:29</code> - the task link is the literal string <code>href="tasks/${task.id}"</code> (plain quotes, not a template literal). Every card links to the same broken URL, and the <code>/tasks/[id]</code> route it points at does not exist yet. Phase 2 fixes the href; Phase 3 creates the route.</span>
           </div>
@@ -86,7 +86,7 @@
   <!-- ============ DATA MODEL ============ -->
   <section class="space-y-4">
     <h2 class="text-2xl font-bold">2 &middot; Data model</h2>
-    <p class="max-w-3xl text-sm opacity-80">One migration adds four models and six fields on <code>Task</code>. The diagram answers: <i>how does a client's feature request flow into schedulable work?</i> Client &rarr; Task (a 2-5h deliverable with a deadline) &rarr; Subtasks (30-45 min steps) + a running work log.</p>
+    <p class="max-w-3xl text-sm opacity-80">The data model stores task ranges, subtask estimates, and logged durations as decimal hours. Existing minute values are backfilled during migration. The diagram answers: <i>how does a client's feature request flow into schedulable work?</i> Client &rarr; Task (a deliverable with a deadline) &rarr; Subtasks (up to 5h each) + detailed manual work logs.</p>
     <div class="card card-border bg-base-100">
       <div class="card-body items-center">
         <pre class="mermaid">
@@ -95,6 +95,7 @@ erDiagram
   Label ||--o{ Task : "tags"
   Task ||--o{ Subtask : "breaks into"
   Task ||--o{ TaskLog : "work journal"
+  TaskLog ||--o{ WorkLogImage : "attaches"
   Client {
     int id PK
     string name
@@ -110,8 +111,8 @@ erDiagram
     string description "nullable"
     TaskStatus status
     datetime deadline "nullable"
-    int estimateMinMinutes "nullable"
-    int estimateMaxMinutes "nullable, max 300"
+    float estimateMinHours "nullable"
+    float estimateMaxHours "nullable"
     datetime archivedAt "nullable"
     int clientId FK "nullable"
     int labelId FK "nullable"
@@ -121,14 +122,22 @@ erDiagram
     int taskId FK
     string title
     TaskStatus status
-    int estimatedMinutes "nullable, target 30-45"
+    float estimatedHours "nullable, max 5"
   }
   TaskLog {
     int id PK
     int taskId FK
     string note
-    int minutesSpent "nullable"
+    string details "nullable"
+    float hoursSpent "nullable for migrated rows"
     datetime createdAt
+  }
+  WorkLogImage {
+    int id PK
+    int taskLogId FK
+    string fileName
+    string mimeType
+    bytes data
   }
         </pre>
       </div>
@@ -154,8 +163,8 @@ erDiagram
 <pre data-prefix=" "><code>model Task {</code></pre>
 <pre data-prefix=" "><code>  // ...existing fields...</code></pre>
 <pre data-prefix="+"><code>  deadline           DateTime?</code></pre>
-<pre data-prefix="+"><code>  estimateMinMinutes Int?      // "2 to 5 hours" = 120</code></pre>
-<pre data-prefix="+"><code>  estimateMaxMinutes Int?      // = 300, zod-capped at 300</code></pre>
+<pre data-prefix="+"><code>  estimateMinHours   Float?</code></pre>
+<pre data-prefix="+"><code>  estimateMaxHours   Float?</code></pre>
 <pre data-prefix="+"><code>  archivedAt         DateTime? // null = active</code></pre>
 <pre data-prefix="+"><code>  clientId           Int?</code></pre>
 <pre data-prefix="+"><code>  client             Client?   @relation(fields: [clientId], references: [id])</code></pre>
@@ -171,7 +180,7 @@ erDiagram
 <pre data-prefix=" "><code>  task             Task       @relation(fields: [taskId], references: [id], onDelete: Cascade)</code></pre>
 <pre data-prefix=" "><code>  title            String</code></pre>
 <pre data-prefix=" "><code>  status           TaskStatus @default(Inbox)</code></pre>
-<pre data-prefix=" "><code>  estimatedMinutes Int?       // target 30-45</code></pre>
+<pre data-prefix=" "><code>  estimatedHours   Float?     // positive, capped at 5</code></pre>
 <pre data-prefix=" "><code>  createdAt        DateTime   @default(now())</code></pre>
 <pre data-prefix=" "><code>}</code></pre>
 <pre data-prefix=" "><code></code></pre>
@@ -179,19 +188,30 @@ erDiagram
 <pre data-prefix=" "><code>  id           Int      @id @default(autoincrement())</code></pre>
 <pre data-prefix=" "><code>  taskId       Int</code></pre>
 <pre data-prefix=" "><code>  task         Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)</code></pre>
-<pre data-prefix=" "><code>  note         String</code></pre>
-<pre data-prefix=" "><code>  minutesSpent Int?     // optional: compare actual vs estimate</code></pre>
+<pre data-prefix=" "><code>  note         String          // required short summary</code></pre>
+<pre data-prefix=" "><code>  details      String?</code></pre>
+<pre data-prefix=" "><code>  hoursSpent   Float?          // required for new entries; nullable for legacy rows</code></pre>
+<pre data-prefix=" "><code>  images       WorkLogImage[]</code></pre>
 <pre data-prefix=" "><code>  createdAt    DateTime @default(now())</code></pre>
 <pre data-prefix=" "><code>}</code></pre>
+<pre data-prefix=" "><code></code></pre>
+<pre data-prefix=" "><code>model WorkLogImage {</code></pre>
+<pre data-prefix=" "><code>  id        Int     @id @default(autoincrement())</code></pre>
+<pre data-prefix=" "><code>  taskLogId Int</code></pre>
+<pre data-prefix=" "><code>  taskLog   TaskLog @relation(fields: [taskLogId], references: [id], onDelete: Cascade)</code></pre>
+<pre data-prefix=" "><code>  fileName  String</code></pre>
+<pre data-prefix=" "><code>  mimeType  String</code></pre>
+<pre data-prefix=" "><code>  data      Bytes</code></pre>
+<pre data-prefix=" "><code>}</code></pre>
         </div>
-        <p class="text-xs opacity-70 mt-2">Notes: <code>onDelete: Cascade</code> means deleting a task removes its subtasks and logs (the delete confirm dialog states this). <code>archivedAt</code> keeps the last status intact, so unarchiving restores the card to its column. Estimates stored as integer minutes - no float math, easy to sum.</p>
+        <p class="text-xs opacity-70 mt-2">Notes: <code>onDelete: Cascade</code> means deleting a task removes its subtasks, logs, and attached images; deleting one log removes that log's images. <code>archivedAt</code> keeps the last status intact, so unarchiving restores the card to its column. New hour fields are backfilled from the legacy minute columns during migration.</p>
       </div>
     </div>
   </section>
 
   <!-- ============ UI MOCKUPS ============ -->
   <section class="space-y-4">
-    <h2 class="text-2xl font-bold">3 &middot; What it will look like</h2>
+    <h2 class="text-2xl font-bold">3 &middot; Original mockups</h2>
     <p class="max-w-3xl text-sm opacity-80">Mocked in the app's own style (indigo columns, black borders, emerald actions). Two surfaces: the board with the new card + filter bar, and the new task detail page.</p>
 
     <!-- Board mock -->
@@ -253,7 +273,7 @@ erDiagram
               <h1 class="font-bold text-xl">Prescription PDF export</h1>
               <span class="rounded-full border border-black bg-red-200 px-2 text-xs font-medium">Bug</span>
               <span class="rounded-full border border-black bg-white px-2 text-xs">Fagercare</span>
-              <span class="ml-auto text-sm">&#128197; Due Jul 18 &nbsp;&middot;&nbsp; &#9202; 2-4h est &nbsp;&middot;&nbsp; logged: 1h 35m</span>
+              <span class="ml-auto text-sm">&#128197; Due Jul 18 &nbsp;&middot;&nbsp; &#9202; 2-4h est &nbsp;&middot;&nbsp; logged: 1.58h</span>
             </div>
             <p class="mt-1 text-sm opacity-80">Export signed prescriptions as PDF from the doctor dashboard.</p>
           </div>
@@ -261,21 +281,21 @@ erDiagram
             <!-- Subtasks -->
             <div class="rounded-xl border-2 border-black bg-indigo-200 p-3">
               <div class="mb-2 flex items-center justify-between">
-                <h2 class="font-bold">Subtasks &nbsp;<span class="text-sm font-normal">3/5 done &middot; ~1h 20m left</span></h2>
+                <h2 class="font-bold">Subtasks &nbsp;<span class="text-sm font-normal">3/5 done &middot; ~1.33h left</span></h2>
                 <button class="rounded-lg border border-emerald-900 bg-emerald-700 px-2 py-1 text-xs font-semibold text-white">+ Add</button>
               </div>
               <div class="space-y-1.5">
                 <div class="flex items-center gap-2 rounded-lg border border-black bg-indigo-100 p-2 text-sm">
                   <select class="rounded border border-black bg-white text-xs px-1"><option>Finished</option></select>
-                  <span class="line-through opacity-60">Add pdf-lib dependency</span><span class="ml-auto text-xs opacity-70">15m</span>
+                  <span class="line-through opacity-60">Add pdf-lib dependency</span><span class="ml-auto text-xs opacity-70">0.25h</span>
                 </div>
                 <div class="flex items-center gap-2 rounded-lg border border-black bg-indigo-100 p-2 text-sm">
                   <select class="rounded border border-black bg-white text-xs px-1"><option>Ongoing</option></select>
-                  <span>Render prescription template</span><span class="ml-auto text-xs opacity-70">45m</span>
+                  <span>Render prescription template</span><span class="ml-auto text-xs opacity-70">0.75h</span>
                 </div>
                 <div class="flex items-center gap-2 rounded-lg border border-black bg-indigo-100 p-2 text-sm">
                   <select class="rounded border border-black bg-white text-xs px-1"><option>Inbox</option></select>
-                  <span>Wire download button</span><span class="ml-auto text-xs opacity-70">30m</span>
+                  <span>Wire download button</span><span class="ml-auto text-xs opacity-70">0.5h</span>
                 </div>
               </div>
             </div>
@@ -283,13 +303,15 @@ erDiagram
             <div class="rounded-xl border-2 border-black bg-indigo-200 p-3">
               <h2 class="mb-2 font-bold">Work log</h2>
               <div class="mb-2 flex gap-1.5">
-                <input class="w-full rounded-md border border-black bg-white p-1.5 text-sm" placeholder="What did you just do?">
-                <input class="w-16 rounded-md border border-black bg-white p-1.5 text-sm" placeholder="min">
+                <input class="w-full rounded-md border border-black bg-white p-1.5 text-sm" placeholder="Short summary">
+                <input class="w-16 rounded-md border border-black bg-white p-1.5 text-sm" placeholder="hours">
                 <button class="rounded-lg border border-emerald-900 bg-emerald-700 px-2 text-xs font-semibold text-white">Log</button>
               </div>
+              <textarea class="mb-2 w-full rounded-md border border-black bg-white p-1.5 text-sm" placeholder="Detailed notes (optional)"></textarea>
+              <input class="mb-2 w-full rounded-md border border-black bg-white p-1.5 text-xs" type="file" multiple accept="image/png,image/jpeg,image/gif,image/webp">
               <div class="space-y-1.5 text-sm">
-                <div class="rounded-lg border border-black bg-indigo-100 p-2"><span class="text-xs opacity-60">Today 14:10 &middot; 50m</span><br>Template renders, fighting font embedding.</div>
-                <div class="rounded-lg border border-black bg-indigo-100 p-2"><span class="text-xs opacity-60">Today 11:30 &middot; 45m</span><br>Set up pdf-lib, spiked layout options.</div>
+                <div class="rounded-lg border border-black bg-indigo-100 p-2"><span class="text-xs opacity-60">Today 14:10 &middot; 0.83h</span><br>Template renders, fighting font embedding.</div>
+                <div class="rounded-lg border border-black bg-indigo-100 p-2"><span class="text-xs opacity-60">Today 11:30 &middot; 0.75h</span><br>Set up pdf-lib, spiked layout options.</div>
               </div>
             </div>
           </div>
@@ -318,14 +340,14 @@ erDiagram
       </div>
       <div class="card card-border bg-base-100">
         <div class="card-body">
-          <h3 class="card-title text-base">The 5-hour split rule in the form</h3>
-          <p class="text-sm opacity-80">Estimate is entered as a min-max range in hours. Zod caps the max at 300 minutes server-side; the form blocks submission above 5h and tells you to split, nudging from 3h up.</p>
+          <h3 class="card-title text-base">Large project estimates in the form</h3>
+          <p class="text-sm opacity-80">Task estimates are entered as a positive min-max range in decimal hours and may cover large projects. Only subtask estimates are capped at 5 hours.</p>
           <section data-theme="light" class="rounded-box border border-black bg-white p-4 space-y-2">
             <div class="mx-auto max-w-sm space-y-2">
               <label class="block text-sm font-medium">Estimate (hours)</label>
               <div class="flex items-center gap-2 text-sm"><input class="w-16 rounded-md border border-black p-1.5" value="4"> <span>to</span> <input class="w-16 rounded-md border border-black p-1.5" value="7"> <span>h</span></div>
-              <div class="rounded-md border border-red-900 bg-red-100 p-2 text-xs text-red-900"><b>Over 5 hours - split this task.</b> Create two tasks (e.g. "&hellip; part 1/2") or move scope into subtasks. Submission is blocked above 5h.</div>
-              <div class="rounded-md border border-amber-800 bg-amber-100 p-2 text-xs text-amber-900">At 3-5h you get a soft nudge: "big block - consider splitting", but it submits.</div>
+              <div class="rounded-md border border-emerald-800 bg-emerald-100 p-2 text-xs text-emerald-900"><b>Large project estimates are supported.</b> The minimum must not exceed the maximum, and both values must be positive.</div>
+              <div class="rounded-md border border-amber-800 bg-amber-100 p-2 text-xs text-amber-900">Subtasks remain small execution units and reject estimates above 5h.</div>
             </div>
           </section>
         </div>
@@ -366,9 +388,9 @@ erDiagram
           </tr>
           <tr>
             <td class="font-semibold whitespace-nowrap">3 &middot; Detail page</td>
-            <td><code>/tasks/[id]</code>: header, work-log feed + add-log form (note + optional minutes), subtask list with per-item status + estimate, remaining-time rollup. 404s cleanly for bad ids.</td>
+            <td><code>/tasks/[id]</code>: estimate-versus-logged header, manual work-log feed + add-log form (required summary and hours, optional details and images), separate completed subtasks, and clean 404s for bad ids.</td>
             <td>new <code>app/tasks/[id]/page.tsx</code>, <code>subtask-list.tsx</code>, <code>log-form.tsx</code>, new <code>actions/subtasks.ts</code>, <code>actions/logs.ts</code></td>
-            <td><code>createSubtask</code>, <code>updateSubtaskStatus</code>, <code>deleteSubtask</code>, <code>addLog</code></td>
+            <td><code>createSubtask</code>, <code>updateSubtaskStatus</code>, <code>deleteSubtask</code>, <code>addLog</code>, <code>deleteLog</code></td>
             <td class="whitespace-nowrap">~3.5h</td>
           </tr>
           <tr>
@@ -387,7 +409,7 @@ erDiagram
           </tr>
           <tr>
             <td class="font-semibold whitespace-nowrap">6 &middot; Deadlines &amp; estimates</td>
-            <td>Deadline date picker + min/max estimate on tasks, estimate on subtasks; 5h hard cap + 3h soft nudge; deadline shown on card with overdue styling; board sorts by deadline within columns.</td>
+            <td>Deadline date picker + positive decimal-hour min/max estimates on tasks, 5h-capped estimate on subtasks, and estimate-versus-logged comparison on task details.</td>
             <td>forms, <code>task-card.tsx</code>, detail page, <code>actions/tasks.ts</code></td>
             <td>- (extends <code>createTask</code>/<code>updateTask</code> schemas)</td>
             <td class="whitespace-nowrap">~2.5h</td>
@@ -400,10 +422,10 @@ erDiagram
       <div class="card-body">
         <h3 class="card-title text-base">Conventions carried through every phase</h3>
         <ul class="list-disc pl-5 text-sm space-y-1 opacity-90">
-          <li>Server actions only (no API routes) - matches the existing <code>createTask</code> pattern: Zod parse &rarr; Prisma &rarr; <code>revalidatePath</code>.</li>
-          <li>All ids validated with <code>z.coerce.number().int().positive()</code>; mutations verify the row exists before acting.</li>
+          <li>Mutations use server actions. Stored work-log images are served by an authenticated, non-cacheable API route.</li>
+          <li>All ids are validated as positive PostgreSQL INT4 values; mutations verify the row exists before acting.</li>
           <li>Board filtering happens in the Prisma query via <code>searchParams</code>, not client-side - stays a server component, URLs are shareable.</li>
-          <li>No new dependencies. Native <code>&lt;dialog&gt;</code>, native <code>&lt;input type="date"&gt;</code>, Tailwind only.</li>
+          <li>Sharp validates uploaded image contents, dimensions, and decoded pixel counts before storage.</li>
           <li>Verify with <code>pnpm typecheck</code> + <code>pnpm check</code> after each phase (dev server assumed running).</li>
         </ul>
       </div>
@@ -418,13 +440,13 @@ erDiagram
         <thead><tr><th></th><th>Task (top level)</th><th>Subtask</th></tr></thead>
         <tbody>
           <tr><td class="font-medium">Deadline</td><td>Yes - a real date ("finish by Jul 18")</td><td>No deadline, just an estimate</td></tr>
-          <tr><td class="font-medium">Estimate</td><td>Range, e.g. 2-5h (<code>estimateMinMinutes</code>-<code>estimateMaxMinutes</code>)</td><td>Single value, target 30-45 min (<code>estimatedMinutes</code>)</td></tr>
-          <tr><td class="font-medium">Cap</td><td><b>Hard cap 5h</b> - Zod rejects <code>estimateMaxMinutes &gt; 300</code>; form blocks and says "split it". Soft nudge from 3h.</td><td>Soft nudge above 60 min: "this looks like its own task"</td></tr>
+          <tr><td class="font-medium">Estimate</td><td>Positive decimal-hour range, e.g. 2-40h (<code>estimateMinHours</code>-<code>estimateMaxHours</code>)</td><td>Single positive decimal-hour value (<code>estimatedHours</code>)</td></tr>
+          <tr><td class="font-medium">Cap</td><td>Large project ranges are allowed, up to the shared 100,000-hour validation bound.</td><td><b>Hard cap 5h</b> - Zod and the database reject larger values.</td></tr>
           <tr><td class="font-medium">Purpose</td><td>Time-blockable calendar unit</td><td>Progress tracking + remaining-time rollup on the detail page</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="text-sm opacity-80 max-w-3xl">Splitting stays manual in this plan (the form blocks &gt;5h and tells you to create "part 1 / part 2" tasks). An auto-split button is easy to add later once the manual flow proves out - see decisions below.</p>
+    <p class="text-sm opacity-80 max-w-3xl">Task estimates may represent large projects. The strict 5-hour bound applies only to subtasks.</p>
   </section>
 
   <!-- ============ SECURITY ============ -->
@@ -435,10 +457,10 @@ erDiagram
         <ul class="space-y-2">
           <li class="flex gap-2"><input type="checkbox" class="checkbox checkbox-sm checkbox-success mt-0.5" checked disabled><span><b>Injection (A03)</b> - all DB access through Prisma parameterized queries; every server action input parsed with Zod (ids coerced to positive ints, strings length-capped) before touching the DB.</span></li>
           <li class="flex gap-2"><input type="checkbox" class="checkbox checkbox-sm checkbox-success mt-0.5" checked disabled><span><b>XSS (A03)</b> - all user content (titles, descriptions, log notes, label names) rendered through React's default escaping; no <code>dangerouslySetInnerHTML</code> anywhere in the plan.</span></li>
-          <li class="flex gap-2"><input type="checkbox" class="checkbox checkbox-sm checkbox-warning mt-0.5" checked disabled><span><b>Broken access control (A01)</b> - the app has <b>no auth</b>: anyone who can reach the server can create/delete anything via server actions. Acceptable for a personal localhost tool; must add auth (Clerk fits your stack) before deploying anywhere public. Flagging, not building it in this plan.</span></li>
+          <li class="flex gap-2"><input type="checkbox" class="checkbox checkbox-sm checkbox-success mt-0.5" checked disabled><span><b>Broken access control (A01)</b> - pages, mutations, and work-log image reads require an authenticated session.</span></li>
           <li class="flex gap-2"><input type="checkbox" class="checkbox checkbox-sm checkbox-success mt-0.5" checked disabled><span><b>Insecure design / mass assignment (A04)</b> - actions whitelist fields via explicit Zod schemas; raw FormData is never spread into Prisma calls. Destructive ops (delete) require explicit confirm and validate the id server-side regardless of UI state.</span></li>
           <li class="flex gap-2"><input type="checkbox" class="checkbox checkbox-sm checkbox-success mt-0.5" checked disabled><span><b>Unvalidated redirects / IDOR-ish ids</b> - <code>/tasks/[id]</code> coerces the param and returns <code>notFound()</code> for missing rows instead of leaking errors; label/client filter params validated before hitting the query.</span></li>
-          <li class="flex gap-2"><input type="checkbox" class="checkbox checkbox-sm checkbox-success mt-0.5" checked disabled><span><b>DoS via unbounded input (A05)</b> - length caps on every string (title 200, description/note 2000, label/client name 50); estimate ints range-checked (0 &lt; x &le; 300).</span></li>
+          <li class="flex gap-2"><input type="checkbox" class="checkbox checkbox-sm checkbox-success mt-0.5" checked disabled><span><b>DoS via unbounded input (A05)</b> - strings and hour values are bounded; uploads allow at most five supported images with per-file, total-byte, dimension, and decoded-pixel limits.</span></li>
         </ul>
       </div>
     </div>
@@ -448,7 +470,7 @@ erDiagram
   <section class="space-y-4">
     <h2 class="text-2xl font-bold">7 &middot; Risks &amp; edge cases considered</h2>
     <div class="grid gap-3 md:grid-cols-2 text-sm">
-      <div class="card card-border bg-base-100"><div class="card-body py-4"><b>Migration on existing data</b><p class="opacity-80">All new Task columns are nullable, so the migration is non-destructive to current tasks. Dropping the unused <code>Post</code> model is the only destructive step - it holds no real data.</p></div></div>
+      <div class="card card-border bg-base-100"><div class="card-body py-4"><b>Migration on existing data</b><p class="opacity-80">New hour columns are added first, existing minute values are backfilled without rounding, and database checks are validated only after the backfill. Compatibility triggers keep legacy minute columns synchronized during deployment.</p></div></div>
       <div class="card card-border bg-base-100"><div class="card-body py-4"><b>Deleting a label/client in use</b><p class="opacity-80">Not exposed in the UI this round. Relations are optional, so if added later it's <code>SetNull</code>, never cascade through tasks.</p></div></div>
       <div class="card card-border bg-base-100"><div class="card-body py-4"><b>Archive vs Finished confusion</b><p class="opacity-80">Finished = done, still visible on the board. Archived = hidden everywhere unless "show archived" is on. Archiving preserves status for clean restore.</p></div></div>
       <div class="card card-border bg-base-100"><div class="card-body py-4"><b>Card getting crowded</b><p class="opacity-80">Card shows at most: title, label badge, client, deadline, estimate, subtask count, 3 small buttons. Everything else lives on the detail page.</p></div></div>
@@ -466,7 +488,7 @@ erDiagram
           <tr><td class="font-medium">A &middot; Labels</td><td>Single label per task - one optional <code>labelId</code>, one badge per card</td></tr>
           <tr><td class="font-medium">B &middot; Subtask UI</td><td>Compact list with a status dropdown per row, beside the work log</td></tr>
           <tr><td class="font-medium">C &middot; Client view</td><td>Filter on the main board via <code>?client=</code> - no dedicated client pages yet</td></tr>
-          <tr><td class="font-medium">D &middot; Time targets</td><td>Subtasks target 30-45 min; tasks 2-5h with a hard 5h cap (blocks submission)</td></tr>
+          <tr><td class="font-medium">D &middot; Time targets</td><td>Tasks support large decimal-hour ranges; subtasks use a single decimal-hour estimate capped at 5h</td></tr>
         </tbody>
       </table>
     </div>

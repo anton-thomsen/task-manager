@@ -1,7 +1,11 @@
+import { join } from "node:path";
 import { expect, test } from "@playwright/test";
 import sharp from "sharp";
 
-test("tracks a project in hours and keeps rich work logs", async ({ page }) => {
+test("tracks a project in hours and keeps rich work logs", async ({
+	page,
+	request,
+}) => {
 	await page.goto("/signup");
 	await page.getByLabel("Name").fill("Playwright");
 	await page.getByLabel("Email").fill("playwright@task-manager.local");
@@ -78,20 +82,29 @@ test("tracks a project in hours and keeps rich work logs", async ({ page }) => {
 	).toBeVisible();
 	await page.getByRole("button", { name: "Edit" }).click();
 	const editDialog = page.getByRole("dialog", { name: "Edit task" });
-	await expect(editDialog.getByLabel("Minimum estimate in hours")).toHaveValue(
-		"32.333333333333336",
-	);
+	const minimumEstimate = editDialog.getByLabel("Minimum estimate in hours");
+	await expect
+		.poll(async () => Number(await minimumEstimate.inputValue()))
+		.toBeCloseTo(32.333333333333336, 12);
 	await editDialog.getByLabel("Description").fill("Preserve my estimate");
 	await editDialog.getByRole("button", { name: "Save changes" }).click();
-	await page.getByRole("button", { name: "Edit" }).click();
-	await expect(editDialog.getByLabel("Minimum estimate in hours")).toHaveValue(
-		"32.333333333333336",
-	);
+	await expect(editDialog).not.toBeVisible();
+	await page.getByRole("button", { name: "Edit", exact: true }).click();
+	await expect
+		.poll(async () => Number(await minimumEstimate.inputValue()))
+		.toBeCloseTo(32.333333333333336, 12);
 	await editDialog.getByRole("button", { name: "Cancel" }).click();
 
 	const subtaskTitle = "Implement responsive layout";
 	await page.getByLabel("Subtask title").fill(subtaskTitle);
-	await page.getByLabel("Estimated hours").fill("0.1");
+	const estimatedHours = page.getByLabel("Estimated hours");
+	await estimatedHours.fill("5.1");
+	expect(
+		await estimatedHours.evaluate(
+			(input: HTMLInputElement) => input.validity.rangeOverflow,
+		),
+	).toBe(true);
+	await estimatedHours.fill("0.1");
 	await page.getByRole("button", { name: "Add", exact: true }).click();
 	await expect(page.getByText(subtaskTitle)).toBeVisible();
 	await expect(page.getByText("0.1h", { exact: true })).toBeVisible();
@@ -105,18 +118,56 @@ test("tracks a project in hours and keeps rich work logs", async ({ page }) => {
 	await expect(page.getByText(subtaskTitle, { exact: true })).toHaveCount(0);
 	await page.getByLabel("What did you do?").fill("Built the responsive layout");
 	await page.getByLabel("Time spent (hours)").fill("3.5");
+	const workLogForm = page.locator("form").filter({
+		has: page.getByLabel("What did you do?"),
+	});
 	await page
 		.getByLabel("Detailed notes")
 		.fill("Implemented the navigation and checked the mobile breakpoint.");
 	const pictures = page.getByLabel("Pictures");
+	const onePixelPng = Buffer.from(
+		"iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
+		"base64",
+	);
 	await pictures.setInputFiles({
 		buffer: Buffer.from("89504e470d0a1a0a", "hex"),
 		mimeType: "image/png",
 		name: "truncated.png",
 	});
 	await page.getByRole("button", { name: "Add work log" }).click();
-	await expect(page.getByRole("alert")).toContainText(
+	await expect(workLogForm.getByRole("alert")).toContainText(
 		"Images must be complete PNG, JPEG, GIF, or WebP files",
+	);
+	await pictures.setInputFiles(
+		Array.from({ length: 6 }, (_, index) => ({
+			buffer: onePixelPng,
+			mimeType: "image/png",
+			name: `image-${index + 1}.png`,
+		})),
+	);
+	await page.getByRole("button", { name: "Add work log" }).click();
+	await expect(workLogForm.getByRole("alert")).toContainText(
+		"Upload at most 5 images",
+	);
+	await pictures.setInputFiles({
+		buffer: Buffer.alloc(5 * 1024 * 1024 + 1),
+		mimeType: "image/png",
+		name: "too-large.png",
+	});
+	await page.getByRole("button", { name: "Add work log" }).click();
+	await expect(workLogForm.getByRole("alert")).toContainText(
+		"Each image must be 5 MB or smaller",
+	);
+	await pictures.setInputFiles(
+		Array.from({ length: 4 }, (_, index) => ({
+			buffer: Buffer.alloc(3_950_000),
+			mimeType: "image/png",
+			name: `large-${index + 1}.png`,
+		})),
+	);
+	await page.getByRole("button", { name: "Add work log" }).click();
+	await expect(workLogForm.getByRole("alert")).toContainText(
+		"Images must total 15 MB or less",
 	);
 	const oversizedImage = await sharp({
 		create: {
@@ -134,14 +185,11 @@ test("tracks a project in hours and keeps rich work logs", async ({ page }) => {
 		name: "too-wide.png",
 	});
 	await page.getByRole("button", { name: "Add work log" }).click();
-	await expect(page.getByRole("alert")).toContainText(
+	await expect(workLogForm.getByRole("alert")).toContainText(
 		"no larger than 8192 pixels per side or 20 megapixels",
 	);
 	await pictures.setInputFiles({
-		buffer: Buffer.from(
-			"iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
-			"base64",
-		),
+		buffer: onePixelPng,
 		mimeType: "image/png",
 		name: "responsive-layout.png",
 	});
@@ -160,6 +208,26 @@ test("tracks a project in hours and keeps rich work logs", async ({ page }) => {
 	const imageResponse = await page.request.get(imageUrl);
 	expect(imageResponse.ok()).toBe(true);
 	expect(imageResponse.headers()["cache-control"]).toBe("private, no-store");
+	const imageUrlAbsolute = new URL(imageUrl, page.url()).toString();
+	const unauthenticatedImageResponse = await request.get(imageUrlAbsolute, {
+		maxRedirects: 0,
+	});
+	expect(unauthenticatedImageResponse.status()).toBe(307);
+	expect(
+		new URL(
+			unauthenticatedImageResponse.headers().location ?? "",
+			imageUrlAbsolute,
+		).pathname,
+	).toBe("/login");
+	await expect(
+		page.getByText(/28\.83h below the estimate range/),
+	).toBeVisible();
+	if (process.env.EVIDENCE_DIR) {
+		await page.screenshot({
+			fullPage: true,
+			path: join(process.env.EVIDENCE_DIR, "hours-work-log.png"),
+		});
+	}
 
 	page.once("dialog", (dialog) => dialog.accept());
 	await page
@@ -170,6 +238,7 @@ test("tracks a project in hours and keeps rich work logs", async ({ page }) => {
 	await expect(
 		page.getByRole("heading", { name: "Built the responsive layout" }),
 	).toHaveCount(0);
+	expect((await page.request.get(imageUrl)).status()).toBe(404);
 
 	await page.getByRole("link", { name: "Tasks", exact: true }).click();
 	await completedSubtasks
@@ -178,6 +247,8 @@ test("tracks a project in hours and keeps rich work logs", async ({ page }) => {
 	await expect(
 		page.getByTestId("subtask-lane-Inbox").getByText(subtaskTitle),
 	).toBeVisible();
-	await page.getByRole("button", { name: `Delete ${subtaskTitle}` }).click();
+	await page
+		.getByRole("button", { name: `Delete ${subtaskTitle}`, exact: true })
+		.click();
 	await expect(page.getByText(subtaskTitle, { exact: true })).toHaveCount(0);
 });

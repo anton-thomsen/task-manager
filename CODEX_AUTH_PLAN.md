@@ -34,7 +34,11 @@ Goal: the entire app requires a logged-in session. One account (Anton). Signup i
 9. Enforcement - this is the critical part, do all three layers:
    - `middleware.ts` at repo root: optimistic redirect to `/login` when the Better Auth session cookie is absent (`getSessionCookie` from `better-auth/cookies`). Exclude `/login`, `/signup`, `/api/auth`, `/api/health`, `/api/tasks`, `/manifest.webmanifest`, `/_next`, favicon/icons.
    - A `requireSession()` helper in `src/server/auth.ts` that calls `auth.api.getSession({ headers: await headers() })` and throws/redirects when null. Middleware cookie checks are NOT real auth (cookie presence is unverified, and middleware can be bypassed), so:
-   - Call `requireSession()` at the top of EVERY server action in `src/server/actions/*.ts` and in every page that reads task data (`/`, `/archived`, `/tasks/[id]`, and the new `/quick-add`). No mutation or data read may be reachable without a verified session.
+   - Call `requireSession()` at the top of EVERY server action in
+     `src/server/actions/*.ts`, every page that reads task data (`/`, `/archived`,
+     `/tasks/[id]`, and the new `/quick-add`), and every session-protected data API
+     such as `/api/work-log-images/[id]`. No mutation or data read may be reachable
+     without a verified session.
 10. Add a small "sign out" affordance in the layout or board header (`authClient.signOut`).
 11. Railway healthcheck fix: `railway.json` currently healthchecks `/`, which will now redirect to `/login`. Add `src/app/api/health/route.ts` returning `{ ok: true }` with 200 (no auth), and change `railway.json` `healthcheckPath` to `/api/health`.
 
@@ -63,7 +67,9 @@ Goal: installable on Android with a home-screen icon and a long-press "Add task"
 
 - `pnpm typecheck` and `pnpm check` must pass.
 - Add `.env.example` entries for the new vars (do not touch real `.env`).
-- Manual test notes to leave in the PR/summary: which routes were verified as redirecting when logged out, and a sample `curl -X POST /api/tasks` for the token flow.
+- Manual test notes to leave in the PR/summary: which routes were verified as
+  redirecting when logged out, that work-log image reads reject logged-out users,
+  and a sample `curl -X POST /api/tasks` for the token flow.
 
 ## Railway env vars to set (Anton does this, list them in the summary)
 
@@ -74,9 +80,12 @@ Goal: installable on Android with a home-screen icon and a long-press "Add task"
 
 ## Security audit checklist (address each in the implementation)
 
-- [ ] Broken access control: every server action and data-reading page calls `requireSession()`; middleware is only an optimistic redirect layer, never the sole gate.
+- [ ] Broken access control: every server action, data-reading page, and private
+      data API calls `requireSession()`; middleware is only an optimistic redirect
+      layer, never the sole gate.
 - [ ] Injection: all input through zod schemas + Prisma parameterized queries; no raw SQL.
 - [ ] Auth failures: signup disabled by default via env flag; Better Auth rate limiting left on; generic 401 messages (no user enumeration).
 - [ ] Cryptographic failures: API token compared with `timingSafeEqual`; secrets only via env; token never logged, never in URLs.
 - [ ] SSRF/redirects: login redirect target is hardcoded to `/`, never taken from query params.
-- [ ] Resource limits: /api/tasks body size capped; field lengths capped by zod.
+- [ ] Resource limits: `/api/tasks` and Server Action bodies are capped; field
+      lengths and work-log image counts, bytes, dimensions, and pixels are bounded.
