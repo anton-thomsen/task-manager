@@ -19,42 +19,70 @@ enum TaskStatus {
 }
 
 model Client {
-  id    Int    @id @default(autoincrement())
-  name  String @unique
-  tasks Task[]
+  id             Int          @id @default(autoincrement())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name           String
+  tasks          Task[]
+
+  @@unique([organizationId, name])
 }
 
 model Label {
-  id    Int    @id @default(autoincrement())
-  name  String @unique
-  color String
-  tasks Task[]
+  id             Int          @id @default(autoincrement())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name           String
+  color          String
+  tasks          Task[]
+
+  @@unique([organizationId, name])
 }
 
 model Task {
-  id                 Int        @id @default(autoincrement())
+  id                 Int            @id @default(autoincrement())
+  organizationId     String
+  organization       Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   title              String
   description        String?
-  status             TaskStatus @default(Inbox)
+  status             TaskStatus     @default(Inbox)
   deadline           DateTime?
   estimateMinHours   Float?
   estimateMaxHours   Float?
-  estimateMinMinutes Int?       @ignore
-  estimateMaxMinutes Int?       @ignore
+  estimateMinMinutes Int?           @ignore
+  estimateMaxMinutes Int?           @ignore
   archivedAt         DateTime?
-  sortOrder          Int        @default(0)
+  sortOrder          Int            @default(0)
   clientId           Int?
-  client             Client?    @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  client             Client?        @relation(fields: [clientId], references: [id], onDelete: SetNull)
   labelId            Int?
-  label              Label?     @relation(fields: [labelId], references: [id], onDelete: SetNull)
+  label              Label?         @relation(fields: [labelId], references: [id], onDelete: SetNull)
+  createdById        String?
+  createdBy          User?          @relation("createdTasks", fields: [createdById], references: [id], onDelete: SetNull)
+  assignees          TaskAssignee[]
   subtasks           Subtask[]
   logs               TaskLog[]
-  createdAt          DateTime   @default(now())
-  updatedAt          DateTime   @updatedAt
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
 
-  @@index([status, sortOrder])
+  @@index([organizationId, status, sortOrder])
   @@index([clientId])
   @@index([labelId])
+  @@index([createdById])
+}
+
+model TaskAssignee {
+  id           Int      @id @default(autoincrement())
+  taskId       Int
+  task         Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  userId       String
+  user         User     @relation("taskAssignments", fields: [userId], references: [id], onDelete: Cascade)
+  assignedById String?
+  assignedBy   User?    @relation("taskAssignmentsGiven", fields: [assignedById], references: [id], onDelete: SetNull)
+  createdAt    DateTime @default(now())
+
+  @@unique([taskId, userId])
+  @@index([userId])
 }
 
 model Subtask {
@@ -66,23 +94,32 @@ model Subtask {
   estimatedHours   Float?
   estimatedMinutes Int?       @ignore
   sortOrder        Int        @default(0)
+  completedById    String?
+  completedBy      User?      @relation("completedSubtasks", fields: [completedById], references: [id], onDelete: SetNull)
+  logs             TaskLog[]
   createdAt        DateTime   @default(now())
 
   @@index([taskId, status, sortOrder])
 }
 
 model TaskLog {
-  id           Int            @id @default(autoincrement())
-  taskId       Int
-  task         Task           @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  note         String
-  details      String?
-  hoursSpent   Float?
-  minutesSpent Int?           @ignore
-  images       WorkLogImage[]
-  createdAt    DateTime       @default(now())
+  id             Int            @id @default(autoincrement())
+  taskId         Int
+  task           Task           @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  note           String
+  details        String?
+  hoursSpent     Float?
+  minutesSpent   Int?           @ignore
+  estimatedHours Float?
+  subtaskId      Int?
+  subtask        Subtask?       @relation(fields: [subtaskId], references: [id], onDelete: SetNull)
+  authorId       String?
+  author         User?          @relation("authoredLogs", fields: [authorId], references: [id], onDelete: SetNull)
+  images         WorkLogImage[]
+  createdAt      DateTime       @default(now())
 
   @@index([taskId])
+  @@index([subtaskId])
 }
 
 model WorkLogImage {
@@ -96,31 +133,52 @@ model WorkLogImage {
   @@index([taskLogId])
 }
 
+model UserAvatar {
+  id       Int    @id @default(autoincrement())
+  userId   String @unique
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mimeType String
+  data     Bytes
+}
+
 model User {
-  id            String    @id
-  name          String
-  email         String
-  emailVerified Boolean   @default(false)
-  image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  sessions      Session[]
-  accounts      Account[]
+  id                   String         @id
+  name                 String
+  email                String
+  emailVerified        Boolean        @default(false)
+  image                String?
+  calendarToken        String?
+  apiToken             String?
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+  sessions             Session[]
+  accounts             Account[]
+  memberships          Member[]
+  sentInvitations      Invitation[]
+  avatar               UserAvatar?
+  createdTasks         Task[]         @relation("createdTasks")
+  taskAssignments      TaskAssignee[] @relation("taskAssignments")
+  taskAssignmentsGiven TaskAssignee[] @relation("taskAssignmentsGiven")
+  completedSubtasks    Subtask[]      @relation("completedSubtasks")
+  authoredLogs         TaskLog[]      @relation("authoredLogs")
 
   @@unique([email])
+  @@unique([calendarToken])
+  @@unique([apiToken])
   @@map("user")
 }
 
 model Session {
-  id        String   @id
-  expiresAt DateTime
-  token     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  ipAddress String?
-  userAgent String?
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                   String   @id
+  expiresAt            DateTime
+  token                String
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  ipAddress            String?
+  userAgent            String?
+  activeOrganizationId String?
+  userId               String
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([token])
   @@index([userId])
@@ -157,4 +215,52 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+model Organization {
+  id          String       @id
+  name        String
+  slug        String
+  logo        String?
+  metadata    String?
+  createdAt   DateTime     @default(now())
+  members     Member[]
+  invitations Invitation[]
+  clients     Client[]
+  labels      Label[]
+  tasks       Task[]
+
+  @@unique([slug])
+  @@map("organization")
+}
+
+model Member {
+  id             String       @id
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role           String
+  createdAt      DateTime     @default(now())
+
+  @@unique([organizationId, userId])
+  @@index([userId])
+  @@map("member")
+}
+
+model Invitation {
+  id             String       @id
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  email          String
+  role           String
+  status         String       @default("pending")
+  expiresAt      DateTime
+  inviterId      String
+  inviter        User         @relation(fields: [inviterId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+
+  @@index([organizationId])
+  @@index([email])
+  @@map("invitation")
 }

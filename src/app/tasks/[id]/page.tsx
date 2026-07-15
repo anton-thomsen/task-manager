@@ -6,8 +6,9 @@ import { TaskForm } from "~/components/task-form";
 import { WorkLog } from "~/components/work-log";
 import { formatDeadline, formatEstimateRange, formatHours } from "~/lib/format";
 import { int4IdSchema } from "~/lib/validation";
-import { requireSession } from "~/server/auth";
+import { requireMember } from "~/server/auth";
 import { db } from "~/server/db";
+import { taskWhereFor } from "~/server/task-access";
 
 const hourComparisonTolerance = 1e-9;
 
@@ -18,7 +19,7 @@ export default async function TaskDetailPage({
 	params: Promise<{ id: string }>;
 	searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-	await requireSession();
+	const member = await requireMember();
 	const { id: rawId } = await params;
 	const parsedId = int4IdSchema.safeParse(rawId);
 	if (!parsedId.success) notFound();
@@ -27,8 +28,8 @@ export default async function TaskDetailPage({
 	const tab = query.tab === "log" ? "log" : "tasks";
 
 	const [task, clients, labels] = await Promise.all([
-		db.task.findUnique({
-			where: { id },
+		db.task.findFirst({
+			where: { id, AND: taskWhereFor(member) },
 			include: {
 				client: true,
 				label: true,
@@ -43,8 +44,14 @@ export default async function TaskDetailPage({
 				},
 			},
 		}),
-		db.client.findMany({ orderBy: { name: "asc" } }),
-		db.label.findMany({ orderBy: { name: "asc" } }),
+		db.client.findMany({
+			where: { organizationId: member.orgId },
+			orderBy: { name: "asc" },
+		}),
+		db.label.findMany({
+			where: { organizationId: member.orgId },
+			orderBy: { name: "asc" },
+		}),
 	]);
 	if (!task) notFound();
 

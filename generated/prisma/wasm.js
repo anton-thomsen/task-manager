@@ -95,17 +95,20 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
 
 exports.Prisma.ClientScalarFieldEnum = {
   id: 'id',
+  organizationId: 'organizationId',
   name: 'name'
 };
 
 exports.Prisma.LabelScalarFieldEnum = {
   id: 'id',
+  organizationId: 'organizationId',
   name: 'name',
   color: 'color'
 };
 
 exports.Prisma.TaskScalarFieldEnum = {
   id: 'id',
+  organizationId: 'organizationId',
   title: 'title',
   description: 'description',
   status: 'status',
@@ -116,8 +119,17 @@ exports.Prisma.TaskScalarFieldEnum = {
   sortOrder: 'sortOrder',
   clientId: 'clientId',
   labelId: 'labelId',
+  createdById: 'createdById',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.TaskAssigneeScalarFieldEnum = {
+  id: 'id',
+  taskId: 'taskId',
+  userId: 'userId',
+  assignedById: 'assignedById',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.SubtaskScalarFieldEnum = {
@@ -127,6 +139,7 @@ exports.Prisma.SubtaskScalarFieldEnum = {
   status: 'status',
   estimatedHours: 'estimatedHours',
   sortOrder: 'sortOrder',
+  completedById: 'completedById',
   createdAt: 'createdAt'
 };
 
@@ -136,6 +149,9 @@ exports.Prisma.TaskLogScalarFieldEnum = {
   note: 'note',
   details: 'details',
   hoursSpent: 'hoursSpent',
+  estimatedHours: 'estimatedHours',
+  subtaskId: 'subtaskId',
+  authorId: 'authorId',
   createdAt: 'createdAt'
 };
 
@@ -147,12 +163,21 @@ exports.Prisma.WorkLogImageScalarFieldEnum = {
   data: 'data'
 };
 
+exports.Prisma.UserAvatarScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  mimeType: 'mimeType',
+  data: 'data'
+};
+
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   name: 'name',
   email: 'email',
   emailVerified: 'emailVerified',
   image: 'image',
+  calendarToken: 'calendarToken',
+  apiToken: 'apiToken',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -165,6 +190,7 @@ exports.Prisma.SessionScalarFieldEnum = {
   updatedAt: 'updatedAt',
   ipAddress: 'ipAddress',
   userAgent: 'userAgent',
+  activeOrganizationId: 'activeOrganizationId',
   userId: 'userId'
 };
 
@@ -193,6 +219,34 @@ exports.Prisma.VerificationScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.OrganizationScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  slug: 'slug',
+  logo: 'logo',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.MemberScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  userId: 'userId',
+  role: 'role',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.InvitationScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  email: 'email',
+  role: 'role',
+  status: 'status',
+  expiresAt: 'expiresAt',
+  inviterId: 'inviterId',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -218,13 +272,18 @@ exports.Prisma.ModelName = {
   Client: 'Client',
   Label: 'Label',
   Task: 'Task',
+  TaskAssignee: 'TaskAssignee',
   Subtask: 'Subtask',
   TaskLog: 'TaskLog',
   WorkLogImage: 'WorkLogImage',
+  UserAvatar: 'UserAvatar',
   User: 'User',
   Session: 'Session',
   Account: 'Account',
-  Verification: 'Verification'
+  Verification: 'Verification',
+  Organization: 'Organization',
+  Member: 'Member',
+  Invitation: 'Invitation'
 };
 /**
  * Create the Client
@@ -237,7 +296,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/anton/DevFolder/Personal/task-manager/generated/prisma",
+      "value": "/Users/anton/.no-mistakes/worktrees/6d1ee54eb237/01KXK79CZSYHKGH29XZXB1MZQ4/generated/prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -251,12 +310,11 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/Users/anton/DevFolder/Personal/task-manager/prisma/schema.prisma",
+    "sourceFilePath": "/Users/anton/.no-mistakes/worktrees/6d1ee54eb237/01KXK79CZSYHKGH29XZXB1MZQ4/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": null,
-    "schemaEnvPath": "../../.env"
+    "rootEnvPath": null
   },
   "relativePath": "../../prisma",
   "clientVersion": "6.19.3",
@@ -274,13 +332,13 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nenum TaskStatus {\n  Inbox\n  Review\n  Ongoing\n  Finished\n}\n\nmodel Client {\n  id    Int    @id @default(autoincrement())\n  name  String @unique\n  tasks Task[]\n}\n\nmodel Label {\n  id    Int    @id @default(autoincrement())\n  name  String @unique\n  color String\n  tasks Task[]\n}\n\nmodel Task {\n  id                 Int        @id @default(autoincrement())\n  title              String\n  description        String?\n  status             TaskStatus @default(Inbox)\n  deadline           DateTime?\n  estimateMinHours   Float?\n  estimateMaxHours   Float?\n  estimateMinMinutes Int?       @ignore\n  estimateMaxMinutes Int?       @ignore\n  archivedAt         DateTime?\n  sortOrder          Int        @default(0)\n  clientId           Int?\n  client             Client?    @relation(fields: [clientId], references: [id], onDelete: SetNull)\n  labelId            Int?\n  label              Label?     @relation(fields: [labelId], references: [id], onDelete: SetNull)\n  subtasks           Subtask[]\n  logs               TaskLog[]\n  createdAt          DateTime   @default(now())\n  updatedAt          DateTime   @updatedAt\n\n  @@index([status, sortOrder])\n  @@index([clientId])\n  @@index([labelId])\n}\n\nmodel Subtask {\n  id               Int        @id @default(autoincrement())\n  taskId           Int\n  task             Task       @relation(fields: [taskId], references: [id], onDelete: Cascade)\n  title            String\n  status           TaskStatus @default(Inbox)\n  estimatedHours   Float?\n  estimatedMinutes Int?       @ignore\n  sortOrder        Int        @default(0)\n  createdAt        DateTime   @default(now())\n\n  @@index([taskId, status, sortOrder])\n}\n\nmodel TaskLog {\n  id           Int            @id @default(autoincrement())\n  taskId       Int\n  task         Task           @relation(fields: [taskId], references: [id], onDelete: Cascade)\n  note         String\n  details      String?\n  hoursSpent   Float?\n  minutesSpent Int?           @ignore\n  images       WorkLogImage[]\n  createdAt    DateTime       @default(now())\n\n  @@index([taskId])\n}\n\nmodel WorkLogImage {\n  id        Int     @id @default(autoincrement())\n  taskLogId Int\n  taskLog   TaskLog @relation(fields: [taskLogId], references: [id], onDelete: Cascade)\n  fileName  String\n  mimeType  String\n  data      Bytes\n\n  @@index([taskLogId])\n}\n\nmodel User {\n  id            String    @id\n  name          String\n  email         String\n  emailVerified Boolean   @default(false)\n  image         String?\n  createdAt     DateTime  @default(now())\n  updatedAt     DateTime  @updatedAt\n  sessions      Session[]\n  accounts      Account[]\n\n  @@unique([email])\n  @@map(\"user\")\n}\n\nmodel Session {\n  id        String   @id\n  expiresAt DateTime\n  token     String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  ipAddress String?\n  userAgent String?\n  userId    String\n  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@unique([token])\n  @@index([userId])\n  @@map(\"session\")\n}\n\nmodel Account {\n  id                    String    @id\n  accountId             String\n  providerId            String\n  userId                String\n  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)\n  accessToken           String?\n  refreshToken          String?\n  idToken               String?\n  accessTokenExpiresAt  DateTime?\n  refreshTokenExpiresAt DateTime?\n  scope                 String?\n  password              String?\n  createdAt             DateTime  @default(now())\n  updatedAt             DateTime  @updatedAt\n\n  @@index([userId])\n  @@map(\"account\")\n}\n\nmodel Verification {\n  id         String   @id\n  identifier String\n  value      String\n  expiresAt  DateTime\n  createdAt  DateTime @default(now())\n  updatedAt  DateTime @updatedAt\n\n  @@index([identifier])\n  @@map(\"verification\")\n}\n",
-  "inlineSchemaHash": "11359e43161b4280c52e3e8448103336ab85e86156ea60931146e00da95405f1",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nenum TaskStatus {\n  Inbox\n  Review\n  Ongoing\n  Finished\n}\n\nmodel Client {\n  id             Int          @id @default(autoincrement())\n  organizationId String\n  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)\n  name           String\n  tasks          Task[]\n\n  @@unique([organizationId, name])\n}\n\nmodel Label {\n  id             Int          @id @default(autoincrement())\n  organizationId String\n  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)\n  name           String\n  color          String\n  tasks          Task[]\n\n  @@unique([organizationId, name])\n}\n\nmodel Task {\n  id                 Int            @id @default(autoincrement())\n  organizationId     String\n  organization       Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)\n  title              String\n  description        String?\n  status             TaskStatus     @default(Inbox)\n  deadline           DateTime?\n  estimateMinHours   Float?\n  estimateMaxHours   Float?\n  estimateMinMinutes Int?           @ignore\n  estimateMaxMinutes Int?           @ignore\n  archivedAt         DateTime?\n  sortOrder          Int            @default(0)\n  clientId           Int?\n  client             Client?        @relation(fields: [clientId], references: [id], onDelete: SetNull)\n  labelId            Int?\n  label              Label?         @relation(fields: [labelId], references: [id], onDelete: SetNull)\n  createdById        String?\n  createdBy          User?          @relation(\"createdTasks\", fields: [createdById], references: [id], onDelete: SetNull)\n  assignees          TaskAssignee[]\n  subtasks           Subtask[]\n  logs               TaskLog[]\n  createdAt          DateTime       @default(now())\n  updatedAt          DateTime       @updatedAt\n\n  @@index([organizationId, status, sortOrder])\n  @@index([clientId])\n  @@index([labelId])\n  @@index([createdById])\n}\n\nmodel TaskAssignee {\n  id           Int      @id @default(autoincrement())\n  taskId       Int\n  task         Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)\n  userId       String\n  user         User     @relation(\"taskAssignments\", fields: [userId], references: [id], onDelete: Cascade)\n  assignedById String?\n  assignedBy   User?    @relation(\"taskAssignmentsGiven\", fields: [assignedById], references: [id], onDelete: SetNull)\n  createdAt    DateTime @default(now())\n\n  @@unique([taskId, userId])\n  @@index([userId])\n}\n\nmodel Subtask {\n  id               Int        @id @default(autoincrement())\n  taskId           Int\n  task             Task       @relation(fields: [taskId], references: [id], onDelete: Cascade)\n  title            String\n  status           TaskStatus @default(Inbox)\n  estimatedHours   Float?\n  estimatedMinutes Int?       @ignore\n  sortOrder        Int        @default(0)\n  completedById    String?\n  completedBy      User?      @relation(\"completedSubtasks\", fields: [completedById], references: [id], onDelete: SetNull)\n  logs             TaskLog[]\n  createdAt        DateTime   @default(now())\n\n  @@index([taskId, status, sortOrder])\n}\n\nmodel TaskLog {\n  id             Int            @id @default(autoincrement())\n  taskId         Int\n  task           Task           @relation(fields: [taskId], references: [id], onDelete: Cascade)\n  note           String\n  details        String?\n  hoursSpent     Float?\n  minutesSpent   Int?           @ignore\n  estimatedHours Float?\n  subtaskId      Int?\n  subtask        Subtask?       @relation(fields: [subtaskId], references: [id], onDelete: SetNull)\n  authorId       String?\n  author         User?          @relation(\"authoredLogs\", fields: [authorId], references: [id], onDelete: SetNull)\n  images         WorkLogImage[]\n  createdAt      DateTime       @default(now())\n\n  @@index([taskId])\n  @@index([subtaskId])\n}\n\nmodel WorkLogImage {\n  id        Int     @id @default(autoincrement())\n  taskLogId Int\n  taskLog   TaskLog @relation(fields: [taskLogId], references: [id], onDelete: Cascade)\n  fileName  String\n  mimeType  String\n  data      Bytes\n\n  @@index([taskLogId])\n}\n\nmodel UserAvatar {\n  id       Int    @id @default(autoincrement())\n  userId   String @unique\n  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)\n  mimeType String\n  data     Bytes\n}\n\nmodel User {\n  id                   String         @id\n  name                 String\n  email                String\n  emailVerified        Boolean        @default(false)\n  image                String?\n  calendarToken        String?\n  apiToken             String?\n  createdAt            DateTime       @default(now())\n  updatedAt            DateTime       @updatedAt\n  sessions             Session[]\n  accounts             Account[]\n  memberships          Member[]\n  sentInvitations      Invitation[]\n  avatar               UserAvatar?\n  createdTasks         Task[]         @relation(\"createdTasks\")\n  taskAssignments      TaskAssignee[] @relation(\"taskAssignments\")\n  taskAssignmentsGiven TaskAssignee[] @relation(\"taskAssignmentsGiven\")\n  completedSubtasks    Subtask[]      @relation(\"completedSubtasks\")\n  authoredLogs         TaskLog[]      @relation(\"authoredLogs\")\n\n  @@unique([email])\n  @@unique([calendarToken])\n  @@unique([apiToken])\n  @@map(\"user\")\n}\n\nmodel Session {\n  id                   String   @id\n  expiresAt            DateTime\n  token                String\n  createdAt            DateTime @default(now())\n  updatedAt            DateTime @updatedAt\n  ipAddress            String?\n  userAgent            String?\n  activeOrganizationId String?\n  userId               String\n  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@unique([token])\n  @@index([userId])\n  @@map(\"session\")\n}\n\nmodel Account {\n  id                    String    @id\n  accountId             String\n  providerId            String\n  userId                String\n  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)\n  accessToken           String?\n  refreshToken          String?\n  idToken               String?\n  accessTokenExpiresAt  DateTime?\n  refreshTokenExpiresAt DateTime?\n  scope                 String?\n  password              String?\n  createdAt             DateTime  @default(now())\n  updatedAt             DateTime  @updatedAt\n\n  @@index([userId])\n  @@map(\"account\")\n}\n\nmodel Verification {\n  id         String   @id\n  identifier String\n  value      String\n  expiresAt  DateTime\n  createdAt  DateTime @default(now())\n  updatedAt  DateTime @updatedAt\n\n  @@index([identifier])\n  @@map(\"verification\")\n}\n\nmodel Organization {\n  id          String       @id\n  name        String\n  slug        String\n  logo        String?\n  metadata    String?\n  createdAt   DateTime     @default(now())\n  members     Member[]\n  invitations Invitation[]\n  clients     Client[]\n  labels      Label[]\n  tasks       Task[]\n\n  @@unique([slug])\n  @@map(\"organization\")\n}\n\nmodel Member {\n  id             String       @id\n  organizationId String\n  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)\n  userId         String\n  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)\n  role           String\n  createdAt      DateTime     @default(now())\n\n  @@unique([organizationId, userId])\n  @@index([userId])\n  @@map(\"member\")\n}\n\nmodel Invitation {\n  id             String       @id\n  organizationId String\n  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)\n  email          String\n  role           String\n  status         String       @default(\"pending\")\n  expiresAt      DateTime\n  inviterId      String\n  inviter        User         @relation(fields: [inviterId], references: [id], onDelete: Cascade)\n  createdAt      DateTime     @default(now())\n\n  @@index([organizationId])\n  @@index([email])\n  @@map(\"invitation\")\n}\n",
+  "inlineSchemaHash": "0b6df05e438b4dd48b6c127225427a76d8484c276fced2a7fceb1defb78e2062",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"Client\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"tasks\",\"kind\":\"object\",\"type\":\"Task\",\"relationName\":\"ClientToTask\"}],\"dbName\":null},\"Label\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"color\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"tasks\",\"kind\":\"object\",\"type\":\"Task\",\"relationName\":\"LabelToTask\"}],\"dbName\":null},\"Task\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"TaskStatus\"},{\"name\":\"deadline\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"estimateMinHours\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"estimateMaxHours\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"archivedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"sortOrder\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"clientId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"client\",\"kind\":\"object\",\"type\":\"Client\",\"relationName\":\"ClientToTask\"},{\"name\":\"labelId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"label\",\"kind\":\"object\",\"type\":\"Label\",\"relationName\":\"LabelToTask\"},{\"name\":\"subtasks\",\"kind\":\"object\",\"type\":\"Subtask\",\"relationName\":\"SubtaskToTask\"},{\"name\":\"logs\",\"kind\":\"object\",\"type\":\"TaskLog\",\"relationName\":\"TaskToTaskLog\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Subtask\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"taskId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"task\",\"kind\":\"object\",\"type\":\"Task\",\"relationName\":\"SubtaskToTask\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"TaskStatus\"},{\"name\":\"estimatedHours\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"sortOrder\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"TaskLog\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"taskId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"task\",\"kind\":\"object\",\"type\":\"Task\",\"relationName\":\"TaskToTaskLog\"},{\"name\":\"note\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"details\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"hoursSpent\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"images\",\"kind\":\"object\",\"type\":\"WorkLogImage\",\"relationName\":\"TaskLogToWorkLogImage\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"WorkLogImage\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"taskLogId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"taskLog\",\"kind\":\"object\",\"type\":\"TaskLog\",\"relationName\":\"TaskLogToWorkLogImage\"},{\"name\":\"fileName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"mimeType\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"data\",\"kind\":\"scalar\",\"type\":\"Bytes\"}],\"dbName\":null},\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailVerified\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"sessions\",\"kind\":\"object\",\"type\":\"Session\",\"relationName\":\"SessionToUser\"},{\"name\":\"accounts\",\"kind\":\"object\",\"type\":\"Account\",\"relationName\":\"AccountToUser\"}],\"dbName\":\"user\"},\"Session\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"ipAddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userAgent\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"SessionToUser\"}],\"dbName\":\"session\"},\"Account\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accountId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"providerId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"AccountToUser\"},{\"name\":\"accessToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"refreshToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"idToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accessTokenExpiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"refreshTokenExpiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"scope\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"account\"},\"Verification\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"identifier\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"value\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"verification\"}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"Client\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"organizationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organization\",\"kind\":\"object\",\"type\":\"Organization\",\"relationName\":\"ClientToOrganization\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"tasks\",\"kind\":\"object\",\"type\":\"Task\",\"relationName\":\"ClientToTask\"}],\"dbName\":null},\"Label\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"organizationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organization\",\"kind\":\"object\",\"type\":\"Organization\",\"relationName\":\"LabelToOrganization\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"color\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"tasks\",\"kind\":\"object\",\"type\":\"Task\",\"relationName\":\"LabelToTask\"}],\"dbName\":null},\"Task\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"organizationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organization\",\"kind\":\"object\",\"type\":\"Organization\",\"relationName\":\"OrganizationToTask\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"TaskStatus\"},{\"name\":\"deadline\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"estimateMinHours\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"estimateMaxHours\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"archivedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"sortOrder\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"clientId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"client\",\"kind\":\"object\",\"type\":\"Client\",\"relationName\":\"ClientToTask\"},{\"name\":\"labelId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"label\",\"kind\":\"object\",\"type\":\"Label\",\"relationName\":\"LabelToTask\"},{\"name\":\"createdById\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdBy\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"createdTasks\"},{\"name\":\"assignees\",\"kind\":\"object\",\"type\":\"TaskAssignee\",\"relationName\":\"TaskToTaskAssignee\"},{\"name\":\"subtasks\",\"kind\":\"object\",\"type\":\"Subtask\",\"relationName\":\"SubtaskToTask\"},{\"name\":\"logs\",\"kind\":\"object\",\"type\":\"TaskLog\",\"relationName\":\"TaskToTaskLog\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"TaskAssignee\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"taskId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"task\",\"kind\":\"object\",\"type\":\"Task\",\"relationName\":\"TaskToTaskAssignee\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"taskAssignments\"},{\"name\":\"assignedById\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"assignedBy\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"taskAssignmentsGiven\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Subtask\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"taskId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"task\",\"kind\":\"object\",\"type\":\"Task\",\"relationName\":\"SubtaskToTask\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"TaskStatus\"},{\"name\":\"estimatedHours\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"sortOrder\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"completedById\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"completedBy\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"completedSubtasks\"},{\"name\":\"logs\",\"kind\":\"object\",\"type\":\"TaskLog\",\"relationName\":\"SubtaskToTaskLog\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"TaskLog\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"taskId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"task\",\"kind\":\"object\",\"type\":\"Task\",\"relationName\":\"TaskToTaskLog\"},{\"name\":\"note\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"details\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"hoursSpent\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"estimatedHours\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"subtaskId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"subtask\",\"kind\":\"object\",\"type\":\"Subtask\",\"relationName\":\"SubtaskToTaskLog\"},{\"name\":\"authorId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"author\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"authoredLogs\"},{\"name\":\"images\",\"kind\":\"object\",\"type\":\"WorkLogImage\",\"relationName\":\"TaskLogToWorkLogImage\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"WorkLogImage\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"taskLogId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"taskLog\",\"kind\":\"object\",\"type\":\"TaskLog\",\"relationName\":\"TaskLogToWorkLogImage\"},{\"name\":\"fileName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"mimeType\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"data\",\"kind\":\"scalar\",\"type\":\"Bytes\"}],\"dbName\":null},\"UserAvatar\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"UserToUserAvatar\"},{\"name\":\"mimeType\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"data\",\"kind\":\"scalar\",\"type\":\"Bytes\"}],\"dbName\":null},\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailVerified\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"calendarToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"apiToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"sessions\",\"kind\":\"object\",\"type\":\"Session\",\"relationName\":\"SessionToUser\"},{\"name\":\"accounts\",\"kind\":\"object\",\"type\":\"Account\",\"relationName\":\"AccountToUser\"},{\"name\":\"memberships\",\"kind\":\"object\",\"type\":\"Member\",\"relationName\":\"MemberToUser\"},{\"name\":\"sentInvitations\",\"kind\":\"object\",\"type\":\"Invitation\",\"relationName\":\"InvitationToUser\"},{\"name\":\"avatar\",\"kind\":\"object\",\"type\":\"UserAvatar\",\"relationName\":\"UserToUserAvatar\"},{\"name\":\"createdTasks\",\"kind\":\"object\",\"type\":\"Task\",\"relationName\":\"createdTasks\"},{\"name\":\"taskAssignments\",\"kind\":\"object\",\"type\":\"TaskAssignee\",\"relationName\":\"taskAssignments\"},{\"name\":\"taskAssignmentsGiven\",\"kind\":\"object\",\"type\":\"TaskAssignee\",\"relationName\":\"taskAssignmentsGiven\"},{\"name\":\"completedSubtasks\",\"kind\":\"object\",\"type\":\"Subtask\",\"relationName\":\"completedSubtasks\"},{\"name\":\"authoredLogs\",\"kind\":\"object\",\"type\":\"TaskLog\",\"relationName\":\"authoredLogs\"}],\"dbName\":\"user\"},\"Session\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"ipAddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userAgent\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"activeOrganizationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"SessionToUser\"}],\"dbName\":\"session\"},\"Account\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accountId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"providerId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"AccountToUser\"},{\"name\":\"accessToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"refreshToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"idToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accessTokenExpiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"refreshTokenExpiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"scope\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"account\"},\"Verification\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"identifier\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"value\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"verification\"},\"Organization\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"slug\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"logo\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"metadata\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"members\",\"kind\":\"object\",\"type\":\"Member\",\"relationName\":\"MemberToOrganization\"},{\"name\":\"invitations\",\"kind\":\"object\",\"type\":\"Invitation\",\"relationName\":\"InvitationToOrganization\"},{\"name\":\"clients\",\"kind\":\"object\",\"type\":\"Client\",\"relationName\":\"ClientToOrganization\"},{\"name\":\"labels\",\"kind\":\"object\",\"type\":\"Label\",\"relationName\":\"LabelToOrganization\"},{\"name\":\"tasks\",\"kind\":\"object\",\"type\":\"Task\",\"relationName\":\"OrganizationToTask\"}],\"dbName\":\"organization\"},\"Member\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organizationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organization\",\"kind\":\"object\",\"type\":\"Organization\",\"relationName\":\"MemberToOrganization\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"MemberToUser\"},{\"name\":\"role\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"member\"},\"Invitation\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organizationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organization\",\"kind\":\"object\",\"type\":\"Organization\",\"relationName\":\"InvitationToOrganization\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"inviterId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"inviter\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"InvitationToUser\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"invitation\"}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),

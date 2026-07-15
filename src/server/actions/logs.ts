@@ -5,8 +5,9 @@ import sharp from "sharp";
 import { z } from "zod";
 
 import { type ActionResult, actionError, int4IdSchema } from "~/lib/validation";
-import { requireSession } from "~/server/auth";
+import { requireMember } from "~/server/auth";
 import { db } from "~/server/db";
+import { taskWhereFor } from "~/server/task-access";
 
 const maxImageCount = 5;
 const maxImageBytes = 5 * 1024 * 1024;
@@ -84,7 +85,7 @@ async function validateImage(file: File) {
 }
 
 export async function addLog(formData: FormData): Promise<ActionResult> {
-	await requireSession();
+	const member = await requireMember();
 	try {
 		const parsed = logSchema.parse({
 			taskId: formData.get("taskId")?.toString(),
@@ -108,8 +109,8 @@ export async function addLog(formData: FormData): Promise<ActionResult> {
 			return { ok: false, error: "Images must total 15 MB or less." };
 		}
 
-		const task = await db.task.findUnique({
-			where: { id: parsed.taskId },
+		const task = await db.task.findFirst({
+			where: { id: parsed.taskId, AND: taskWhereFor(member) },
 			select: { id: true },
 		});
 		if (!task) return { ok: false, error: "Task not found." };
@@ -132,6 +133,7 @@ export async function addLog(formData: FormData): Promise<ActionResult> {
 				note: parsed.note,
 				details: parsed.details || null,
 				hoursSpent: parsed.hoursSpent,
+				authorId: member.userId,
 				images: { create: images },
 			},
 		});
@@ -143,11 +145,11 @@ export async function addLog(formData: FormData): Promise<ActionResult> {
 }
 
 export async function deleteLog(idInput: number): Promise<ActionResult> {
-	await requireSession();
+	const member = await requireMember();
 	try {
 		const id = int4IdSchema.parse(idInput);
-		const log = await db.taskLog.findUnique({
-			where: { id },
+		const log = await db.taskLog.findFirst({
+			where: { id, task: taskWhereFor(member) },
 			select: { taskId: true },
 		});
 		if (!log) return { ok: false, error: "Work log entry not found." };

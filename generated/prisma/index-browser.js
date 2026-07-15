@@ -123,17 +123,20 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
 
 exports.Prisma.ClientScalarFieldEnum = {
   id: 'id',
+  organizationId: 'organizationId',
   name: 'name'
 };
 
 exports.Prisma.LabelScalarFieldEnum = {
   id: 'id',
+  organizationId: 'organizationId',
   name: 'name',
   color: 'color'
 };
 
 exports.Prisma.TaskScalarFieldEnum = {
   id: 'id',
+  organizationId: 'organizationId',
   title: 'title',
   description: 'description',
   status: 'status',
@@ -144,8 +147,17 @@ exports.Prisma.TaskScalarFieldEnum = {
   sortOrder: 'sortOrder',
   clientId: 'clientId',
   labelId: 'labelId',
+  createdById: 'createdById',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.TaskAssigneeScalarFieldEnum = {
+  id: 'id',
+  taskId: 'taskId',
+  userId: 'userId',
+  assignedById: 'assignedById',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.SubtaskScalarFieldEnum = {
@@ -155,6 +167,7 @@ exports.Prisma.SubtaskScalarFieldEnum = {
   status: 'status',
   estimatedHours: 'estimatedHours',
   sortOrder: 'sortOrder',
+  completedById: 'completedById',
   createdAt: 'createdAt'
 };
 
@@ -164,6 +177,9 @@ exports.Prisma.TaskLogScalarFieldEnum = {
   note: 'note',
   details: 'details',
   hoursSpent: 'hoursSpent',
+  estimatedHours: 'estimatedHours',
+  subtaskId: 'subtaskId',
+  authorId: 'authorId',
   createdAt: 'createdAt'
 };
 
@@ -175,12 +191,21 @@ exports.Prisma.WorkLogImageScalarFieldEnum = {
   data: 'data'
 };
 
+exports.Prisma.UserAvatarScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  mimeType: 'mimeType',
+  data: 'data'
+};
+
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   name: 'name',
   email: 'email',
   emailVerified: 'emailVerified',
   image: 'image',
+  calendarToken: 'calendarToken',
+  apiToken: 'apiToken',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -193,6 +218,7 @@ exports.Prisma.SessionScalarFieldEnum = {
   updatedAt: 'updatedAt',
   ipAddress: 'ipAddress',
   userAgent: 'userAgent',
+  activeOrganizationId: 'activeOrganizationId',
   userId: 'userId'
 };
 
@@ -221,6 +247,34 @@ exports.Prisma.VerificationScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.OrganizationScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  slug: 'slug',
+  logo: 'logo',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.MemberScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  userId: 'userId',
+  role: 'role',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.InvitationScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  email: 'email',
+  role: 'role',
+  status: 'status',
+  expiresAt: 'expiresAt',
+  inviterId: 'inviterId',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -246,13 +300,18 @@ exports.Prisma.ModelName = {
   Client: 'Client',
   Label: 'Label',
   Task: 'Task',
+  TaskAssignee: 'TaskAssignee',
   Subtask: 'Subtask',
   TaskLog: 'TaskLog',
   WorkLogImage: 'WorkLogImage',
+  UserAvatar: 'UserAvatar',
   User: 'User',
   Session: 'Session',
   Account: 'Account',
-  Verification: 'Verification'
+  Verification: 'Verification',
+  Organization: 'Organization',
+  Member: 'Member',
+  Invitation: 'Invitation'
 };
 
 /**

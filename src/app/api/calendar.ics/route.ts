@@ -1,6 +1,7 @@
 import { env } from "~/env";
 import { db } from "~/server/db";
-import { tokensMatch } from "~/server/token-auth";
+import { taskWhereFor } from "~/server/task-access";
+import { memberFromToken } from "~/server/token-auth";
 
 export const runtime = "nodejs";
 
@@ -28,12 +29,17 @@ function nextUtcDay(date: Date): Date {
 
 export async function GET(request: Request) {
 	const token = new URL(request.url).searchParams.get("token") ?? "";
-	if (!tokensMatch(token, env.CALENDAR_FEED_TOKEN)) {
+	const member = await memberFromToken(token, "calendarToken");
+	if (!member) {
 		return new Response("Not found.", { status: 404 });
 	}
 
 	const tasks = await db.task.findMany({
-		where: { archivedAt: null, deadline: { not: null } },
+		where: {
+			AND: [taskWhereFor(member)],
+			archivedAt: null,
+			deadline: { not: null },
+		},
 		orderBy: [{ deadline: "asc" }, { id: "asc" }],
 		include: { client: { select: { name: true } } },
 	});

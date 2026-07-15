@@ -14,8 +14,9 @@ import {
 	taskDescriptionSchema,
 	taskTitleSchema,
 } from "~/lib/validation";
-import { requireSession } from "~/server/auth";
+import { requireMember, type SessionMember } from "~/server/auth";
 import { db } from "~/server/db";
+import { requireTaskAccess, taskWhereFor } from "~/server/task-access";
 import { createTaskAtLaneEnd } from "~/server/task-creation";
 
 const taskFields = {
@@ -69,15 +70,22 @@ function nullableText(value: string | undefined): string | null {
 }
 
 async function verifyRelations(
+	member: SessionMember,
 	clientId: number | undefined,
 	labelId: number | undefined,
 ): Promise<void> {
 	const [client, label] = await Promise.all([
 		clientId
-			? db.client.findUnique({ where: { id: clientId }, select: { id: true } })
+			? db.client.findFirst({
+					where: { id: clientId, organizationId: member.orgId },
+					select: { id: true },
+				})
 			: null,
 		labelId
-			? db.label.findUnique({ where: { id: labelId }, select: { id: true } })
+			? db.label.findFirst({
+					where: { id: labelId, organizationId: member.orgId },
+					select: { id: true },
+				})
 			: null,
 	]);
 	if (clientId && !client) throw new Error("Client not found.");
@@ -89,7 +97,7 @@ function estimatesAreValid(min: number | null, max: number | null): boolean {
 }
 
 export async function createTask(formData: FormData): Promise<ActionResult> {
-	await requireSession();
+	const member = await requireMember();
 	try {
 		const parsed = createTaskSchema.parse(taskInput(formData));
 		const min = parsed.estimateMinHours ?? null;
@@ -100,11 +108,14 @@ export async function createTask(formData: FormData): Promise<ActionResult> {
 				error: "The minimum estimate cannot exceed the maximum estimate.",
 			};
 		}
-		await verifyRelations(parsed.clientId, parsed.labelId);
-		await createTaskAtLaneEnd({
-			...parsed,
-			description: nullableText(parsed.description),
-		});
+		await verifyRelations(member, parsed.clientId, parsed.labelId);
+		await createTaskAtLaneEnd(
+			{ orgId: member.orgId, userId: member.userId },
+			{
+				...parsed,
+				description: nullableText(parsed.description),
+			},
+		);
 		revalidatePath("/");
 		revalidatePath("/archived");
 		return { ok: true };
@@ -124,7 +135,7 @@ export async function moveTask(
 	statusInput: string,
 	beforeIdInput: number | null,
 ): Promise<ActionResult> {
-	await requireSession();
+	const member = await requireMember();
 	try {
 		const { id, status, beforeId } = moveTaskSchema.parse({
 			id: idInput,
@@ -132,13 +143,21 @@ export async function moveTask(
 			beforeId: beforeIdInput,
 		});
 		await db.$transaction(async (tx) => {
-			const task = await tx.task.findUnique({
-				where: { id },
+			const task = await tx.task.findFirst({
+				where: { id, AND: taskWhereFor(member) },
 				select: { archivedAt: true },
 			});
 			if (!task || task.archivedAt) throw new Error("Task not found.");
+			// Reorder within the full organization lane so tasks hidden from this
+			// member keep consistent sort positions; visibility only gates which
+			// task may be moved.
 			const lane = await tx.task.findMany({
-				where: { status, archivedAt: null, id: { not: id } },
+				where: {
+					organizationId: member.orgId,
+					status,
+					archivedAt: null,
+					id: { not: id },
+				},
 				orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
 				select: { id: true },
 			});
@@ -164,13 +183,15 @@ export async function moveTask(
 }
 
 export async function updateTask(formData: FormData): Promise<ActionResult> {
-	await requireSession();
+	const member = await requireMember();
 	try {
 		const parsed = updateTaskSchema.parse({
 			...taskInput(formData),
 			id: field(formData, "id"),
 		});
-		const existing = await db.task.findUnique({ where: { id: parsed.id } });
+		const existing = await db.task.findFirst({
+			where: { id: parsed.id, AND: taskWhereFor(member) },
+		});
 		if (!existing) return { ok: false, error: "Task not found." };
 
 		const has = (name: string) => formData.has(name);
@@ -188,6 +209,7 @@ export async function updateTask(formData: FormData): Promise<ActionResult> {
 		}
 
 		await verifyRelations(
+			member,
 			has("clientId") ? parsed.clientId : undefined,
 			has("labelId") ? parsed.labelId : undefined,
 		);
@@ -219,14 +241,10 @@ export async function updateTask(formData: FormData): Promise<ActionResult> {
 }
 
 export async function deleteTask(idInput: number): Promise<ActionResult> {
-	await requireSession();
+	const member = await requireMember();
 	try {
 		const id = int4IdSchema.parse(idInput);
-		const existing = await db.task.findUnique({
-			where: { id },
-			select: { id: true },
-		});
-		if (!existing) return { ok: false, error: "Task not found." };
+		await requireTaskAccess(member, id);
 		await db.task.delete({ where: { id } });
 		revalidatePath("/");
 		revalidatePath("/archived");
@@ -240,15 +258,11 @@ export async function setArchived(
 	idInput: number,
 	archivedInput: boolean,
 ): Promise<ActionResult> {
-	await requireSession();
+	const member = await requireMember();
 	try {
 		const id = int4IdSchema.parse(idInput);
 		const archived = z.boolean().parse(archivedInput);
-		const existing = await db.task.findUnique({
-			where: { id },
-			select: { id: true },
-		});
-		if (!existing) return { ok: false, error: "Task not found." };
+		await requireTaskAccess(member, id);
 		await db.task.update({
 			where: { id },
 			data: { archivedAt: archived ? new Date() : null },
