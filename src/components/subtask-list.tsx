@@ -82,6 +82,9 @@ export function SubtaskList({
 		(status): status is Exclude<TaskStatus, "Finished"> =>
 			status !== "Finished",
 	);
+	const completedSubtasks = optimisticSubtasks.filter(
+		({ status }) => status === "Finished",
+	);
 
 	async function submit(formData: FormData) {
 		setError(null);
@@ -195,10 +198,10 @@ export function SubtaskList({
 					aria-label="Estimated hours"
 					className="min-w-0 rounded-md border border-stone-900 bg-white px-2 py-1.5 text-sm"
 					max={5}
-					min={0.25}
+					min={Number.MIN_VALUE}
 					name="estimatedHours"
 					placeholder="hours"
-					step={0.25}
+					step="any"
 					type="number"
 				/>
 				<button
@@ -294,6 +297,66 @@ export function SubtaskList({
 					})}
 				</div>
 			</DndContext>
+			<section
+				aria-labelledby="completed-subtasks-heading"
+				className="rounded-2xl border-2 border-stone-900 bg-stone-200 p-3 shadow-[4px_4px_0_#1c1917]"
+			>
+				<div className="mb-3 flex items-center justify-between border-stone-900 border-b pb-2">
+					<h3
+						className="display-font font-bold text-lg"
+						id="completed-subtasks-heading"
+					>
+						Completed subtasks
+					</h3>
+					<span className="rounded-full bg-stone-900 px-2 py-0.5 font-bold text-white text-xs">
+						{completedSubtasks.length}
+					</span>
+				</div>
+				<div className="space-y-2">
+					{completedSubtasks.map((subtask) => (
+						<div
+							className="flex items-center gap-2 rounded-lg border border-stone-900 bg-[#fffdf6] p-2"
+							key={subtask.id}
+						>
+							<select
+								aria-label={`Status for ${subtask.title}`}
+								className="rounded border border-stone-900 bg-white p-1 text-xs"
+								disabled={pendingIds.has(subtask.id)}
+								onChange={(event) =>
+									changeStatus(subtask, event.target.value as TaskStatus)
+								}
+								value={statusOverrides[subtask.id] ?? subtask.status}
+							>
+								{taskStatuses.map((status) => (
+									<option key={status}>{status}</option>
+								))}
+							</select>
+							<span className="min-w-0 flex-1 text-sm line-through opacity-50">
+								{subtask.title}
+							</span>
+							{subtask.estimatedHours ? (
+								<span className="text-stone-600 text-xs">
+									{formatHours(subtask.estimatedHours)}
+								</span>
+							) : null}
+							<button
+								aria-label={`Delete ${subtask.title}`}
+								className="px-1 font-bold text-red-700"
+								disabled={pendingIds.has(subtask.id)}
+								onClick={() => removeSubtask(subtask)}
+								type="button"
+							>
+								×
+							</button>
+						</div>
+					))}
+					{completedSubtasks.length === 0 ? (
+						<p className="rounded-lg border border-stone-500 border-dashed p-4 text-center text-stone-600 text-xs">
+							No completed subtasks
+						</p>
+					) : null}
+				</div>
+			</section>
 		</section>
 	);
 }

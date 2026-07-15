@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import sharp from "sharp";
 
 test("tracks a project in hours and keeps rich work logs", async ({ page }) => {
 	await page.goto("/signup");
@@ -13,7 +14,9 @@ test("tracks a project in hours and keeps rich work logs", async ({ page }) => {
 	const taskDialog = page.getByRole("dialog", { name: "Create a task" });
 	await taskDialog.getByLabel("Title").fill(title);
 	await taskDialog.getByLabel("Status").selectOption("Ongoing");
-	await taskDialog.getByLabel("Minimum estimate in hours").fill("32");
+	await taskDialog
+		.getByLabel("Minimum estimate in hours")
+		.fill("32.333333333333336");
 	await taskDialog.getByLabel("Maximum estimate in hours").fill("40");
 	await taskDialog.getByRole("button", { name: "Add task" }).click();
 
@@ -71,21 +74,70 @@ test("tracks a project in hours and keeps rich work logs", async ({ page }) => {
 
 	await page.goto(taskHref);
 	await expect(
-		page.getByText("32-40h estimated", { exact: true }),
+		page.getByText("32.33-40h estimated", { exact: true }),
 	).toBeVisible();
-	await page.getByLabel("Subtask title").fill("Implement responsive layout");
-	await page.getByLabel("Estimated hours").fill("5");
+	await page.getByRole("button", { name: "Edit" }).click();
+	const editDialog = page.getByRole("dialog", { name: "Edit task" });
+	await expect(editDialog.getByLabel("Minimum estimate in hours")).toHaveValue(
+		"32.333333333333336",
+	);
+	await editDialog.getByLabel("Description").fill("Preserve my estimate");
+	await editDialog.getByRole("button", { name: "Save changes" }).click();
+	await page.getByRole("button", { name: "Edit" }).click();
+	await expect(editDialog.getByLabel("Minimum estimate in hours")).toHaveValue(
+		"32.333333333333336",
+	);
+	await editDialog.getByRole("button", { name: "Cancel" }).click();
+
+	const subtaskTitle = "Implement responsive layout";
+	await page.getByLabel("Subtask title").fill(subtaskTitle);
+	await page.getByLabel("Estimated hours").fill("0.1");
 	await page.getByRole("button", { name: "Add", exact: true }).click();
-	await expect(page.getByText("Implement responsive layout")).toBeVisible();
-	await expect(page.getByText("5h", { exact: true })).toBeVisible();
+	await expect(page.getByText(subtaskTitle)).toBeVisible();
+	await expect(page.getByText("0.1h", { exact: true })).toBeVisible();
+	await page.getByLabel(`Status for ${subtaskTitle}`).selectOption("Finished");
+	const completedSubtasks = page.getByRole("region", {
+		name: "Completed subtasks",
+	});
+	await expect(completedSubtasks.getByText(subtaskTitle)).toBeVisible();
 
 	await page.getByRole("link", { name: /Work log/ }).click();
+	await expect(page.getByText(subtaskTitle, { exact: true })).toHaveCount(0);
 	await page.getByLabel("What did you do?").fill("Built the responsive layout");
 	await page.getByLabel("Time spent (hours)").fill("3.5");
 	await page
 		.getByLabel("Detailed notes")
 		.fill("Implemented the navigation and checked the mobile breakpoint.");
-	await page.getByLabel("Pictures").setInputFiles({
+	const pictures = page.getByLabel("Pictures");
+	await pictures.setInputFiles({
+		buffer: Buffer.from("89504e470d0a1a0a", "hex"),
+		mimeType: "image/png",
+		name: "truncated.png",
+	});
+	await page.getByRole("button", { name: "Add work log" }).click();
+	await expect(page.getByRole("alert")).toContainText(
+		"Images must be complete PNG, JPEG, GIF, or WebP files",
+	);
+	const oversizedImage = await sharp({
+		create: {
+			background: "white",
+			channels: 3,
+			height: 1,
+			width: 8193,
+		},
+	})
+		.png()
+		.toBuffer();
+	await pictures.setInputFiles({
+		buffer: oversizedImage,
+		mimeType: "image/png",
+		name: "too-wide.png",
+	});
+	await page.getByRole("button", { name: "Add work log" }).click();
+	await expect(page.getByRole("alert")).toContainText(
+		"no larger than 8192 pixels per side or 20 megapixels",
+	);
+	await pictures.setInputFiles({
 		buffer: Buffer.from(
 			"iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
 			"base64",
@@ -112,4 +164,14 @@ test("tracks a project in hours and keeps rich work logs", async ({ page }) => {
 	await expect(
 		page.getByRole("heading", { name: "Built the responsive layout" }),
 	).toHaveCount(0);
+
+	await page.getByRole("link", { name: "Tasks", exact: true }).click();
+	await completedSubtasks
+		.getByLabel(`Status for ${subtaskTitle}`)
+		.selectOption("Inbox");
+	await expect(
+		page.getByTestId("subtask-lane-Inbox").getByText(subtaskTitle),
+	).toBeVisible();
+	await page.getByRole("button", { name: `Delete ${subtaskTitle}` }).click();
+	await expect(page.getByText(subtaskTitle, { exact: true })).toHaveCount(0);
 });

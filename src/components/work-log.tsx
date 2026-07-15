@@ -123,7 +123,7 @@ export function WorkLog({ logs, taskId }: { logs: Log[]; taskId: number }) {
 					/>
 					<span className="block font-normal text-stone-600 text-xs">
 						Up to 5 PNG, JPEG, GIF, or WebP images. Maximum 5 MB each and 15 MB
-						total.
+						total. Maximum 8192 × 8192 pixels and 20 megapixels per image.
 					</span>
 				</label>
 				{error ? (

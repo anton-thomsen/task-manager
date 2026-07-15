@@ -9,6 +9,8 @@ import { int4IdSchema } from "~/lib/validation";
 import { requireSession } from "~/server/auth";
 import { db } from "~/server/db";
 
+const hourComparisonTolerance = 1e-9;
+
 export default async function TaskDetailPage({
 	params,
 	searchParams,
@@ -67,10 +69,16 @@ export default async function TaskDetailPage({
 		labelId: task.labelId,
 	};
 	const estimateComparison = (() => {
-		if (task.estimateMinHours !== null && totalLogged < task.estimateMinHours) {
+		if (
+			task.estimateMinHours !== null &&
+			totalLogged < task.estimateMinHours - hourComparisonTolerance
+		) {
 			return `${formatHours(task.estimateMinHours - totalLogged)} below the estimate range`;
 		}
-		if (task.estimateMaxHours !== null && totalLogged > task.estimateMaxHours) {
+		if (
+			task.estimateMaxHours !== null &&
+			totalLogged > task.estimateMaxHours + hourComparisonTolerance
+		) {
 			return `${formatHours(totalLogged - task.estimateMaxHours)} over the estimate range`;
 		}
 		if (task.estimateMinHours !== null || task.estimateMaxHours !== null) {

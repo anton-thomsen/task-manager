@@ -116,7 +116,9 @@ export function TaskForm({
 	const maxEstimate = Number(maxHours);
 	const minEstimate = Number(minHours);
 	const estimateIsInvalid =
-		minHours !== "" && maxHours !== "" && minEstimate > maxEstimate;
+		(minHours !== "" && minEstimate <= 0) ||
+		(maxHours !== "" && maxEstimate <= 0) ||
+		(minHours !== "" && maxHours !== "" && minEstimate > maxEstimate);
 
 	async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault();
@@ -324,12 +326,11 @@ export function TaskForm({
 							<input
 								aria-label="Minimum estimate in hours"
 								className={`${inputClass} w-24`}
-								min="0.25"
 								name="estimateMinHours"
 								onChange={(event) => {
 									setMinHours(event.target.value);
 								}}
-								step="0.25"
+								step="any"
 								type="number"
 								value={minHours}
 							/>
@@ -337,12 +338,11 @@ export function TaskForm({
 							<input
 								aria-label="Maximum estimate in hours"
 								className={`${inputClass} w-24`}
-								min="0.25"
 								name="estimateMaxHours"
 								onChange={(event) => {
 									setMaxHours(event.target.value);
 								}}
-								step="0.25"
+								step="any"
 								type="number"
 								value={maxHours}
 							/>
@@ -351,6 +351,12 @@ export function TaskForm({
 						{minHours !== "" && maxHours !== "" && minEstimate > maxEstimate ? (
 							<p className="mt-2 text-red-800 text-xs">
 								The minimum must not exceed the maximum.
+							</p>
+						) : null}
+						{(minHours !== "" && minEstimate <= 0) ||
+						(maxHours !== "" && maxEstimate <= 0) ? (
+							<p className="mt-2 text-red-800 text-xs">
+								Estimates must be greater than zero.
 							</p>
 						) : null}
 						<p className="mt-2 text-stone-600 text-xs">

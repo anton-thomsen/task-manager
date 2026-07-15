@@ -2,11 +2,11 @@ import type { TaskStatus } from "~/lib/tasks";
 
 export function hoursInputValue(hours: number | null | undefined): string {
 	if (!hours) return "";
-	return String(Number(hours.toFixed(2)));
+	return String(hours);
 }
 
 export function formatHours(hours: number): string {
-	return `${hoursInputValue(hours) || "0"}h`;
+	return `${Number(hours.toFixed(2)) || "0"}h`;
 }
 
 export function formatEstimateRange(
@@ -16,7 +16,7 @@ export function formatEstimateRange(
 	if (min !== null && max !== null) {
 		return min === max
 			? formatHours(min)
-			: `${hoursInputValue(min)}-${formatHours(max)}`;
+			: `${Number(min.toFixed(2))}-${formatHours(max)}`;
 	}
 	if (max !== null) return `up to ${formatHours(max)}`;
 	if (min !== null) return `${formatHours(min)}+`;

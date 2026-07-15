@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import sharp from "sharp";
 import { z } from "zod";
 
 import { type ActionResult, actionError, int4IdSchema } from "~/lib/validation";
@@ -10,6 +11,10 @@ import { db } from "~/server/db";
 const maxImageCount = 5;
 const maxImageBytes = 5 * 1024 * 1024;
 const maxTotalImageBytes = 15 * 1024 * 1024;
+const maxImageDimension = 8192;
+const maxImagePixels = 20_000_000;
+const supportedImageError =
+	"Images must be complete PNG, JPEG, GIF, or WebP files no larger than 8192 pixels per side or 20 megapixels.";
 
 const logSchema = z.object({
 	taskId: int4IdSchema,
@@ -25,40 +30,57 @@ const logSchema = z.object({
 	),
 });
 
-function detectImageMimeType(data: Uint8Array): string | null {
-	if (
-		data.length >= 8 &&
-		data[0] === 0x89 &&
-		data[1] === 0x50 &&
-		data[2] === 0x4e &&
-		data[3] === 0x47 &&
-		data[4] === 0x0d &&
-		data[5] === 0x0a &&
-		data[6] === 0x1a &&
-		data[7] === 0x0a
-	) {
-		return "image/png";
+function imageMimeType(format: string | undefined): string | null {
+	switch (format) {
+		case "png":
+			return "image/png";
+		case "jpeg":
+			return "image/jpeg";
+		case "gif":
+			return "image/gif";
+		case "webp":
+			return "image/webp";
+		default:
+			return null;
 	}
-	if (
-		data.length >= 3 &&
-		data[0] === 0xff &&
-		data[1] === 0xd8 &&
-		data[2] === 0xff
-	) {
-		return "image/jpeg";
+}
+
+async function validateImage(file: File) {
+	try {
+		const data = new Uint8Array(await file.arrayBuffer());
+		const image = sharp(data, {
+			animated: true,
+			failOn: "warning",
+			limitInputPixels: maxImagePixels,
+		});
+		const metadata = await image.metadata();
+		const mimeType = imageMimeType(metadata.format);
+		const width = metadata.width ?? 0;
+		const frameHeight = metadata.pageHeight ?? metadata.height ?? 0;
+		const pages = metadata.pages ?? 1;
+		const pixelCount = width * frameHeight * pages;
+
+		if (
+			!mimeType ||
+			width === 0 ||
+			frameHeight === 0 ||
+			width > maxImageDimension ||
+			frameHeight > maxImageDimension ||
+			!Number.isSafeInteger(pixelCount) ||
+			pixelCount > maxImagePixels
+		) {
+			throw new Error("INVALID_IMAGE");
+		}
+
+		await image.raw().toBuffer();
+		return {
+			data,
+			fileName: file.name.trim().slice(0, 200) || "work-log-image",
+			mimeType,
+		};
+	} catch {
+		throw new Error(supportedImageError);
 	}
-	const gifHeader = String.fromCharCode(...data.slice(0, 6));
-	if (data.length >= 6 && (gifHeader === "GIF87a" || gifHeader === "GIF89a")) {
-		return "image/gif";
-	}
-	if (
-		data.length >= 12 &&
-		String.fromCharCode(...data.slice(0, 4)) === "RIFF" &&
-		String.fromCharCode(...data.slice(8, 12)) === "WEBP"
-	) {
-		return "image/webp";
-	}
-	return null;
 }
 
 export async function addLog(formData: FormData): Promise<ActionResult> {
@@ -92,28 +114,16 @@ export async function addLog(formData: FormData): Promise<ActionResult> {
 		});
 		if (!task) return { ok: false, error: "Task not found." };
 
-		const images = await Promise.all(
-			files.map(async (file) => {
-				const data = new Uint8Array(await file.arrayBuffer());
-				const mimeType = detectImageMimeType(data);
-				if (!mimeType) throw new Error("UNSUPPORTED_IMAGE");
+		const images = [];
+		for (const file of files) {
+			try {
+				images.push(await validateImage(file));
+			} catch {
 				return {
-					data,
-					fileName: file.name.trim().slice(0, 200) || "work-log-image",
-					mimeType,
+					ok: false,
+					error: supportedImageError,
 				};
-			}),
-		).catch((error: unknown) => {
-			if (error instanceof Error && error.message === "UNSUPPORTED_IMAGE") {
-				return null;
 			}
-			throw error;
-		});
-		if (!images) {
-			return {
-				ok: false,
-				error: "Images must be PNG, JPEG, GIF, or WebP files.",
-			};
 		}
 
 		await db.taskLog.create({
