@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 
 import { cancelInvitation, inviteMember } from "~/server/actions/members";
@@ -65,10 +66,13 @@ export function MembersSettings({
 					{members.map((member) => (
 						<li className="flex items-center gap-3" key={member.id}>
 							{member.image ? (
-								<img
+								<Image
 									alt=""
 									className="size-10 rounded-full border-2 border-stone-900 object-cover"
+									height={40}
 									src={member.image}
+									unoptimized
+									width={40}
 								/>
 							) : (
 								<div className="grid size-10 place-items-center rounded-full border-2 border-stone-900 bg-emerald-700 font-bold text-white">

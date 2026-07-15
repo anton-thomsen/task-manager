@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 
 import { updateProfile, uploadAvatar } from "~/server/actions/profile";
@@ -77,10 +78,13 @@ export function ProfileSettings({ name, email, image }: ProfileSettingsProps) {
 				<h2 className="display-font font-black text-2xl">Profile picture</h2>
 				<div className="mt-4 flex items-center gap-4">
 					{image ? (
-						<img
+						<Image
 							alt="Your avatar"
 							className="size-16 rounded-full border-2 border-stone-900 object-cover"
+							height={64}
 							src={`${image}?v=${avatarVersion}`}
+							unoptimized
+							width={64}
 						/>
 					) : (
 						<div className="grid size-16 place-items-center rounded-full border-2 border-stone-900 bg-emerald-700 font-bold text-white text-xl">
