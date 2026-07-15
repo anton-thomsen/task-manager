@@ -23,6 +23,18 @@ export function formatEstimateRange(
 	return null;
 }
 
+export function logVariance(log: {
+	estimatedHours: number | null;
+	hoursSpent: number | null;
+}): string | null {
+	if (log.estimatedHours === null || log.hoursSpent === null) return null;
+	const delta = log.hoursSpent - log.estimatedHours;
+	if (Math.abs(delta) < 1e-9) return "on estimate";
+	return delta > 0
+		? `${formatHours(delta)} over`
+		: `${formatHours(-delta)} under`;
+}
+
 export function formatDeadline(deadline: string): string {
 	return new Intl.DateTimeFormat("en", {
 		month: "short",

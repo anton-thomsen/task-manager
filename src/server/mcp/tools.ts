@@ -21,8 +21,10 @@ import {
 } from "~/server/mcp/schemas";
 import {
 	serializeTaskDetail,
+	serializeTaskReport,
 	serializeTaskSummary,
 	taskDetailSelect,
+	taskReportSelect,
 	taskSummarySelect,
 } from "~/server/mcp/serialize";
 import { taskWhereFor } from "~/server/task-access";
@@ -185,6 +187,26 @@ export function registerTools(server: McpServer): void {
 				});
 				if (!task) return errorResult(`Task ${args.task_id} not found.`);
 				return jsonResult(serializeTaskDetail(task));
+			}),
+	);
+
+	server.registerTool(
+		"get_task_report",
+		{
+			title: "Get task time report",
+			description:
+				'The tool for "why did this take longer (or shorter) than estimated" analysis. Returns the task estimate range, every work log with its own estimate, actual hours, variance, author, and full details text, every subtask with estimate and completer, and totals. To explain a variance, READ the details field of each work log - that is where the reasons live. Estimates shown as "n/a" were never set.',
+			inputSchema: { task_id: int4IdSchema },
+		},
+		(args, extra) =>
+			run(async () => {
+				const member = memberFromExtra(extra);
+				const task = await db.task.findFirst({
+					where: { id: args.task_id, AND: taskWhereFor(member) },
+					select: taskReportSelect,
+				});
+				if (!task) return errorResult(`Task ${args.task_id} not found.`);
+				return jsonResult(serializeTaskReport(task));
 			}),
 	);
 

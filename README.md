@@ -54,6 +54,12 @@ summary and hours spent, optional detailed notes, and up to five PNG, JPEG, GIF,
 or WebP images. Images are limited to 5 MB each, 15 MB total, 8192 pixels per
 side, and 20 megapixels. Deleting a work log permanently removes its images.
 
+Completing a subtask offers a pre-filled work log: the subtask's estimate is
+carried over, you add the hours it actually took (or skip). Manual work logs
+can also record an estimate, shown as N/A when absent, and each entry displays
+its over/under variance. The task header includes a per-worklog breakdown of
+estimates versus actuals.
+
 The task header compares total logged hours with the task's estimate range.
 Top-level task estimates can cover large projects; individual subtask estimates
 use 15-minute increments and are capped at 5 hours.

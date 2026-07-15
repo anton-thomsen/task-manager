@@ -10,7 +10,13 @@ import {
 	useSensors,
 } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
-import { startTransition, useOptimistic, useState } from "react";
+import {
+	startTransition,
+	useEffect,
+	useOptimistic,
+	useRef,
+	useState,
+} from "react";
 
 import { formatHours } from "~/lib/format";
 import type { TaskStatus } from "~/lib/tasks";
@@ -23,6 +29,7 @@ import {
 } from "~/server/actions/subtasks";
 import { DropLane, SortableItem } from "./sortable-lane";
 import { UserAvatar } from "./user-avatar";
+import { WorkLogForm } from "./work-log-form";
 
 type SubtaskCompleter = {
 	id: string;
@@ -39,6 +46,51 @@ type Subtask = {
 };
 
 type Move = { id: number; status: TaskStatus; beforeId: number | null };
+
+function CompletionLogDialog({
+	subtask,
+	taskId,
+	onClose,
+}: {
+	subtask: Subtask;
+	taskId: number;
+	onClose: () => void;
+}) {
+	const dialogRef = useRef<HTMLDialogElement>(null);
+	useEffect(() => {
+		dialogRef.current?.showModal();
+	}, []);
+
+	return (
+		<dialog
+			className="m-auto w-full max-w-2xl bg-transparent p-4 backdrop:bg-stone-900/40"
+			onCancel={onClose}
+			onClose={onClose}
+			ref={dialogRef}
+		>
+			<div className="space-y-3">
+				<div className="rounded-2xl border-2 border-stone-900 bg-[#fffdf6] p-4 shadow-[4px_4px_0_#1c1917]">
+					<h3 className="display-font font-bold text-xl">
+						Nice - “{subtask.title}” is done
+					</h3>
+					<p className="mt-1 text-sm text-stone-600">
+						Log the work while it is fresh. The subtask&apos;s estimate is
+						filled in - add the time it actually took, or skip.
+					</p>
+				</div>
+				<WorkLogForm
+					onDone={() => dialogRef.current?.close()}
+					prefill={{
+						note: subtask.title,
+						estimatedHours: subtask.estimatedHours,
+						subtaskId: subtask.id,
+					}}
+					taskId={taskId}
+				/>
+			</div>
+		</dialog>
+	);
+}
 
 function applyMove(subtasks: Subtask[], move: Move): Subtask[] {
 	const moving = subtasks.find(({ id }) => id === move.id);
@@ -76,6 +128,7 @@ export function SubtaskList({
 	const [statusOverrides, setStatusOverrides] = useState<
 		Record<number, TaskStatus>
 	>({});
+	const [offeredLog, setOfferedLog] = useState<Subtask | null>(null);
 	const completed = subtasks.filter(
 		({ status }) => status === "Finished",
 	).length;
@@ -114,6 +167,9 @@ export function SubtaskList({
 				delete next[subtask.id];
 				return next;
 			});
+			if (status === "Finished" && subtask.status !== "Finished") {
+				setOfferedLog(subtask);
+			}
 		} catch {
 			setStatusOverrides((current) => {
 				const next = { ...current };
@@ -182,6 +238,13 @@ export function SubtaskList({
 
 	return (
 		<section className="space-y-4">
+			{offeredLog ? (
+				<CompletionLogDialog
+					onClose={() => setOfferedLog(null)}
+					subtask={offeredLog}
+					taskId={taskId}
+				/>
+			) : null}
 			<div className="mb-3 flex items-baseline justify-between gap-3">
 				<h2 className="font-bold text-xl">Subtasks</h2>
 				<p className="text-stone-600 text-xs">

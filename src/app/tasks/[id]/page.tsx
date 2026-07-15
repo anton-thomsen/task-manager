@@ -4,7 +4,12 @@ import { notFound } from "next/navigation";
 import { SubtaskList } from "~/components/subtask-list";
 import { TaskForm } from "~/components/task-form";
 import { WorkLog } from "~/components/work-log";
-import { formatDeadline, formatEstimateRange, formatHours } from "~/lib/format";
+import {
+	formatDeadline,
+	formatEstimateRange,
+	formatHours,
+	logVariance,
+} from "~/lib/format";
 import { int4IdSchema } from "~/lib/validation";
 import { requireMember } from "~/server/auth";
 import { db } from "~/server/db";
@@ -46,6 +51,7 @@ export default async function TaskDetailPage({
 					include: {
 						author: { select: { id: true, name: true, image: true } },
 						images: { select: { id: true, fileName: true } },
+						subtask: { select: { title: true } },
 					},
 				},
 			},
@@ -64,6 +70,10 @@ export default async function TaskDetailPage({
 
 	const totalLogged = task.logs.reduce(
 		(total, log) => total + (log.hoursSpent ?? 0),
+		0,
+	);
+	const totalLogEstimates = task.logs.reduce(
+		(total, log) => total + (log.estimatedHours ?? 0),
 		0,
 	);
 	const deadline = task.deadline?.toISOString().slice(0, 10) ?? null;
@@ -165,6 +175,48 @@ export default async function TaskDetailPage({
 							{estimate ?? "No estimate"} estimated · {formatHours(totalLogged)}{" "}
 							logged · {estimateComparison}
 						</p>
+						{task.logs.length > 0 ? (
+							<details className="mt-2">
+								<summary className="interactive-field inline-block cursor-pointer rounded-md border border-stone-900 bg-white px-2 py-1 font-semibold text-xs">
+									Per-worklog breakdown
+								</summary>
+								<div className="mt-2 space-y-1 text-sm">
+									{task.logs.map((log) => (
+										<p
+											className="flex flex-wrap items-baseline gap-x-2 border-stone-300 border-b pb-1 last:border-b-0"
+											key={log.id}
+										>
+											<span className="min-w-0 flex-1 truncate font-semibold">
+												{log.note}
+											</span>
+											{log.author ? (
+												<span className="text-stone-500 text-xs">
+													{log.author.name}
+												</span>
+											) : null}
+											<span className="text-stone-700 text-xs">
+												est.{" "}
+												{log.estimatedHours !== null
+													? formatHours(log.estimatedHours)
+													: "N/A"}{" "}
+												· actual{" "}
+												{log.hoursSpent !== null
+													? formatHours(log.hoursSpent)
+													: "N/A"}
+												{logVariance(log) ? ` · ${logVariance(log)}` : ""}
+											</span>
+										</p>
+									))}
+									<p className="pt-1 font-semibold text-stone-700 text-xs">
+										Totals: est.{" "}
+										{totalLogEstimates > 0
+											? formatHours(totalLogEstimates)
+											: "N/A"}{" "}
+										· actual {formatHours(totalLogged)}
+									</p>
+								</div>
+							</details>
+						) : null}
 					</div>
 				) : null}
 			</header>
