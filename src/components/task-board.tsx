@@ -19,6 +19,7 @@ import { taskStatuses } from "~/lib/tasks";
 import { moveTask } from "~/server/actions/tasks";
 import { DropLane, SortableItem } from "./sortable-lane";
 import { TaskCard, type TaskCardValue } from "./task-card";
+import type { UserRef } from "./user-avatar";
 
 type Move = { id: number; status: TaskStatus; beforeId: number | null };
 
@@ -57,10 +58,12 @@ export function TaskBoard({
 	tasks,
 	clients,
 	labels,
+	members,
 }: {
 	tasks: TaskCardValue[];
 	clients: TaskOption[];
 	labels: LabelOption[];
+	members?: UserRef[];
 }) {
 	const [error, setError] = useState<string | null>(null);
 	const [optimisticTasks, moveOptimistic] = useOptimistic(tasks, applyMove);
@@ -148,7 +151,12 @@ export function TaskBoard({
 											id={`task-${task.id}`}
 											key={task.id}
 										>
-											<TaskCard clients={clients} labels={labels} task={task} />
+											<TaskCard
+												clients={clients}
+												labels={labels}
+												members={members}
+												task={task}
+											/>
 										</SortableItem>
 									))}
 									{lane.length === 0 ? (

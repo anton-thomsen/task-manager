@@ -22,12 +22,20 @@ import {
 	updateSubtaskStatus,
 } from "~/server/actions/subtasks";
 import { DropLane, SortableItem } from "./sortable-lane";
+import { UserAvatar } from "./user-avatar";
+
+type SubtaskCompleter = {
+	id: string;
+	name: string;
+	image: string | null;
+};
 
 type Subtask = {
 	id: number;
 	title: string;
 	status: TaskStatus;
 	estimatedHours: number | null;
+	completedBy?: SubtaskCompleter | null;
 };
 
 type Move = { id: number; status: TaskStatus; beforeId: number | null };
@@ -334,6 +342,18 @@ export function SubtaskList({
 							<span className="min-w-0 flex-1 text-sm line-through opacity-50">
 								{subtask.title}
 							</span>
+							{subtask.completedBy ? (
+								<span title={`Completed by ${subtask.completedBy.name}`}>
+									<UserAvatar
+										size="sm"
+										user={{
+											userId: subtask.completedBy.id,
+											name: subtask.completedBy.name,
+											image: subtask.completedBy.image,
+										}}
+									/>
+								</span>
+							) : null}
 							{subtask.estimatedHours ? (
 								<span className="text-stone-600 text-xs">
 									{formatHours(subtask.estimatedHours)}

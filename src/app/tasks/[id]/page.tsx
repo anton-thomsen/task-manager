@@ -8,6 +8,7 @@ import { formatDeadline, formatEstimateRange, formatHours } from "~/lib/format";
 import { int4IdSchema } from "~/lib/validation";
 import { requireMember } from "~/server/auth";
 import { db } from "~/server/db";
+import { listOrgMembers } from "~/server/org-members";
 import { taskWhereFor } from "~/server/task-access";
 
 const hourComparisonTolerance = 1e-9;
@@ -27,18 +28,23 @@ export default async function TaskDetailPage({
 	const query = await searchParams;
 	const tab = query.tab === "log" ? "log" : "tasks";
 
-	const [task, clients, labels] = await Promise.all([
+	const [task, clients, labels, members] = await Promise.all([
 		db.task.findFirst({
 			where: { id, AND: taskWhereFor(member) },
 			include: {
 				client: true,
 				label: true,
+				assignees: { select: { userId: true } },
 				subtasks: {
 					orderBy: [{ status: "asc" }, { sortOrder: "asc" }, { id: "asc" }],
+					include: {
+						completedBy: { select: { id: true, name: true, image: true } },
+					},
 				},
 				logs: {
 					orderBy: { createdAt: "desc" },
 					include: {
+						author: { select: { id: true, name: true, image: true } },
 						images: { select: { id: true, fileName: true } },
 					},
 				},
@@ -52,6 +58,7 @@ export default async function TaskDetailPage({
 			where: { organizationId: member.orgId },
 			orderBy: { name: "asc" },
 		}),
+		listOrgMembers(member.orgId),
 	]);
 	if (!task) notFound();
 
@@ -74,6 +81,7 @@ export default async function TaskDetailPage({
 		estimateMaxHours: task.estimateMaxHours,
 		clientId: task.clientId,
 		labelId: task.labelId,
+		assigneeIds: task.assignees.map(({ userId }) => userId),
 	};
 	const estimateComparison = (() => {
 		if (
@@ -138,7 +146,12 @@ export default async function TaskDetailPage({
 							</p>
 						) : null}
 					</div>
-					<TaskForm clients={clients} labels={labels} task={formTask} />
+					<TaskForm
+						clients={clients}
+						labels={labels}
+						members={members}
+						task={formTask}
+					/>
 				</div>
 				<div className="mt-5 flex flex-wrap gap-x-5 gap-y-1 border-stone-900 border-t pt-3 font-semibold text-sm">
 					{deadline ? <span>Due {formatDeadline(deadline)}</span> : null}

@@ -6,8 +6,10 @@ import { useRef, useState } from "react";
 
 import { formatDeadline, formatEstimateRange } from "~/lib/format";
 import type { LabelOption, TaskOption } from "~/lib/tasks";
+import { acceptTask } from "~/server/actions/assignments";
 import { deleteTask, setArchived } from "~/server/actions/tasks";
 import { TaskForm, type TaskFormValue } from "./task-form";
+import { UserAvatar, type UserRef } from "./user-avatar";
 
 export type TaskCardValue = TaskFormValue & {
 	client: TaskOption | null;
@@ -17,15 +19,20 @@ export type TaskCardValue = TaskFormValue & {
 	finishedSubtaskCount: number;
 	logCount: number;
 	overdue: boolean;
+	participants?: UserRef[];
+	pendingFrom?: string | null;
 };
 
 type TaskCardProps = {
 	clients: TaskOption[];
 	labels: LabelOption[];
+	members?: UserRef[];
 	task: TaskCardValue;
 };
 
-export function TaskCard({ clients, labels, task }: TaskCardProps) {
+const maxAvatars = 3;
+
+export function TaskCard({ clients, labels, members, task }: TaskCardProps) {
 	const deleteDialogRef = useRef<HTMLDialogElement>(null);
 	const [isWorking, setIsWorking] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -54,6 +61,17 @@ export function TaskCard({ clients, labels, task }: TaskCardProps) {
 		}
 	}
 
+	async function accept() {
+		setIsWorking(true);
+		setError(null);
+		try {
+			const result = await acceptTask(task.id);
+			if (!result.ok) setError(result.error);
+		} finally {
+			setIsWorking(false);
+		}
+	}
+
 	async function remove() {
 		setIsWorking(true);
 		setError(null);
@@ -73,8 +91,23 @@ export function TaskCard({ clients, labels, task }: TaskCardProps) {
 
 	return (
 		<article
-			className={`space-y-2 rounded-xl border-2 border-stone-900 p-3 shadow-[3px_3px_0_#1c1917] ${task.archivedAt ? "bg-stone-200 opacity-70" : "bg-[#fffdf6]"} ${exitAnimation === "archive" ? "pixel-archive" : ""} ${exitAnimation === "delete" ? "pixel-delete" : ""}`}
+			className={`space-y-2 rounded-xl border-2 border-stone-900 p-3 shadow-[3px_3px_0_#1c1917] ${task.pendingFrom ? "border-l-4 border-l-emerald-700" : ""} ${task.archivedAt ? "bg-stone-200 opacity-70" : "bg-[#fffdf6]"} ${exitAnimation === "archive" ? "pixel-archive" : ""} ${exitAnimation === "delete" ? "pixel-delete" : ""}`}
 		>
+			{task.pendingFrom ? (
+				<div className="flex items-center justify-between gap-2 rounded-lg bg-emerald-50 px-2 py-1.5">
+					<p className="font-semibold text-emerald-900 text-xs">
+						From {task.pendingFrom}
+					</p>
+					<button
+						className="rounded border border-emerald-950 bg-emerald-700 px-2.5 py-1 font-bold text-white text-xs hover:bg-emerald-800"
+						disabled={isWorking}
+						onClick={accept}
+						type="button"
+					>
+						Accept
+					</button>
+				</div>
+			) : null}
 			<div className="flex items-start justify-between gap-2">
 				<Link
 					className="font-bold leading-tight underline decoration-2 decoration-emerald-700 underline-offset-4"
@@ -109,10 +142,25 @@ export function TaskCard({ clients, labels, task }: TaskCardProps) {
 					</span>
 				) : null}
 			</div>
+			{task.participants && task.participants.length > 0 ? (
+				<div className="flex items-center gap-1">
+					<span className="flex -space-x-1.5">
+						{task.participants.slice(0, maxAvatars).map((person) => (
+							<UserAvatar key={person.userId} size="sm" user={person} />
+						))}
+					</span>
+					{task.participants.length > maxAvatars ? (
+						<span className="font-semibold text-stone-600 text-xs">
+							+{task.participants.length - maxAvatars}
+						</span>
+					) : null}
+				</div>
+			) : null}
 			<div className="flex flex-wrap gap-1.5 pt-1">
 				<TaskForm
 					clients={clients}
 					labels={labels}
+					members={members}
 					task={task}
 					triggerVariant="card"
 				/>
