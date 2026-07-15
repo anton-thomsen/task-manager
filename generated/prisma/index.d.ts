@@ -88,6 +88,16 @@ export type Member = $Result.DefaultSelection<Prisma.$MemberPayload>
  * 
  */
 export type Invitation = $Result.DefaultSelection<Prisma.$InvitationPayload>
+/**
+ * Model TaskCalendarEvent
+ * 
+ */
+export type TaskCalendarEvent = $Result.DefaultSelection<Prisma.$TaskCalendarEventPayload>
+/**
+ * Model CalendarSyncStatus
+ * 
+ */
+export type CalendarSyncStatus = $Result.DefaultSelection<Prisma.$CalendarSyncStatusPayload>
 
 /**
  * Enums
@@ -375,6 +385,26 @@ export class PrismaClient<
     * ```
     */
   get invitation(): Prisma.InvitationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.taskCalendarEvent`: Exposes CRUD operations for the **TaskCalendarEvent** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more TaskCalendarEvents
+    * const taskCalendarEvents = await prisma.taskCalendarEvent.findMany()
+    * ```
+    */
+  get taskCalendarEvent(): Prisma.TaskCalendarEventDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.calendarSyncStatus`: Exposes CRUD operations for the **CalendarSyncStatus** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CalendarSyncStatuses
+    * const calendarSyncStatuses = await prisma.calendarSyncStatus.findMany()
+    * ```
+    */
+  get calendarSyncStatus(): Prisma.CalendarSyncStatusDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -830,7 +860,9 @@ export namespace Prisma {
     Verification: 'Verification',
     Organization: 'Organization',
     Member: 'Member',
-    Invitation: 'Invitation'
+    Invitation: 'Invitation',
+    TaskCalendarEvent: 'TaskCalendarEvent',
+    CalendarSyncStatus: 'CalendarSyncStatus'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -849,7 +881,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "client" | "label" | "task" | "taskAssignee" | "subtask" | "taskLog" | "workLogImage" | "userAvatar" | "user" | "session" | "account" | "verification" | "organization" | "member" | "invitation"
+      modelProps: "client" | "label" | "task" | "taskAssignee" | "subtask" | "taskLog" | "workLogImage" | "userAvatar" | "user" | "session" | "account" | "verification" | "organization" | "member" | "invitation" | "taskCalendarEvent" | "calendarSyncStatus"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1963,6 +1995,154 @@ export namespace Prisma {
           }
         }
       }
+      TaskCalendarEvent: {
+        payload: Prisma.$TaskCalendarEventPayload<ExtArgs>
+        fields: Prisma.TaskCalendarEventFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TaskCalendarEventFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskCalendarEventPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TaskCalendarEventFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskCalendarEventPayload>
+          }
+          findFirst: {
+            args: Prisma.TaskCalendarEventFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskCalendarEventPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TaskCalendarEventFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskCalendarEventPayload>
+          }
+          findMany: {
+            args: Prisma.TaskCalendarEventFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskCalendarEventPayload>[]
+          }
+          create: {
+            args: Prisma.TaskCalendarEventCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskCalendarEventPayload>
+          }
+          createMany: {
+            args: Prisma.TaskCalendarEventCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TaskCalendarEventCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskCalendarEventPayload>[]
+          }
+          delete: {
+            args: Prisma.TaskCalendarEventDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskCalendarEventPayload>
+          }
+          update: {
+            args: Prisma.TaskCalendarEventUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskCalendarEventPayload>
+          }
+          deleteMany: {
+            args: Prisma.TaskCalendarEventDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TaskCalendarEventUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TaskCalendarEventUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskCalendarEventPayload>[]
+          }
+          upsert: {
+            args: Prisma.TaskCalendarEventUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskCalendarEventPayload>
+          }
+          aggregate: {
+            args: Prisma.TaskCalendarEventAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTaskCalendarEvent>
+          }
+          groupBy: {
+            args: Prisma.TaskCalendarEventGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TaskCalendarEventGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TaskCalendarEventCountArgs<ExtArgs>
+            result: $Utils.Optional<TaskCalendarEventCountAggregateOutputType> | number
+          }
+        }
+      }
+      CalendarSyncStatus: {
+        payload: Prisma.$CalendarSyncStatusPayload<ExtArgs>
+        fields: Prisma.CalendarSyncStatusFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CalendarSyncStatusFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendarSyncStatusPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CalendarSyncStatusFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendarSyncStatusPayload>
+          }
+          findFirst: {
+            args: Prisma.CalendarSyncStatusFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendarSyncStatusPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CalendarSyncStatusFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendarSyncStatusPayload>
+          }
+          findMany: {
+            args: Prisma.CalendarSyncStatusFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendarSyncStatusPayload>[]
+          }
+          create: {
+            args: Prisma.CalendarSyncStatusCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendarSyncStatusPayload>
+          }
+          createMany: {
+            args: Prisma.CalendarSyncStatusCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CalendarSyncStatusCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendarSyncStatusPayload>[]
+          }
+          delete: {
+            args: Prisma.CalendarSyncStatusDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendarSyncStatusPayload>
+          }
+          update: {
+            args: Prisma.CalendarSyncStatusUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendarSyncStatusPayload>
+          }
+          deleteMany: {
+            args: Prisma.CalendarSyncStatusDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CalendarSyncStatusUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CalendarSyncStatusUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendarSyncStatusPayload>[]
+          }
+          upsert: {
+            args: Prisma.CalendarSyncStatusUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendarSyncStatusPayload>
+          }
+          aggregate: {
+            args: Prisma.CalendarSyncStatusAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCalendarSyncStatus>
+          }
+          groupBy: {
+            args: Prisma.CalendarSyncStatusGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CalendarSyncStatusGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CalendarSyncStatusCountArgs<ExtArgs>
+            result: $Utils.Optional<CalendarSyncStatusCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2074,6 +2254,8 @@ export namespace Prisma {
     organization?: OrganizationOmit
     member?: MemberOmit
     invitation?: InvitationOmit
+    taskCalendarEvent?: TaskCalendarEventOmit
+    calendarSyncStatus?: CalendarSyncStatusOmit
   }
 
   /* Types for Logging */
@@ -2219,12 +2401,14 @@ export namespace Prisma {
     assignees: number
     subtasks: number
     logs: number
+    calendarEvents: number
   }
 
   export type TaskCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     assignees?: boolean | TaskCountOutputTypeCountAssigneesArgs
     subtasks?: boolean | TaskCountOutputTypeCountSubtasksArgs
     logs?: boolean | TaskCountOutputTypeCountLogsArgs
+    calendarEvents?: boolean | TaskCountOutputTypeCountCalendarEventsArgs
   }
 
   // Custom InputTypes
@@ -2257,6 +2441,13 @@ export namespace Prisma {
    */
   export type TaskCountOutputTypeCountLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TaskLogWhereInput
+  }
+
+  /**
+   * TaskCountOutputType without action
+   */
+  export type TaskCountOutputTypeCountCalendarEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TaskCalendarEventWhereInput
   }
 
 
@@ -2336,6 +2527,7 @@ export namespace Prisma {
     taskAssignmentsGiven: number
     completedSubtasks: number
     authoredLogs: number
+    calendarEvents: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2348,6 +2540,7 @@ export namespace Prisma {
     taskAssignmentsGiven?: boolean | UserCountOutputTypeCountTaskAssignmentsGivenArgs
     completedSubtasks?: boolean | UserCountOutputTypeCountCompletedSubtasksArgs
     authoredLogs?: boolean | UserCountOutputTypeCountAuthoredLogsArgs
+    calendarEvents?: boolean | UserCountOutputTypeCountCalendarEventsArgs
   }
 
   // Custom InputTypes
@@ -2422,6 +2615,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountAuthoredLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TaskLogWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountCalendarEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TaskCalendarEventWhereInput
   }
 
 
@@ -5006,6 +5206,7 @@ export namespace Prisma {
     assignees?: boolean | Task$assigneesArgs<ExtArgs>
     subtasks?: boolean | Task$subtasksArgs<ExtArgs>
     logs?: boolean | Task$logsArgs<ExtArgs>
+    calendarEvents?: boolean | Task$calendarEventsArgs<ExtArgs>
     _count?: boolean | TaskCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["task"]>
 
@@ -5080,6 +5281,7 @@ export namespace Prisma {
     assignees?: boolean | Task$assigneesArgs<ExtArgs>
     subtasks?: boolean | Task$subtasksArgs<ExtArgs>
     logs?: boolean | Task$logsArgs<ExtArgs>
+    calendarEvents?: boolean | Task$calendarEventsArgs<ExtArgs>
     _count?: boolean | TaskCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type TaskIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5105,6 +5307,7 @@ export namespace Prisma {
       assignees: Prisma.$TaskAssigneePayload<ExtArgs>[]
       subtasks: Prisma.$SubtaskPayload<ExtArgs>[]
       logs: Prisma.$TaskLogPayload<ExtArgs>[]
+      calendarEvents: Prisma.$TaskCalendarEventPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -5523,6 +5726,7 @@ export namespace Prisma {
     assignees<T extends Task$assigneesArgs<ExtArgs> = {}>(args?: Subset<T, Task$assigneesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskAssigneePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     subtasks<T extends Task$subtasksArgs<ExtArgs> = {}>(args?: Subset<T, Task$subtasksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SubtaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     logs<T extends Task$logsArgs<ExtArgs> = {}>(args?: Subset<T, Task$logsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    calendarEvents<T extends Task$calendarEventsArgs<ExtArgs> = {}>(args?: Subset<T, Task$calendarEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskCalendarEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6089,6 +6293,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TaskLogScalarFieldEnum | TaskLogScalarFieldEnum[]
+  }
+
+  /**
+   * Task.calendarEvents
+   */
+  export type Task$calendarEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskCalendarEvent
+     */
+    select?: TaskCalendarEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskCalendarEvent
+     */
+    omit?: TaskCalendarEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskCalendarEventInclude<ExtArgs> | null
+    where?: TaskCalendarEventWhereInput
+    orderBy?: TaskCalendarEventOrderByWithRelationInput | TaskCalendarEventOrderByWithRelationInput[]
+    cursor?: TaskCalendarEventWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TaskCalendarEventScalarFieldEnum | TaskCalendarEventScalarFieldEnum[]
   }
 
   /**
@@ -12079,6 +12307,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: boolean | User$taskAssignmentsGivenArgs<ExtArgs>
     completedSubtasks?: boolean | User$completedSubtasksArgs<ExtArgs>
     authoredLogs?: boolean | User$authoredLogsArgs<ExtArgs>
+    calendarEvents?: boolean | User$calendarEventsArgs<ExtArgs>
+    calendarSyncStatus?: boolean | User$calendarSyncStatusArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -12130,6 +12360,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: boolean | User$taskAssignmentsGivenArgs<ExtArgs>
     completedSubtasks?: boolean | User$completedSubtasksArgs<ExtArgs>
     authoredLogs?: boolean | User$authoredLogsArgs<ExtArgs>
+    calendarEvents?: boolean | User$calendarEventsArgs<ExtArgs>
+    calendarSyncStatus?: boolean | User$calendarSyncStatusArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -12148,6 +12380,8 @@ export namespace Prisma {
       taskAssignmentsGiven: Prisma.$TaskAssigneePayload<ExtArgs>[]
       completedSubtasks: Prisma.$SubtaskPayload<ExtArgs>[]
       authoredLogs: Prisma.$TaskLogPayload<ExtArgs>[]
+      calendarEvents: Prisma.$TaskCalendarEventPayload<ExtArgs>[]
+      calendarSyncStatus: Prisma.$CalendarSyncStatusPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -12563,6 +12797,8 @@ export namespace Prisma {
     taskAssignmentsGiven<T extends User$taskAssignmentsGivenArgs<ExtArgs> = {}>(args?: Subset<T, User$taskAssignmentsGivenArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskAssigneePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     completedSubtasks<T extends User$completedSubtasksArgs<ExtArgs> = {}>(args?: Subset<T, User$completedSubtasksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SubtaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     authoredLogs<T extends User$authoredLogsArgs<ExtArgs> = {}>(args?: Subset<T, User$authoredLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    calendarEvents<T extends User$calendarEventsArgs<ExtArgs> = {}>(args?: Subset<T, User$calendarEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskCalendarEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    calendarSyncStatus<T extends User$calendarSyncStatusArgs<ExtArgs> = {}>(args?: Subset<T, User$calendarSyncStatusArgs<ExtArgs>>): Prisma__CalendarSyncStatusClient<$Result.GetResult<Prisma.$CalendarSyncStatusPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -13221,6 +13457,49 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TaskLogScalarFieldEnum | TaskLogScalarFieldEnum[]
+  }
+
+  /**
+   * User.calendarEvents
+   */
+  export type User$calendarEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskCalendarEvent
+     */
+    select?: TaskCalendarEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskCalendarEvent
+     */
+    omit?: TaskCalendarEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskCalendarEventInclude<ExtArgs> | null
+    where?: TaskCalendarEventWhereInput
+    orderBy?: TaskCalendarEventOrderByWithRelationInput | TaskCalendarEventOrderByWithRelationInput[]
+    cursor?: TaskCalendarEventWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TaskCalendarEventScalarFieldEnum | TaskCalendarEventScalarFieldEnum[]
+  }
+
+  /**
+   * User.calendarSyncStatus
+   */
+  export type User$calendarSyncStatusArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarSyncStatus
+     */
+    select?: CalendarSyncStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CalendarSyncStatus
+     */
+    omit?: CalendarSyncStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendarSyncStatusInclude<ExtArgs> | null
+    where?: CalendarSyncStatusWhereInput
   }
 
   /**
@@ -19889,6 +20168,2142 @@ export namespace Prisma {
 
 
   /**
+   * Model TaskCalendarEvent
+   */
+
+  export type AggregateTaskCalendarEvent = {
+    _count: TaskCalendarEventCountAggregateOutputType | null
+    _avg: TaskCalendarEventAvgAggregateOutputType | null
+    _sum: TaskCalendarEventSumAggregateOutputType | null
+    _min: TaskCalendarEventMinAggregateOutputType | null
+    _max: TaskCalendarEventMaxAggregateOutputType | null
+  }
+
+  export type TaskCalendarEventAvgAggregateOutputType = {
+    id: number | null
+    taskId: number | null
+  }
+
+  export type TaskCalendarEventSumAggregateOutputType = {
+    id: number | null
+    taskId: number | null
+  }
+
+  export type TaskCalendarEventMinAggregateOutputType = {
+    id: number | null
+    taskId: number | null
+    userId: string | null
+    googleEventId: string | null
+  }
+
+  export type TaskCalendarEventMaxAggregateOutputType = {
+    id: number | null
+    taskId: number | null
+    userId: string | null
+    googleEventId: string | null
+  }
+
+  export type TaskCalendarEventCountAggregateOutputType = {
+    id: number
+    taskId: number
+    userId: number
+    googleEventId: number
+    _all: number
+  }
+
+
+  export type TaskCalendarEventAvgAggregateInputType = {
+    id?: true
+    taskId?: true
+  }
+
+  export type TaskCalendarEventSumAggregateInputType = {
+    id?: true
+    taskId?: true
+  }
+
+  export type TaskCalendarEventMinAggregateInputType = {
+    id?: true
+    taskId?: true
+    userId?: true
+    googleEventId?: true
+  }
+
+  export type TaskCalendarEventMaxAggregateInputType = {
+    id?: true
+    taskId?: true
+    userId?: true
+    googleEventId?: true
+  }
+
+  export type TaskCalendarEventCountAggregateInputType = {
+    id?: true
+    taskId?: true
+    userId?: true
+    googleEventId?: true
+    _all?: true
+  }
+
+  export type TaskCalendarEventAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TaskCalendarEvent to aggregate.
+     */
+    where?: TaskCalendarEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TaskCalendarEvents to fetch.
+     */
+    orderBy?: TaskCalendarEventOrderByWithRelationInput | TaskCalendarEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TaskCalendarEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TaskCalendarEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TaskCalendarEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned TaskCalendarEvents
+    **/
+    _count?: true | TaskCalendarEventCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: TaskCalendarEventAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TaskCalendarEventSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TaskCalendarEventMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TaskCalendarEventMaxAggregateInputType
+  }
+
+  export type GetTaskCalendarEventAggregateType<T extends TaskCalendarEventAggregateArgs> = {
+        [P in keyof T & keyof AggregateTaskCalendarEvent]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTaskCalendarEvent[P]>
+      : GetScalarType<T[P], AggregateTaskCalendarEvent[P]>
+  }
+
+
+
+
+  export type TaskCalendarEventGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TaskCalendarEventWhereInput
+    orderBy?: TaskCalendarEventOrderByWithAggregationInput | TaskCalendarEventOrderByWithAggregationInput[]
+    by: TaskCalendarEventScalarFieldEnum[] | TaskCalendarEventScalarFieldEnum
+    having?: TaskCalendarEventScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TaskCalendarEventCountAggregateInputType | true
+    _avg?: TaskCalendarEventAvgAggregateInputType
+    _sum?: TaskCalendarEventSumAggregateInputType
+    _min?: TaskCalendarEventMinAggregateInputType
+    _max?: TaskCalendarEventMaxAggregateInputType
+  }
+
+  export type TaskCalendarEventGroupByOutputType = {
+    id: number
+    taskId: number
+    userId: string
+    googleEventId: string
+    _count: TaskCalendarEventCountAggregateOutputType | null
+    _avg: TaskCalendarEventAvgAggregateOutputType | null
+    _sum: TaskCalendarEventSumAggregateOutputType | null
+    _min: TaskCalendarEventMinAggregateOutputType | null
+    _max: TaskCalendarEventMaxAggregateOutputType | null
+  }
+
+  type GetTaskCalendarEventGroupByPayload<T extends TaskCalendarEventGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TaskCalendarEventGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TaskCalendarEventGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TaskCalendarEventGroupByOutputType[P]>
+            : GetScalarType<T[P], TaskCalendarEventGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TaskCalendarEventSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    taskId?: boolean
+    userId?: boolean
+    googleEventId?: boolean
+    task?: boolean | TaskDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["taskCalendarEvent"]>
+
+  export type TaskCalendarEventSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    taskId?: boolean
+    userId?: boolean
+    googleEventId?: boolean
+    task?: boolean | TaskDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["taskCalendarEvent"]>
+
+  export type TaskCalendarEventSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    taskId?: boolean
+    userId?: boolean
+    googleEventId?: boolean
+    task?: boolean | TaskDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["taskCalendarEvent"]>
+
+  export type TaskCalendarEventSelectScalar = {
+    id?: boolean
+    taskId?: boolean
+    userId?: boolean
+    googleEventId?: boolean
+  }
+
+  export type TaskCalendarEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "taskId" | "userId" | "googleEventId", ExtArgs["result"]["taskCalendarEvent"]>
+  export type TaskCalendarEventInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    task?: boolean | TaskDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type TaskCalendarEventIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    task?: boolean | TaskDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type TaskCalendarEventIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    task?: boolean | TaskDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $TaskCalendarEventPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "TaskCalendarEvent"
+    objects: {
+      task: Prisma.$TaskPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      taskId: number
+      userId: string
+      googleEventId: string
+    }, ExtArgs["result"]["taskCalendarEvent"]>
+    composites: {}
+  }
+
+  type TaskCalendarEventGetPayload<S extends boolean | null | undefined | TaskCalendarEventDefaultArgs> = $Result.GetResult<Prisma.$TaskCalendarEventPayload, S>
+
+  type TaskCalendarEventCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TaskCalendarEventFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TaskCalendarEventCountAggregateInputType | true
+    }
+
+  export interface TaskCalendarEventDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TaskCalendarEvent'], meta: { name: 'TaskCalendarEvent' } }
+    /**
+     * Find zero or one TaskCalendarEvent that matches the filter.
+     * @param {TaskCalendarEventFindUniqueArgs} args - Arguments to find a TaskCalendarEvent
+     * @example
+     * // Get one TaskCalendarEvent
+     * const taskCalendarEvent = await prisma.taskCalendarEvent.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TaskCalendarEventFindUniqueArgs>(args: SelectSubset<T, TaskCalendarEventFindUniqueArgs<ExtArgs>>): Prisma__TaskCalendarEventClient<$Result.GetResult<Prisma.$TaskCalendarEventPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one TaskCalendarEvent that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TaskCalendarEventFindUniqueOrThrowArgs} args - Arguments to find a TaskCalendarEvent
+     * @example
+     * // Get one TaskCalendarEvent
+     * const taskCalendarEvent = await prisma.taskCalendarEvent.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TaskCalendarEventFindUniqueOrThrowArgs>(args: SelectSubset<T, TaskCalendarEventFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TaskCalendarEventClient<$Result.GetResult<Prisma.$TaskCalendarEventPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TaskCalendarEvent that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskCalendarEventFindFirstArgs} args - Arguments to find a TaskCalendarEvent
+     * @example
+     * // Get one TaskCalendarEvent
+     * const taskCalendarEvent = await prisma.taskCalendarEvent.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TaskCalendarEventFindFirstArgs>(args?: SelectSubset<T, TaskCalendarEventFindFirstArgs<ExtArgs>>): Prisma__TaskCalendarEventClient<$Result.GetResult<Prisma.$TaskCalendarEventPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TaskCalendarEvent that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskCalendarEventFindFirstOrThrowArgs} args - Arguments to find a TaskCalendarEvent
+     * @example
+     * // Get one TaskCalendarEvent
+     * const taskCalendarEvent = await prisma.taskCalendarEvent.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TaskCalendarEventFindFirstOrThrowArgs>(args?: SelectSubset<T, TaskCalendarEventFindFirstOrThrowArgs<ExtArgs>>): Prisma__TaskCalendarEventClient<$Result.GetResult<Prisma.$TaskCalendarEventPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more TaskCalendarEvents that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskCalendarEventFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TaskCalendarEvents
+     * const taskCalendarEvents = await prisma.taskCalendarEvent.findMany()
+     * 
+     * // Get first 10 TaskCalendarEvents
+     * const taskCalendarEvents = await prisma.taskCalendarEvent.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const taskCalendarEventWithIdOnly = await prisma.taskCalendarEvent.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TaskCalendarEventFindManyArgs>(args?: SelectSubset<T, TaskCalendarEventFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskCalendarEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a TaskCalendarEvent.
+     * @param {TaskCalendarEventCreateArgs} args - Arguments to create a TaskCalendarEvent.
+     * @example
+     * // Create one TaskCalendarEvent
+     * const TaskCalendarEvent = await prisma.taskCalendarEvent.create({
+     *   data: {
+     *     // ... data to create a TaskCalendarEvent
+     *   }
+     * })
+     * 
+     */
+    create<T extends TaskCalendarEventCreateArgs>(args: SelectSubset<T, TaskCalendarEventCreateArgs<ExtArgs>>): Prisma__TaskCalendarEventClient<$Result.GetResult<Prisma.$TaskCalendarEventPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many TaskCalendarEvents.
+     * @param {TaskCalendarEventCreateManyArgs} args - Arguments to create many TaskCalendarEvents.
+     * @example
+     * // Create many TaskCalendarEvents
+     * const taskCalendarEvent = await prisma.taskCalendarEvent.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TaskCalendarEventCreateManyArgs>(args?: SelectSubset<T, TaskCalendarEventCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many TaskCalendarEvents and returns the data saved in the database.
+     * @param {TaskCalendarEventCreateManyAndReturnArgs} args - Arguments to create many TaskCalendarEvents.
+     * @example
+     * // Create many TaskCalendarEvents
+     * const taskCalendarEvent = await prisma.taskCalendarEvent.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many TaskCalendarEvents and only return the `id`
+     * const taskCalendarEventWithIdOnly = await prisma.taskCalendarEvent.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TaskCalendarEventCreateManyAndReturnArgs>(args?: SelectSubset<T, TaskCalendarEventCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskCalendarEventPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a TaskCalendarEvent.
+     * @param {TaskCalendarEventDeleteArgs} args - Arguments to delete one TaskCalendarEvent.
+     * @example
+     * // Delete one TaskCalendarEvent
+     * const TaskCalendarEvent = await prisma.taskCalendarEvent.delete({
+     *   where: {
+     *     // ... filter to delete one TaskCalendarEvent
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TaskCalendarEventDeleteArgs>(args: SelectSubset<T, TaskCalendarEventDeleteArgs<ExtArgs>>): Prisma__TaskCalendarEventClient<$Result.GetResult<Prisma.$TaskCalendarEventPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one TaskCalendarEvent.
+     * @param {TaskCalendarEventUpdateArgs} args - Arguments to update one TaskCalendarEvent.
+     * @example
+     * // Update one TaskCalendarEvent
+     * const taskCalendarEvent = await prisma.taskCalendarEvent.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TaskCalendarEventUpdateArgs>(args: SelectSubset<T, TaskCalendarEventUpdateArgs<ExtArgs>>): Prisma__TaskCalendarEventClient<$Result.GetResult<Prisma.$TaskCalendarEventPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more TaskCalendarEvents.
+     * @param {TaskCalendarEventDeleteManyArgs} args - Arguments to filter TaskCalendarEvents to delete.
+     * @example
+     * // Delete a few TaskCalendarEvents
+     * const { count } = await prisma.taskCalendarEvent.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TaskCalendarEventDeleteManyArgs>(args?: SelectSubset<T, TaskCalendarEventDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TaskCalendarEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskCalendarEventUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TaskCalendarEvents
+     * const taskCalendarEvent = await prisma.taskCalendarEvent.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TaskCalendarEventUpdateManyArgs>(args: SelectSubset<T, TaskCalendarEventUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TaskCalendarEvents and returns the data updated in the database.
+     * @param {TaskCalendarEventUpdateManyAndReturnArgs} args - Arguments to update many TaskCalendarEvents.
+     * @example
+     * // Update many TaskCalendarEvents
+     * const taskCalendarEvent = await prisma.taskCalendarEvent.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more TaskCalendarEvents and only return the `id`
+     * const taskCalendarEventWithIdOnly = await prisma.taskCalendarEvent.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TaskCalendarEventUpdateManyAndReturnArgs>(args: SelectSubset<T, TaskCalendarEventUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskCalendarEventPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one TaskCalendarEvent.
+     * @param {TaskCalendarEventUpsertArgs} args - Arguments to update or create a TaskCalendarEvent.
+     * @example
+     * // Update or create a TaskCalendarEvent
+     * const taskCalendarEvent = await prisma.taskCalendarEvent.upsert({
+     *   create: {
+     *     // ... data to create a TaskCalendarEvent
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TaskCalendarEvent we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TaskCalendarEventUpsertArgs>(args: SelectSubset<T, TaskCalendarEventUpsertArgs<ExtArgs>>): Prisma__TaskCalendarEventClient<$Result.GetResult<Prisma.$TaskCalendarEventPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of TaskCalendarEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskCalendarEventCountArgs} args - Arguments to filter TaskCalendarEvents to count.
+     * @example
+     * // Count the number of TaskCalendarEvents
+     * const count = await prisma.taskCalendarEvent.count({
+     *   where: {
+     *     // ... the filter for the TaskCalendarEvents we want to count
+     *   }
+     * })
+    **/
+    count<T extends TaskCalendarEventCountArgs>(
+      args?: Subset<T, TaskCalendarEventCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TaskCalendarEventCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a TaskCalendarEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskCalendarEventAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TaskCalendarEventAggregateArgs>(args: Subset<T, TaskCalendarEventAggregateArgs>): Prisma.PrismaPromise<GetTaskCalendarEventAggregateType<T>>
+
+    /**
+     * Group by TaskCalendarEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskCalendarEventGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TaskCalendarEventGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TaskCalendarEventGroupByArgs['orderBy'] }
+        : { orderBy?: TaskCalendarEventGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TaskCalendarEventGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTaskCalendarEventGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the TaskCalendarEvent model
+   */
+  readonly fields: TaskCalendarEventFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TaskCalendarEvent.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TaskCalendarEventClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    task<T extends TaskDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TaskDefaultArgs<ExtArgs>>): Prisma__TaskClient<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the TaskCalendarEvent model
+   */
+  interface TaskCalendarEventFieldRefs {
+    readonly id: FieldRef<"TaskCalendarEvent", 'Int'>
+    readonly taskId: FieldRef<"TaskCalendarEvent", 'Int'>
+    readonly userId: FieldRef<"TaskCalendarEvent", 'String'>
+    readonly googleEventId: FieldRef<"TaskCalendarEvent", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * TaskCalendarEvent findUnique
+   */
+  export type TaskCalendarEventFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskCalendarEvent
+     */
+    select?: TaskCalendarEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskCalendarEvent
+     */
+    omit?: TaskCalendarEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskCalendarEventInclude<ExtArgs> | null
+    /**
+     * Filter, which TaskCalendarEvent to fetch.
+     */
+    where: TaskCalendarEventWhereUniqueInput
+  }
+
+  /**
+   * TaskCalendarEvent findUniqueOrThrow
+   */
+  export type TaskCalendarEventFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskCalendarEvent
+     */
+    select?: TaskCalendarEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskCalendarEvent
+     */
+    omit?: TaskCalendarEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskCalendarEventInclude<ExtArgs> | null
+    /**
+     * Filter, which TaskCalendarEvent to fetch.
+     */
+    where: TaskCalendarEventWhereUniqueInput
+  }
+
+  /**
+   * TaskCalendarEvent findFirst
+   */
+  export type TaskCalendarEventFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskCalendarEvent
+     */
+    select?: TaskCalendarEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskCalendarEvent
+     */
+    omit?: TaskCalendarEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskCalendarEventInclude<ExtArgs> | null
+    /**
+     * Filter, which TaskCalendarEvent to fetch.
+     */
+    where?: TaskCalendarEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TaskCalendarEvents to fetch.
+     */
+    orderBy?: TaskCalendarEventOrderByWithRelationInput | TaskCalendarEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TaskCalendarEvents.
+     */
+    cursor?: TaskCalendarEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TaskCalendarEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TaskCalendarEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TaskCalendarEvents.
+     */
+    distinct?: TaskCalendarEventScalarFieldEnum | TaskCalendarEventScalarFieldEnum[]
+  }
+
+  /**
+   * TaskCalendarEvent findFirstOrThrow
+   */
+  export type TaskCalendarEventFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskCalendarEvent
+     */
+    select?: TaskCalendarEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskCalendarEvent
+     */
+    omit?: TaskCalendarEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskCalendarEventInclude<ExtArgs> | null
+    /**
+     * Filter, which TaskCalendarEvent to fetch.
+     */
+    where?: TaskCalendarEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TaskCalendarEvents to fetch.
+     */
+    orderBy?: TaskCalendarEventOrderByWithRelationInput | TaskCalendarEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TaskCalendarEvents.
+     */
+    cursor?: TaskCalendarEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TaskCalendarEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TaskCalendarEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TaskCalendarEvents.
+     */
+    distinct?: TaskCalendarEventScalarFieldEnum | TaskCalendarEventScalarFieldEnum[]
+  }
+
+  /**
+   * TaskCalendarEvent findMany
+   */
+  export type TaskCalendarEventFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskCalendarEvent
+     */
+    select?: TaskCalendarEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskCalendarEvent
+     */
+    omit?: TaskCalendarEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskCalendarEventInclude<ExtArgs> | null
+    /**
+     * Filter, which TaskCalendarEvents to fetch.
+     */
+    where?: TaskCalendarEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TaskCalendarEvents to fetch.
+     */
+    orderBy?: TaskCalendarEventOrderByWithRelationInput | TaskCalendarEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing TaskCalendarEvents.
+     */
+    cursor?: TaskCalendarEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TaskCalendarEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TaskCalendarEvents.
+     */
+    skip?: number
+    distinct?: TaskCalendarEventScalarFieldEnum | TaskCalendarEventScalarFieldEnum[]
+  }
+
+  /**
+   * TaskCalendarEvent create
+   */
+  export type TaskCalendarEventCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskCalendarEvent
+     */
+    select?: TaskCalendarEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskCalendarEvent
+     */
+    omit?: TaskCalendarEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskCalendarEventInclude<ExtArgs> | null
+    /**
+     * The data needed to create a TaskCalendarEvent.
+     */
+    data: XOR<TaskCalendarEventCreateInput, TaskCalendarEventUncheckedCreateInput>
+  }
+
+  /**
+   * TaskCalendarEvent createMany
+   */
+  export type TaskCalendarEventCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TaskCalendarEvents.
+     */
+    data: TaskCalendarEventCreateManyInput | TaskCalendarEventCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TaskCalendarEvent createManyAndReturn
+   */
+  export type TaskCalendarEventCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskCalendarEvent
+     */
+    select?: TaskCalendarEventSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskCalendarEvent
+     */
+    omit?: TaskCalendarEventOmit<ExtArgs> | null
+    /**
+     * The data used to create many TaskCalendarEvents.
+     */
+    data: TaskCalendarEventCreateManyInput | TaskCalendarEventCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskCalendarEventIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TaskCalendarEvent update
+   */
+  export type TaskCalendarEventUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskCalendarEvent
+     */
+    select?: TaskCalendarEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskCalendarEvent
+     */
+    omit?: TaskCalendarEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskCalendarEventInclude<ExtArgs> | null
+    /**
+     * The data needed to update a TaskCalendarEvent.
+     */
+    data: XOR<TaskCalendarEventUpdateInput, TaskCalendarEventUncheckedUpdateInput>
+    /**
+     * Choose, which TaskCalendarEvent to update.
+     */
+    where: TaskCalendarEventWhereUniqueInput
+  }
+
+  /**
+   * TaskCalendarEvent updateMany
+   */
+  export type TaskCalendarEventUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TaskCalendarEvents.
+     */
+    data: XOR<TaskCalendarEventUpdateManyMutationInput, TaskCalendarEventUncheckedUpdateManyInput>
+    /**
+     * Filter which TaskCalendarEvents to update
+     */
+    where?: TaskCalendarEventWhereInput
+    /**
+     * Limit how many TaskCalendarEvents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TaskCalendarEvent updateManyAndReturn
+   */
+  export type TaskCalendarEventUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskCalendarEvent
+     */
+    select?: TaskCalendarEventSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskCalendarEvent
+     */
+    omit?: TaskCalendarEventOmit<ExtArgs> | null
+    /**
+     * The data used to update TaskCalendarEvents.
+     */
+    data: XOR<TaskCalendarEventUpdateManyMutationInput, TaskCalendarEventUncheckedUpdateManyInput>
+    /**
+     * Filter which TaskCalendarEvents to update
+     */
+    where?: TaskCalendarEventWhereInput
+    /**
+     * Limit how many TaskCalendarEvents to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskCalendarEventIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TaskCalendarEvent upsert
+   */
+  export type TaskCalendarEventUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskCalendarEvent
+     */
+    select?: TaskCalendarEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskCalendarEvent
+     */
+    omit?: TaskCalendarEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskCalendarEventInclude<ExtArgs> | null
+    /**
+     * The filter to search for the TaskCalendarEvent to update in case it exists.
+     */
+    where: TaskCalendarEventWhereUniqueInput
+    /**
+     * In case the TaskCalendarEvent found by the `where` argument doesn't exist, create a new TaskCalendarEvent with this data.
+     */
+    create: XOR<TaskCalendarEventCreateInput, TaskCalendarEventUncheckedCreateInput>
+    /**
+     * In case the TaskCalendarEvent was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TaskCalendarEventUpdateInput, TaskCalendarEventUncheckedUpdateInput>
+  }
+
+  /**
+   * TaskCalendarEvent delete
+   */
+  export type TaskCalendarEventDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskCalendarEvent
+     */
+    select?: TaskCalendarEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskCalendarEvent
+     */
+    omit?: TaskCalendarEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskCalendarEventInclude<ExtArgs> | null
+    /**
+     * Filter which TaskCalendarEvent to delete.
+     */
+    where: TaskCalendarEventWhereUniqueInput
+  }
+
+  /**
+   * TaskCalendarEvent deleteMany
+   */
+  export type TaskCalendarEventDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TaskCalendarEvents to delete
+     */
+    where?: TaskCalendarEventWhereInput
+    /**
+     * Limit how many TaskCalendarEvents to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * TaskCalendarEvent without action
+   */
+  export type TaskCalendarEventDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskCalendarEvent
+     */
+    select?: TaskCalendarEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskCalendarEvent
+     */
+    omit?: TaskCalendarEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskCalendarEventInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CalendarSyncStatus
+   */
+
+  export type AggregateCalendarSyncStatus = {
+    _count: CalendarSyncStatusCountAggregateOutputType | null
+    _min: CalendarSyncStatusMinAggregateOutputType | null
+    _max: CalendarSyncStatusMaxAggregateOutputType | null
+  }
+
+  export type CalendarSyncStatusMinAggregateOutputType = {
+    userId: string | null
+    needsReconnect: boolean | null
+    lastSyncedAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CalendarSyncStatusMaxAggregateOutputType = {
+    userId: string | null
+    needsReconnect: boolean | null
+    lastSyncedAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CalendarSyncStatusCountAggregateOutputType = {
+    userId: number
+    needsReconnect: number
+    lastSyncedAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type CalendarSyncStatusMinAggregateInputType = {
+    userId?: true
+    needsReconnect?: true
+    lastSyncedAt?: true
+    updatedAt?: true
+  }
+
+  export type CalendarSyncStatusMaxAggregateInputType = {
+    userId?: true
+    needsReconnect?: true
+    lastSyncedAt?: true
+    updatedAt?: true
+  }
+
+  export type CalendarSyncStatusCountAggregateInputType = {
+    userId?: true
+    needsReconnect?: true
+    lastSyncedAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type CalendarSyncStatusAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CalendarSyncStatus to aggregate.
+     */
+    where?: CalendarSyncStatusWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CalendarSyncStatuses to fetch.
+     */
+    orderBy?: CalendarSyncStatusOrderByWithRelationInput | CalendarSyncStatusOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CalendarSyncStatusWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CalendarSyncStatuses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CalendarSyncStatuses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CalendarSyncStatuses
+    **/
+    _count?: true | CalendarSyncStatusCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CalendarSyncStatusMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CalendarSyncStatusMaxAggregateInputType
+  }
+
+  export type GetCalendarSyncStatusAggregateType<T extends CalendarSyncStatusAggregateArgs> = {
+        [P in keyof T & keyof AggregateCalendarSyncStatus]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCalendarSyncStatus[P]>
+      : GetScalarType<T[P], AggregateCalendarSyncStatus[P]>
+  }
+
+
+
+
+  export type CalendarSyncStatusGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CalendarSyncStatusWhereInput
+    orderBy?: CalendarSyncStatusOrderByWithAggregationInput | CalendarSyncStatusOrderByWithAggregationInput[]
+    by: CalendarSyncStatusScalarFieldEnum[] | CalendarSyncStatusScalarFieldEnum
+    having?: CalendarSyncStatusScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CalendarSyncStatusCountAggregateInputType | true
+    _min?: CalendarSyncStatusMinAggregateInputType
+    _max?: CalendarSyncStatusMaxAggregateInputType
+  }
+
+  export type CalendarSyncStatusGroupByOutputType = {
+    userId: string
+    needsReconnect: boolean
+    lastSyncedAt: Date | null
+    updatedAt: Date
+    _count: CalendarSyncStatusCountAggregateOutputType | null
+    _min: CalendarSyncStatusMinAggregateOutputType | null
+    _max: CalendarSyncStatusMaxAggregateOutputType | null
+  }
+
+  type GetCalendarSyncStatusGroupByPayload<T extends CalendarSyncStatusGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CalendarSyncStatusGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CalendarSyncStatusGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CalendarSyncStatusGroupByOutputType[P]>
+            : GetScalarType<T[P], CalendarSyncStatusGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CalendarSyncStatusSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    userId?: boolean
+    needsReconnect?: boolean
+    lastSyncedAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["calendarSyncStatus"]>
+
+  export type CalendarSyncStatusSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    userId?: boolean
+    needsReconnect?: boolean
+    lastSyncedAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["calendarSyncStatus"]>
+
+  export type CalendarSyncStatusSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    userId?: boolean
+    needsReconnect?: boolean
+    lastSyncedAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["calendarSyncStatus"]>
+
+  export type CalendarSyncStatusSelectScalar = {
+    userId?: boolean
+    needsReconnect?: boolean
+    lastSyncedAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type CalendarSyncStatusOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"userId" | "needsReconnect" | "lastSyncedAt" | "updatedAt", ExtArgs["result"]["calendarSyncStatus"]>
+  export type CalendarSyncStatusInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type CalendarSyncStatusIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type CalendarSyncStatusIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $CalendarSyncStatusPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CalendarSyncStatus"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      userId: string
+      needsReconnect: boolean
+      lastSyncedAt: Date | null
+      updatedAt: Date
+    }, ExtArgs["result"]["calendarSyncStatus"]>
+    composites: {}
+  }
+
+  type CalendarSyncStatusGetPayload<S extends boolean | null | undefined | CalendarSyncStatusDefaultArgs> = $Result.GetResult<Prisma.$CalendarSyncStatusPayload, S>
+
+  type CalendarSyncStatusCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CalendarSyncStatusFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CalendarSyncStatusCountAggregateInputType | true
+    }
+
+  export interface CalendarSyncStatusDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CalendarSyncStatus'], meta: { name: 'CalendarSyncStatus' } }
+    /**
+     * Find zero or one CalendarSyncStatus that matches the filter.
+     * @param {CalendarSyncStatusFindUniqueArgs} args - Arguments to find a CalendarSyncStatus
+     * @example
+     * // Get one CalendarSyncStatus
+     * const calendarSyncStatus = await prisma.calendarSyncStatus.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CalendarSyncStatusFindUniqueArgs>(args: SelectSubset<T, CalendarSyncStatusFindUniqueArgs<ExtArgs>>): Prisma__CalendarSyncStatusClient<$Result.GetResult<Prisma.$CalendarSyncStatusPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CalendarSyncStatus that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CalendarSyncStatusFindUniqueOrThrowArgs} args - Arguments to find a CalendarSyncStatus
+     * @example
+     * // Get one CalendarSyncStatus
+     * const calendarSyncStatus = await prisma.calendarSyncStatus.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CalendarSyncStatusFindUniqueOrThrowArgs>(args: SelectSubset<T, CalendarSyncStatusFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CalendarSyncStatusClient<$Result.GetResult<Prisma.$CalendarSyncStatusPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CalendarSyncStatus that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CalendarSyncStatusFindFirstArgs} args - Arguments to find a CalendarSyncStatus
+     * @example
+     * // Get one CalendarSyncStatus
+     * const calendarSyncStatus = await prisma.calendarSyncStatus.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CalendarSyncStatusFindFirstArgs>(args?: SelectSubset<T, CalendarSyncStatusFindFirstArgs<ExtArgs>>): Prisma__CalendarSyncStatusClient<$Result.GetResult<Prisma.$CalendarSyncStatusPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CalendarSyncStatus that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CalendarSyncStatusFindFirstOrThrowArgs} args - Arguments to find a CalendarSyncStatus
+     * @example
+     * // Get one CalendarSyncStatus
+     * const calendarSyncStatus = await prisma.calendarSyncStatus.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CalendarSyncStatusFindFirstOrThrowArgs>(args?: SelectSubset<T, CalendarSyncStatusFindFirstOrThrowArgs<ExtArgs>>): Prisma__CalendarSyncStatusClient<$Result.GetResult<Prisma.$CalendarSyncStatusPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CalendarSyncStatuses that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CalendarSyncStatusFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CalendarSyncStatuses
+     * const calendarSyncStatuses = await prisma.calendarSyncStatus.findMany()
+     * 
+     * // Get first 10 CalendarSyncStatuses
+     * const calendarSyncStatuses = await prisma.calendarSyncStatus.findMany({ take: 10 })
+     * 
+     * // Only select the `userId`
+     * const calendarSyncStatusWithUserIdOnly = await prisma.calendarSyncStatus.findMany({ select: { userId: true } })
+     * 
+     */
+    findMany<T extends CalendarSyncStatusFindManyArgs>(args?: SelectSubset<T, CalendarSyncStatusFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CalendarSyncStatusPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CalendarSyncStatus.
+     * @param {CalendarSyncStatusCreateArgs} args - Arguments to create a CalendarSyncStatus.
+     * @example
+     * // Create one CalendarSyncStatus
+     * const CalendarSyncStatus = await prisma.calendarSyncStatus.create({
+     *   data: {
+     *     // ... data to create a CalendarSyncStatus
+     *   }
+     * })
+     * 
+     */
+    create<T extends CalendarSyncStatusCreateArgs>(args: SelectSubset<T, CalendarSyncStatusCreateArgs<ExtArgs>>): Prisma__CalendarSyncStatusClient<$Result.GetResult<Prisma.$CalendarSyncStatusPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CalendarSyncStatuses.
+     * @param {CalendarSyncStatusCreateManyArgs} args - Arguments to create many CalendarSyncStatuses.
+     * @example
+     * // Create many CalendarSyncStatuses
+     * const calendarSyncStatus = await prisma.calendarSyncStatus.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CalendarSyncStatusCreateManyArgs>(args?: SelectSubset<T, CalendarSyncStatusCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CalendarSyncStatuses and returns the data saved in the database.
+     * @param {CalendarSyncStatusCreateManyAndReturnArgs} args - Arguments to create many CalendarSyncStatuses.
+     * @example
+     * // Create many CalendarSyncStatuses
+     * const calendarSyncStatus = await prisma.calendarSyncStatus.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CalendarSyncStatuses and only return the `userId`
+     * const calendarSyncStatusWithUserIdOnly = await prisma.calendarSyncStatus.createManyAndReturn({
+     *   select: { userId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CalendarSyncStatusCreateManyAndReturnArgs>(args?: SelectSubset<T, CalendarSyncStatusCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CalendarSyncStatusPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CalendarSyncStatus.
+     * @param {CalendarSyncStatusDeleteArgs} args - Arguments to delete one CalendarSyncStatus.
+     * @example
+     * // Delete one CalendarSyncStatus
+     * const CalendarSyncStatus = await prisma.calendarSyncStatus.delete({
+     *   where: {
+     *     // ... filter to delete one CalendarSyncStatus
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CalendarSyncStatusDeleteArgs>(args: SelectSubset<T, CalendarSyncStatusDeleteArgs<ExtArgs>>): Prisma__CalendarSyncStatusClient<$Result.GetResult<Prisma.$CalendarSyncStatusPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CalendarSyncStatus.
+     * @param {CalendarSyncStatusUpdateArgs} args - Arguments to update one CalendarSyncStatus.
+     * @example
+     * // Update one CalendarSyncStatus
+     * const calendarSyncStatus = await prisma.calendarSyncStatus.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CalendarSyncStatusUpdateArgs>(args: SelectSubset<T, CalendarSyncStatusUpdateArgs<ExtArgs>>): Prisma__CalendarSyncStatusClient<$Result.GetResult<Prisma.$CalendarSyncStatusPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CalendarSyncStatuses.
+     * @param {CalendarSyncStatusDeleteManyArgs} args - Arguments to filter CalendarSyncStatuses to delete.
+     * @example
+     * // Delete a few CalendarSyncStatuses
+     * const { count } = await prisma.calendarSyncStatus.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CalendarSyncStatusDeleteManyArgs>(args?: SelectSubset<T, CalendarSyncStatusDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CalendarSyncStatuses.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CalendarSyncStatusUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CalendarSyncStatuses
+     * const calendarSyncStatus = await prisma.calendarSyncStatus.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CalendarSyncStatusUpdateManyArgs>(args: SelectSubset<T, CalendarSyncStatusUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CalendarSyncStatuses and returns the data updated in the database.
+     * @param {CalendarSyncStatusUpdateManyAndReturnArgs} args - Arguments to update many CalendarSyncStatuses.
+     * @example
+     * // Update many CalendarSyncStatuses
+     * const calendarSyncStatus = await prisma.calendarSyncStatus.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CalendarSyncStatuses and only return the `userId`
+     * const calendarSyncStatusWithUserIdOnly = await prisma.calendarSyncStatus.updateManyAndReturn({
+     *   select: { userId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CalendarSyncStatusUpdateManyAndReturnArgs>(args: SelectSubset<T, CalendarSyncStatusUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CalendarSyncStatusPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CalendarSyncStatus.
+     * @param {CalendarSyncStatusUpsertArgs} args - Arguments to update or create a CalendarSyncStatus.
+     * @example
+     * // Update or create a CalendarSyncStatus
+     * const calendarSyncStatus = await prisma.calendarSyncStatus.upsert({
+     *   create: {
+     *     // ... data to create a CalendarSyncStatus
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CalendarSyncStatus we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CalendarSyncStatusUpsertArgs>(args: SelectSubset<T, CalendarSyncStatusUpsertArgs<ExtArgs>>): Prisma__CalendarSyncStatusClient<$Result.GetResult<Prisma.$CalendarSyncStatusPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CalendarSyncStatuses.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CalendarSyncStatusCountArgs} args - Arguments to filter CalendarSyncStatuses to count.
+     * @example
+     * // Count the number of CalendarSyncStatuses
+     * const count = await prisma.calendarSyncStatus.count({
+     *   where: {
+     *     // ... the filter for the CalendarSyncStatuses we want to count
+     *   }
+     * })
+    **/
+    count<T extends CalendarSyncStatusCountArgs>(
+      args?: Subset<T, CalendarSyncStatusCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CalendarSyncStatusCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CalendarSyncStatus.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CalendarSyncStatusAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CalendarSyncStatusAggregateArgs>(args: Subset<T, CalendarSyncStatusAggregateArgs>): Prisma.PrismaPromise<GetCalendarSyncStatusAggregateType<T>>
+
+    /**
+     * Group by CalendarSyncStatus.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CalendarSyncStatusGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CalendarSyncStatusGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CalendarSyncStatusGroupByArgs['orderBy'] }
+        : { orderBy?: CalendarSyncStatusGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CalendarSyncStatusGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCalendarSyncStatusGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CalendarSyncStatus model
+   */
+  readonly fields: CalendarSyncStatusFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CalendarSyncStatus.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CalendarSyncStatusClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CalendarSyncStatus model
+   */
+  interface CalendarSyncStatusFieldRefs {
+    readonly userId: FieldRef<"CalendarSyncStatus", 'String'>
+    readonly needsReconnect: FieldRef<"CalendarSyncStatus", 'Boolean'>
+    readonly lastSyncedAt: FieldRef<"CalendarSyncStatus", 'DateTime'>
+    readonly updatedAt: FieldRef<"CalendarSyncStatus", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CalendarSyncStatus findUnique
+   */
+  export type CalendarSyncStatusFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarSyncStatus
+     */
+    select?: CalendarSyncStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CalendarSyncStatus
+     */
+    omit?: CalendarSyncStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendarSyncStatusInclude<ExtArgs> | null
+    /**
+     * Filter, which CalendarSyncStatus to fetch.
+     */
+    where: CalendarSyncStatusWhereUniqueInput
+  }
+
+  /**
+   * CalendarSyncStatus findUniqueOrThrow
+   */
+  export type CalendarSyncStatusFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarSyncStatus
+     */
+    select?: CalendarSyncStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CalendarSyncStatus
+     */
+    omit?: CalendarSyncStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendarSyncStatusInclude<ExtArgs> | null
+    /**
+     * Filter, which CalendarSyncStatus to fetch.
+     */
+    where: CalendarSyncStatusWhereUniqueInput
+  }
+
+  /**
+   * CalendarSyncStatus findFirst
+   */
+  export type CalendarSyncStatusFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarSyncStatus
+     */
+    select?: CalendarSyncStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CalendarSyncStatus
+     */
+    omit?: CalendarSyncStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendarSyncStatusInclude<ExtArgs> | null
+    /**
+     * Filter, which CalendarSyncStatus to fetch.
+     */
+    where?: CalendarSyncStatusWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CalendarSyncStatuses to fetch.
+     */
+    orderBy?: CalendarSyncStatusOrderByWithRelationInput | CalendarSyncStatusOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CalendarSyncStatuses.
+     */
+    cursor?: CalendarSyncStatusWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CalendarSyncStatuses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CalendarSyncStatuses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CalendarSyncStatuses.
+     */
+    distinct?: CalendarSyncStatusScalarFieldEnum | CalendarSyncStatusScalarFieldEnum[]
+  }
+
+  /**
+   * CalendarSyncStatus findFirstOrThrow
+   */
+  export type CalendarSyncStatusFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarSyncStatus
+     */
+    select?: CalendarSyncStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CalendarSyncStatus
+     */
+    omit?: CalendarSyncStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendarSyncStatusInclude<ExtArgs> | null
+    /**
+     * Filter, which CalendarSyncStatus to fetch.
+     */
+    where?: CalendarSyncStatusWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CalendarSyncStatuses to fetch.
+     */
+    orderBy?: CalendarSyncStatusOrderByWithRelationInput | CalendarSyncStatusOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CalendarSyncStatuses.
+     */
+    cursor?: CalendarSyncStatusWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CalendarSyncStatuses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CalendarSyncStatuses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CalendarSyncStatuses.
+     */
+    distinct?: CalendarSyncStatusScalarFieldEnum | CalendarSyncStatusScalarFieldEnum[]
+  }
+
+  /**
+   * CalendarSyncStatus findMany
+   */
+  export type CalendarSyncStatusFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarSyncStatus
+     */
+    select?: CalendarSyncStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CalendarSyncStatus
+     */
+    omit?: CalendarSyncStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendarSyncStatusInclude<ExtArgs> | null
+    /**
+     * Filter, which CalendarSyncStatuses to fetch.
+     */
+    where?: CalendarSyncStatusWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CalendarSyncStatuses to fetch.
+     */
+    orderBy?: CalendarSyncStatusOrderByWithRelationInput | CalendarSyncStatusOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CalendarSyncStatuses.
+     */
+    cursor?: CalendarSyncStatusWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CalendarSyncStatuses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CalendarSyncStatuses.
+     */
+    skip?: number
+    distinct?: CalendarSyncStatusScalarFieldEnum | CalendarSyncStatusScalarFieldEnum[]
+  }
+
+  /**
+   * CalendarSyncStatus create
+   */
+  export type CalendarSyncStatusCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarSyncStatus
+     */
+    select?: CalendarSyncStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CalendarSyncStatus
+     */
+    omit?: CalendarSyncStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendarSyncStatusInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CalendarSyncStatus.
+     */
+    data: XOR<CalendarSyncStatusCreateInput, CalendarSyncStatusUncheckedCreateInput>
+  }
+
+  /**
+   * CalendarSyncStatus createMany
+   */
+  export type CalendarSyncStatusCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CalendarSyncStatuses.
+     */
+    data: CalendarSyncStatusCreateManyInput | CalendarSyncStatusCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CalendarSyncStatus createManyAndReturn
+   */
+  export type CalendarSyncStatusCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarSyncStatus
+     */
+    select?: CalendarSyncStatusSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CalendarSyncStatus
+     */
+    omit?: CalendarSyncStatusOmit<ExtArgs> | null
+    /**
+     * The data used to create many CalendarSyncStatuses.
+     */
+    data: CalendarSyncStatusCreateManyInput | CalendarSyncStatusCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendarSyncStatusIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CalendarSyncStatus update
+   */
+  export type CalendarSyncStatusUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarSyncStatus
+     */
+    select?: CalendarSyncStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CalendarSyncStatus
+     */
+    omit?: CalendarSyncStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendarSyncStatusInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CalendarSyncStatus.
+     */
+    data: XOR<CalendarSyncStatusUpdateInput, CalendarSyncStatusUncheckedUpdateInput>
+    /**
+     * Choose, which CalendarSyncStatus to update.
+     */
+    where: CalendarSyncStatusWhereUniqueInput
+  }
+
+  /**
+   * CalendarSyncStatus updateMany
+   */
+  export type CalendarSyncStatusUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CalendarSyncStatuses.
+     */
+    data: XOR<CalendarSyncStatusUpdateManyMutationInput, CalendarSyncStatusUncheckedUpdateManyInput>
+    /**
+     * Filter which CalendarSyncStatuses to update
+     */
+    where?: CalendarSyncStatusWhereInput
+    /**
+     * Limit how many CalendarSyncStatuses to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CalendarSyncStatus updateManyAndReturn
+   */
+  export type CalendarSyncStatusUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarSyncStatus
+     */
+    select?: CalendarSyncStatusSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CalendarSyncStatus
+     */
+    omit?: CalendarSyncStatusOmit<ExtArgs> | null
+    /**
+     * The data used to update CalendarSyncStatuses.
+     */
+    data: XOR<CalendarSyncStatusUpdateManyMutationInput, CalendarSyncStatusUncheckedUpdateManyInput>
+    /**
+     * Filter which CalendarSyncStatuses to update
+     */
+    where?: CalendarSyncStatusWhereInput
+    /**
+     * Limit how many CalendarSyncStatuses to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendarSyncStatusIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CalendarSyncStatus upsert
+   */
+  export type CalendarSyncStatusUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarSyncStatus
+     */
+    select?: CalendarSyncStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CalendarSyncStatus
+     */
+    omit?: CalendarSyncStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendarSyncStatusInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CalendarSyncStatus to update in case it exists.
+     */
+    where: CalendarSyncStatusWhereUniqueInput
+    /**
+     * In case the CalendarSyncStatus found by the `where` argument doesn't exist, create a new CalendarSyncStatus with this data.
+     */
+    create: XOR<CalendarSyncStatusCreateInput, CalendarSyncStatusUncheckedCreateInput>
+    /**
+     * In case the CalendarSyncStatus was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CalendarSyncStatusUpdateInput, CalendarSyncStatusUncheckedUpdateInput>
+  }
+
+  /**
+   * CalendarSyncStatus delete
+   */
+  export type CalendarSyncStatusDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarSyncStatus
+     */
+    select?: CalendarSyncStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CalendarSyncStatus
+     */
+    omit?: CalendarSyncStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendarSyncStatusInclude<ExtArgs> | null
+    /**
+     * Filter which CalendarSyncStatus to delete.
+     */
+    where: CalendarSyncStatusWhereUniqueInput
+  }
+
+  /**
+   * CalendarSyncStatus deleteMany
+   */
+  export type CalendarSyncStatusDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CalendarSyncStatuses to delete
+     */
+    where?: CalendarSyncStatusWhereInput
+    /**
+     * Limit how many CalendarSyncStatuses to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CalendarSyncStatus without action
+   */
+  export type CalendarSyncStatusDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendarSyncStatus
+     */
+    select?: CalendarSyncStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CalendarSyncStatus
+     */
+    omit?: CalendarSyncStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendarSyncStatusInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -20100,6 +22515,26 @@ export namespace Prisma {
   };
 
   export type InvitationScalarFieldEnum = (typeof InvitationScalarFieldEnum)[keyof typeof InvitationScalarFieldEnum]
+
+
+  export const TaskCalendarEventScalarFieldEnum: {
+    id: 'id',
+    taskId: 'taskId',
+    userId: 'userId',
+    googleEventId: 'googleEventId'
+  };
+
+  export type TaskCalendarEventScalarFieldEnum = (typeof TaskCalendarEventScalarFieldEnum)[keyof typeof TaskCalendarEventScalarFieldEnum]
+
+
+  export const CalendarSyncStatusScalarFieldEnum: {
+    userId: 'userId',
+    needsReconnect: 'needsReconnect',
+    lastSyncedAt: 'lastSyncedAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type CalendarSyncStatusScalarFieldEnum = (typeof CalendarSyncStatusScalarFieldEnum)[keyof typeof CalendarSyncStatusScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -20358,6 +22793,7 @@ export namespace Prisma {
     assignees?: TaskAssigneeListRelationFilter
     subtasks?: SubtaskListRelationFilter
     logs?: TaskLogListRelationFilter
+    calendarEvents?: TaskCalendarEventListRelationFilter
   }
 
   export type TaskOrderByWithRelationInput = {
@@ -20383,6 +22819,7 @@ export namespace Prisma {
     assignees?: TaskAssigneeOrderByRelationAggregateInput
     subtasks?: SubtaskOrderByRelationAggregateInput
     logs?: TaskLogOrderByRelationAggregateInput
+    calendarEvents?: TaskCalendarEventOrderByRelationAggregateInput
   }
 
   export type TaskWhereUniqueInput = Prisma.AtLeast<{
@@ -20411,6 +22848,7 @@ export namespace Prisma {
     assignees?: TaskAssigneeListRelationFilter
     subtasks?: SubtaskListRelationFilter
     logs?: TaskLogListRelationFilter
+    calendarEvents?: TaskCalendarEventListRelationFilter
   }, "id">
 
   export type TaskOrderByWithAggregationInput = {
@@ -20822,6 +23260,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeListRelationFilter
     completedSubtasks?: SubtaskListRelationFilter
     authoredLogs?: TaskLogListRelationFilter
+    calendarEvents?: TaskCalendarEventListRelationFilter
+    calendarSyncStatus?: XOR<CalendarSyncStatusNullableScalarRelationFilter, CalendarSyncStatusWhereInput> | null
   }
 
   export type UserOrderByWithRelationInput = {
@@ -20844,6 +23284,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeOrderByRelationAggregateInput
     completedSubtasks?: SubtaskOrderByRelationAggregateInput
     authoredLogs?: TaskLogOrderByRelationAggregateInput
+    calendarEvents?: TaskCalendarEventOrderByRelationAggregateInput
+    calendarSyncStatus?: CalendarSyncStatusOrderByWithRelationInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -20869,6 +23311,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeListRelationFilter
     completedSubtasks?: SubtaskListRelationFilter
     authoredLogs?: TaskLogListRelationFilter
+    calendarEvents?: TaskCalendarEventListRelationFilter
+    calendarSyncStatus?: XOR<CalendarSyncStatusNullableScalarRelationFilter, CalendarSyncStatusWhereInput> | null
   }, "id" | "email" | "calendarToken" | "apiToken">
 
   export type UserOrderByWithAggregationInput = {
@@ -21332,6 +23776,112 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Invitation"> | Date | string
   }
 
+  export type TaskCalendarEventWhereInput = {
+    AND?: TaskCalendarEventWhereInput | TaskCalendarEventWhereInput[]
+    OR?: TaskCalendarEventWhereInput[]
+    NOT?: TaskCalendarEventWhereInput | TaskCalendarEventWhereInput[]
+    id?: IntFilter<"TaskCalendarEvent"> | number
+    taskId?: IntFilter<"TaskCalendarEvent"> | number
+    userId?: StringFilter<"TaskCalendarEvent"> | string
+    googleEventId?: StringFilter<"TaskCalendarEvent"> | string
+    task?: XOR<TaskScalarRelationFilter, TaskWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type TaskCalendarEventOrderByWithRelationInput = {
+    id?: SortOrder
+    taskId?: SortOrder
+    userId?: SortOrder
+    googleEventId?: SortOrder
+    task?: TaskOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type TaskCalendarEventWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    taskId_userId?: TaskCalendarEventTaskIdUserIdCompoundUniqueInput
+    AND?: TaskCalendarEventWhereInput | TaskCalendarEventWhereInput[]
+    OR?: TaskCalendarEventWhereInput[]
+    NOT?: TaskCalendarEventWhereInput | TaskCalendarEventWhereInput[]
+    taskId?: IntFilter<"TaskCalendarEvent"> | number
+    userId?: StringFilter<"TaskCalendarEvent"> | string
+    googleEventId?: StringFilter<"TaskCalendarEvent"> | string
+    task?: XOR<TaskScalarRelationFilter, TaskWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "taskId_userId">
+
+  export type TaskCalendarEventOrderByWithAggregationInput = {
+    id?: SortOrder
+    taskId?: SortOrder
+    userId?: SortOrder
+    googleEventId?: SortOrder
+    _count?: TaskCalendarEventCountOrderByAggregateInput
+    _avg?: TaskCalendarEventAvgOrderByAggregateInput
+    _max?: TaskCalendarEventMaxOrderByAggregateInput
+    _min?: TaskCalendarEventMinOrderByAggregateInput
+    _sum?: TaskCalendarEventSumOrderByAggregateInput
+  }
+
+  export type TaskCalendarEventScalarWhereWithAggregatesInput = {
+    AND?: TaskCalendarEventScalarWhereWithAggregatesInput | TaskCalendarEventScalarWhereWithAggregatesInput[]
+    OR?: TaskCalendarEventScalarWhereWithAggregatesInput[]
+    NOT?: TaskCalendarEventScalarWhereWithAggregatesInput | TaskCalendarEventScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"TaskCalendarEvent"> | number
+    taskId?: IntWithAggregatesFilter<"TaskCalendarEvent"> | number
+    userId?: StringWithAggregatesFilter<"TaskCalendarEvent"> | string
+    googleEventId?: StringWithAggregatesFilter<"TaskCalendarEvent"> | string
+  }
+
+  export type CalendarSyncStatusWhereInput = {
+    AND?: CalendarSyncStatusWhereInput | CalendarSyncStatusWhereInput[]
+    OR?: CalendarSyncStatusWhereInput[]
+    NOT?: CalendarSyncStatusWhereInput | CalendarSyncStatusWhereInput[]
+    userId?: StringFilter<"CalendarSyncStatus"> | string
+    needsReconnect?: BoolFilter<"CalendarSyncStatus"> | boolean
+    lastSyncedAt?: DateTimeNullableFilter<"CalendarSyncStatus"> | Date | string | null
+    updatedAt?: DateTimeFilter<"CalendarSyncStatus"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type CalendarSyncStatusOrderByWithRelationInput = {
+    userId?: SortOrder
+    needsReconnect?: SortOrder
+    lastSyncedAt?: SortOrderInput | SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type CalendarSyncStatusWhereUniqueInput = Prisma.AtLeast<{
+    userId?: string
+    AND?: CalendarSyncStatusWhereInput | CalendarSyncStatusWhereInput[]
+    OR?: CalendarSyncStatusWhereInput[]
+    NOT?: CalendarSyncStatusWhereInput | CalendarSyncStatusWhereInput[]
+    needsReconnect?: BoolFilter<"CalendarSyncStatus"> | boolean
+    lastSyncedAt?: DateTimeNullableFilter<"CalendarSyncStatus"> | Date | string | null
+    updatedAt?: DateTimeFilter<"CalendarSyncStatus"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "userId">
+
+  export type CalendarSyncStatusOrderByWithAggregationInput = {
+    userId?: SortOrder
+    needsReconnect?: SortOrder
+    lastSyncedAt?: SortOrderInput | SortOrder
+    updatedAt?: SortOrder
+    _count?: CalendarSyncStatusCountOrderByAggregateInput
+    _max?: CalendarSyncStatusMaxOrderByAggregateInput
+    _min?: CalendarSyncStatusMinOrderByAggregateInput
+  }
+
+  export type CalendarSyncStatusScalarWhereWithAggregatesInput = {
+    AND?: CalendarSyncStatusScalarWhereWithAggregatesInput | CalendarSyncStatusScalarWhereWithAggregatesInput[]
+    OR?: CalendarSyncStatusScalarWhereWithAggregatesInput[]
+    NOT?: CalendarSyncStatusScalarWhereWithAggregatesInput | CalendarSyncStatusScalarWhereWithAggregatesInput[]
+    userId?: StringWithAggregatesFilter<"CalendarSyncStatus"> | string
+    needsReconnect?: BoolWithAggregatesFilter<"CalendarSyncStatus"> | boolean
+    lastSyncedAt?: DateTimeNullableWithAggregatesFilter<"CalendarSyncStatus"> | Date | string | null
+    updatedAt?: DateTimeWithAggregatesFilter<"CalendarSyncStatus"> | Date | string
+  }
+
   export type ClientCreateInput = {
     name: string
     organization: OrganizationCreateNestedOneWithoutClientsInput
@@ -21441,6 +23991,7 @@ export namespace Prisma {
     assignees?: TaskAssigneeCreateNestedManyWithoutTaskInput
     subtasks?: SubtaskCreateNestedManyWithoutTaskInput
     logs?: TaskLogCreateNestedManyWithoutTaskInput
+    calendarEvents?: TaskCalendarEventCreateNestedManyWithoutTaskInput
   }
 
   export type TaskUncheckedCreateInput = {
@@ -21462,6 +24013,7 @@ export namespace Prisma {
     assignees?: TaskAssigneeUncheckedCreateNestedManyWithoutTaskInput
     subtasks?: SubtaskUncheckedCreateNestedManyWithoutTaskInput
     logs?: TaskLogUncheckedCreateNestedManyWithoutTaskInput
+    calendarEvents?: TaskCalendarEventUncheckedCreateNestedManyWithoutTaskInput
   }
 
   export type TaskUpdateInput = {
@@ -21482,6 +24034,7 @@ export namespace Prisma {
     assignees?: TaskAssigneeUpdateManyWithoutTaskNestedInput
     subtasks?: SubtaskUpdateManyWithoutTaskNestedInput
     logs?: TaskLogUpdateManyWithoutTaskNestedInput
+    calendarEvents?: TaskCalendarEventUpdateManyWithoutTaskNestedInput
   }
 
   export type TaskUncheckedUpdateInput = {
@@ -21503,6 +24056,7 @@ export namespace Prisma {
     assignees?: TaskAssigneeUncheckedUpdateManyWithoutTaskNestedInput
     subtasks?: SubtaskUncheckedUpdateManyWithoutTaskNestedInput
     logs?: TaskLogUncheckedUpdateManyWithoutTaskNestedInput
+    calendarEvents?: TaskCalendarEventUncheckedUpdateManyWithoutTaskNestedInput
   }
 
   export type TaskCreateManyInput = {
@@ -21886,6 +24440,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeCreateNestedManyWithoutAssignedByInput
     completedSubtasks?: SubtaskCreateNestedManyWithoutCompletedByInput
     authoredLogs?: TaskLogCreateNestedManyWithoutAuthorInput
+    calendarEvents?: TaskCalendarEventCreateNestedManyWithoutUserInput
+    calendarSyncStatus?: CalendarSyncStatusCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -21908,6 +24464,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeUncheckedCreateNestedManyWithoutAssignedByInput
     completedSubtasks?: SubtaskUncheckedCreateNestedManyWithoutCompletedByInput
     authoredLogs?: TaskLogUncheckedCreateNestedManyWithoutAuthorInput
+    calendarEvents?: TaskCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    calendarSyncStatus?: CalendarSyncStatusUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -21930,6 +24488,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeUpdateManyWithoutAssignedByNestedInput
     completedSubtasks?: SubtaskUpdateManyWithoutCompletedByNestedInput
     authoredLogs?: TaskLogUpdateManyWithoutAuthorNestedInput
+    calendarEvents?: TaskCalendarEventUpdateManyWithoutUserNestedInput
+    calendarSyncStatus?: CalendarSyncStatusUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -21952,6 +24512,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeUncheckedUpdateManyWithoutAssignedByNestedInput
     completedSubtasks?: SubtaskUncheckedUpdateManyWithoutCompletedByNestedInput
     authoredLogs?: TaskLogUncheckedUpdateManyWithoutAuthorNestedInput
+    calendarEvents?: TaskCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    calendarSyncStatus?: CalendarSyncStatusUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -22459,6 +25021,98 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type TaskCalendarEventCreateInput = {
+    googleEventId: string
+    task: TaskCreateNestedOneWithoutCalendarEventsInput
+    user: UserCreateNestedOneWithoutCalendarEventsInput
+  }
+
+  export type TaskCalendarEventUncheckedCreateInput = {
+    id?: number
+    taskId: number
+    userId: string
+    googleEventId: string
+  }
+
+  export type TaskCalendarEventUpdateInput = {
+    googleEventId?: StringFieldUpdateOperationsInput | string
+    task?: TaskUpdateOneRequiredWithoutCalendarEventsNestedInput
+    user?: UserUpdateOneRequiredWithoutCalendarEventsNestedInput
+  }
+
+  export type TaskCalendarEventUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    taskId?: IntFieldUpdateOperationsInput | number
+    userId?: StringFieldUpdateOperationsInput | string
+    googleEventId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type TaskCalendarEventCreateManyInput = {
+    id?: number
+    taskId: number
+    userId: string
+    googleEventId: string
+  }
+
+  export type TaskCalendarEventUpdateManyMutationInput = {
+    googleEventId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type TaskCalendarEventUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    taskId?: IntFieldUpdateOperationsInput | number
+    userId?: StringFieldUpdateOperationsInput | string
+    googleEventId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type CalendarSyncStatusCreateInput = {
+    needsReconnect?: boolean
+    lastSyncedAt?: Date | string | null
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutCalendarSyncStatusInput
+  }
+
+  export type CalendarSyncStatusUncheckedCreateInput = {
+    userId: string
+    needsReconnect?: boolean
+    lastSyncedAt?: Date | string | null
+    updatedAt?: Date | string
+  }
+
+  export type CalendarSyncStatusUpdateInput = {
+    needsReconnect?: BoolFieldUpdateOperationsInput | boolean
+    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutCalendarSyncStatusNestedInput
+  }
+
+  export type CalendarSyncStatusUncheckedUpdateInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    needsReconnect?: BoolFieldUpdateOperationsInput | boolean
+    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CalendarSyncStatusCreateManyInput = {
+    userId: string
+    needsReconnect?: boolean
+    lastSyncedAt?: Date | string | null
+    updatedAt?: Date | string
+  }
+
+  export type CalendarSyncStatusUpdateManyMutationInput = {
+    needsReconnect?: BoolFieldUpdateOperationsInput | boolean
+    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CalendarSyncStatusUncheckedUpdateManyInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    needsReconnect?: BoolFieldUpdateOperationsInput | boolean
+    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -22698,6 +25352,12 @@ export namespace Prisma {
     none?: TaskLogWhereInput
   }
 
+  export type TaskCalendarEventListRelationFilter = {
+    every?: TaskCalendarEventWhereInput
+    some?: TaskCalendarEventWhereInput
+    none?: TaskCalendarEventWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -22712,6 +25372,10 @@ export namespace Prisma {
   }
 
   export type TaskLogOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type TaskCalendarEventOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -23160,6 +25824,11 @@ export namespace Prisma {
     isNot?: UserAvatarWhereInput | null
   }
 
+  export type CalendarSyncStatusNullableScalarRelationFilter = {
+    is?: CalendarSyncStatusWhereInput | null
+    isNot?: CalendarSyncStatusWhereInput | null
+  }
+
   export type SessionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -23440,6 +26109,63 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
+  export type TaskCalendarEventTaskIdUserIdCompoundUniqueInput = {
+    taskId: number
+    userId: string
+  }
+
+  export type TaskCalendarEventCountOrderByAggregateInput = {
+    id?: SortOrder
+    taskId?: SortOrder
+    userId?: SortOrder
+    googleEventId?: SortOrder
+  }
+
+  export type TaskCalendarEventAvgOrderByAggregateInput = {
+    id?: SortOrder
+    taskId?: SortOrder
+  }
+
+  export type TaskCalendarEventMaxOrderByAggregateInput = {
+    id?: SortOrder
+    taskId?: SortOrder
+    userId?: SortOrder
+    googleEventId?: SortOrder
+  }
+
+  export type TaskCalendarEventMinOrderByAggregateInput = {
+    id?: SortOrder
+    taskId?: SortOrder
+    userId?: SortOrder
+    googleEventId?: SortOrder
+  }
+
+  export type TaskCalendarEventSumOrderByAggregateInput = {
+    id?: SortOrder
+    taskId?: SortOrder
+  }
+
+  export type CalendarSyncStatusCountOrderByAggregateInput = {
+    userId?: SortOrder
+    needsReconnect?: SortOrder
+    lastSyncedAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CalendarSyncStatusMaxOrderByAggregateInput = {
+    userId?: SortOrder
+    needsReconnect?: SortOrder
+    lastSyncedAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CalendarSyncStatusMinOrderByAggregateInput = {
+    userId?: SortOrder
+    needsReconnect?: SortOrder
+    lastSyncedAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
   export type OrganizationCreateNestedOneWithoutClientsInput = {
     create?: XOR<OrganizationCreateWithoutClientsInput, OrganizationUncheckedCreateWithoutClientsInput>
     connectOrCreate?: OrganizationCreateOrConnectWithoutClientsInput
@@ -23609,6 +26335,13 @@ export namespace Prisma {
     connect?: TaskLogWhereUniqueInput | TaskLogWhereUniqueInput[]
   }
 
+  export type TaskCalendarEventCreateNestedManyWithoutTaskInput = {
+    create?: XOR<TaskCalendarEventCreateWithoutTaskInput, TaskCalendarEventUncheckedCreateWithoutTaskInput> | TaskCalendarEventCreateWithoutTaskInput[] | TaskCalendarEventUncheckedCreateWithoutTaskInput[]
+    connectOrCreate?: TaskCalendarEventCreateOrConnectWithoutTaskInput | TaskCalendarEventCreateOrConnectWithoutTaskInput[]
+    createMany?: TaskCalendarEventCreateManyTaskInputEnvelope
+    connect?: TaskCalendarEventWhereUniqueInput | TaskCalendarEventWhereUniqueInput[]
+  }
+
   export type TaskAssigneeUncheckedCreateNestedManyWithoutTaskInput = {
     create?: XOR<TaskAssigneeCreateWithoutTaskInput, TaskAssigneeUncheckedCreateWithoutTaskInput> | TaskAssigneeCreateWithoutTaskInput[] | TaskAssigneeUncheckedCreateWithoutTaskInput[]
     connectOrCreate?: TaskAssigneeCreateOrConnectWithoutTaskInput | TaskAssigneeCreateOrConnectWithoutTaskInput[]
@@ -23628,6 +26361,13 @@ export namespace Prisma {
     connectOrCreate?: TaskLogCreateOrConnectWithoutTaskInput | TaskLogCreateOrConnectWithoutTaskInput[]
     createMany?: TaskLogCreateManyTaskInputEnvelope
     connect?: TaskLogWhereUniqueInput | TaskLogWhereUniqueInput[]
+  }
+
+  export type TaskCalendarEventUncheckedCreateNestedManyWithoutTaskInput = {
+    create?: XOR<TaskCalendarEventCreateWithoutTaskInput, TaskCalendarEventUncheckedCreateWithoutTaskInput> | TaskCalendarEventCreateWithoutTaskInput[] | TaskCalendarEventUncheckedCreateWithoutTaskInput[]
+    connectOrCreate?: TaskCalendarEventCreateOrConnectWithoutTaskInput | TaskCalendarEventCreateOrConnectWithoutTaskInput[]
+    createMany?: TaskCalendarEventCreateManyTaskInputEnvelope
+    connect?: TaskCalendarEventWhereUniqueInput | TaskCalendarEventWhereUniqueInput[]
   }
 
   export type NullableStringFieldUpdateOperationsInput = {
@@ -23734,6 +26474,20 @@ export namespace Prisma {
     deleteMany?: TaskLogScalarWhereInput | TaskLogScalarWhereInput[]
   }
 
+  export type TaskCalendarEventUpdateManyWithoutTaskNestedInput = {
+    create?: XOR<TaskCalendarEventCreateWithoutTaskInput, TaskCalendarEventUncheckedCreateWithoutTaskInput> | TaskCalendarEventCreateWithoutTaskInput[] | TaskCalendarEventUncheckedCreateWithoutTaskInput[]
+    connectOrCreate?: TaskCalendarEventCreateOrConnectWithoutTaskInput | TaskCalendarEventCreateOrConnectWithoutTaskInput[]
+    upsert?: TaskCalendarEventUpsertWithWhereUniqueWithoutTaskInput | TaskCalendarEventUpsertWithWhereUniqueWithoutTaskInput[]
+    createMany?: TaskCalendarEventCreateManyTaskInputEnvelope
+    set?: TaskCalendarEventWhereUniqueInput | TaskCalendarEventWhereUniqueInput[]
+    disconnect?: TaskCalendarEventWhereUniqueInput | TaskCalendarEventWhereUniqueInput[]
+    delete?: TaskCalendarEventWhereUniqueInput | TaskCalendarEventWhereUniqueInput[]
+    connect?: TaskCalendarEventWhereUniqueInput | TaskCalendarEventWhereUniqueInput[]
+    update?: TaskCalendarEventUpdateWithWhereUniqueWithoutTaskInput | TaskCalendarEventUpdateWithWhereUniqueWithoutTaskInput[]
+    updateMany?: TaskCalendarEventUpdateManyWithWhereWithoutTaskInput | TaskCalendarEventUpdateManyWithWhereWithoutTaskInput[]
+    deleteMany?: TaskCalendarEventScalarWhereInput | TaskCalendarEventScalarWhereInput[]
+  }
+
   export type NullableIntFieldUpdateOperationsInput = {
     set?: number | null
     increment?: number
@@ -23782,6 +26536,20 @@ export namespace Prisma {
     update?: TaskLogUpdateWithWhereUniqueWithoutTaskInput | TaskLogUpdateWithWhereUniqueWithoutTaskInput[]
     updateMany?: TaskLogUpdateManyWithWhereWithoutTaskInput | TaskLogUpdateManyWithWhereWithoutTaskInput[]
     deleteMany?: TaskLogScalarWhereInput | TaskLogScalarWhereInput[]
+  }
+
+  export type TaskCalendarEventUncheckedUpdateManyWithoutTaskNestedInput = {
+    create?: XOR<TaskCalendarEventCreateWithoutTaskInput, TaskCalendarEventUncheckedCreateWithoutTaskInput> | TaskCalendarEventCreateWithoutTaskInput[] | TaskCalendarEventUncheckedCreateWithoutTaskInput[]
+    connectOrCreate?: TaskCalendarEventCreateOrConnectWithoutTaskInput | TaskCalendarEventCreateOrConnectWithoutTaskInput[]
+    upsert?: TaskCalendarEventUpsertWithWhereUniqueWithoutTaskInput | TaskCalendarEventUpsertWithWhereUniqueWithoutTaskInput[]
+    createMany?: TaskCalendarEventCreateManyTaskInputEnvelope
+    set?: TaskCalendarEventWhereUniqueInput | TaskCalendarEventWhereUniqueInput[]
+    disconnect?: TaskCalendarEventWhereUniqueInput | TaskCalendarEventWhereUniqueInput[]
+    delete?: TaskCalendarEventWhereUniqueInput | TaskCalendarEventWhereUniqueInput[]
+    connect?: TaskCalendarEventWhereUniqueInput | TaskCalendarEventWhereUniqueInput[]
+    update?: TaskCalendarEventUpdateWithWhereUniqueWithoutTaskInput | TaskCalendarEventUpdateWithWhereUniqueWithoutTaskInput[]
+    updateMany?: TaskCalendarEventUpdateManyWithWhereWithoutTaskInput | TaskCalendarEventUpdateManyWithWhereWithoutTaskInput[]
+    deleteMany?: TaskCalendarEventScalarWhereInput | TaskCalendarEventScalarWhereInput[]
   }
 
   export type TaskCreateNestedOneWithoutAssigneesInput = {
@@ -24089,6 +26857,19 @@ export namespace Prisma {
     connect?: TaskLogWhereUniqueInput | TaskLogWhereUniqueInput[]
   }
 
+  export type TaskCalendarEventCreateNestedManyWithoutUserInput = {
+    create?: XOR<TaskCalendarEventCreateWithoutUserInput, TaskCalendarEventUncheckedCreateWithoutUserInput> | TaskCalendarEventCreateWithoutUserInput[] | TaskCalendarEventUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TaskCalendarEventCreateOrConnectWithoutUserInput | TaskCalendarEventCreateOrConnectWithoutUserInput[]
+    createMany?: TaskCalendarEventCreateManyUserInputEnvelope
+    connect?: TaskCalendarEventWhereUniqueInput | TaskCalendarEventWhereUniqueInput[]
+  }
+
+  export type CalendarSyncStatusCreateNestedOneWithoutUserInput = {
+    create?: XOR<CalendarSyncStatusCreateWithoutUserInput, CalendarSyncStatusUncheckedCreateWithoutUserInput>
+    connectOrCreate?: CalendarSyncStatusCreateOrConnectWithoutUserInput
+    connect?: CalendarSyncStatusWhereUniqueInput
+  }
+
   export type SessionUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -24156,6 +26937,19 @@ export namespace Prisma {
     connectOrCreate?: TaskLogCreateOrConnectWithoutAuthorInput | TaskLogCreateOrConnectWithoutAuthorInput[]
     createMany?: TaskLogCreateManyAuthorInputEnvelope
     connect?: TaskLogWhereUniqueInput | TaskLogWhereUniqueInput[]
+  }
+
+  export type TaskCalendarEventUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<TaskCalendarEventCreateWithoutUserInput, TaskCalendarEventUncheckedCreateWithoutUserInput> | TaskCalendarEventCreateWithoutUserInput[] | TaskCalendarEventUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TaskCalendarEventCreateOrConnectWithoutUserInput | TaskCalendarEventCreateOrConnectWithoutUserInput[]
+    createMany?: TaskCalendarEventCreateManyUserInputEnvelope
+    connect?: TaskCalendarEventWhereUniqueInput | TaskCalendarEventWhereUniqueInput[]
+  }
+
+  export type CalendarSyncStatusUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<CalendarSyncStatusCreateWithoutUserInput, CalendarSyncStatusUncheckedCreateWithoutUserInput>
+    connectOrCreate?: CalendarSyncStatusCreateOrConnectWithoutUserInput
+    connect?: CalendarSyncStatusWhereUniqueInput
   }
 
   export type BoolFieldUpdateOperationsInput = {
@@ -24298,6 +27092,30 @@ export namespace Prisma {
     deleteMany?: TaskLogScalarWhereInput | TaskLogScalarWhereInput[]
   }
 
+  export type TaskCalendarEventUpdateManyWithoutUserNestedInput = {
+    create?: XOR<TaskCalendarEventCreateWithoutUserInput, TaskCalendarEventUncheckedCreateWithoutUserInput> | TaskCalendarEventCreateWithoutUserInput[] | TaskCalendarEventUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TaskCalendarEventCreateOrConnectWithoutUserInput | TaskCalendarEventCreateOrConnectWithoutUserInput[]
+    upsert?: TaskCalendarEventUpsertWithWhereUniqueWithoutUserInput | TaskCalendarEventUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: TaskCalendarEventCreateManyUserInputEnvelope
+    set?: TaskCalendarEventWhereUniqueInput | TaskCalendarEventWhereUniqueInput[]
+    disconnect?: TaskCalendarEventWhereUniqueInput | TaskCalendarEventWhereUniqueInput[]
+    delete?: TaskCalendarEventWhereUniqueInput | TaskCalendarEventWhereUniqueInput[]
+    connect?: TaskCalendarEventWhereUniqueInput | TaskCalendarEventWhereUniqueInput[]
+    update?: TaskCalendarEventUpdateWithWhereUniqueWithoutUserInput | TaskCalendarEventUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: TaskCalendarEventUpdateManyWithWhereWithoutUserInput | TaskCalendarEventUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: TaskCalendarEventScalarWhereInput | TaskCalendarEventScalarWhereInput[]
+  }
+
+  export type CalendarSyncStatusUpdateOneWithoutUserNestedInput = {
+    create?: XOR<CalendarSyncStatusCreateWithoutUserInput, CalendarSyncStatusUncheckedCreateWithoutUserInput>
+    connectOrCreate?: CalendarSyncStatusCreateOrConnectWithoutUserInput
+    upsert?: CalendarSyncStatusUpsertWithoutUserInput
+    disconnect?: CalendarSyncStatusWhereInput | boolean
+    delete?: CalendarSyncStatusWhereInput | boolean
+    connect?: CalendarSyncStatusWhereUniqueInput
+    update?: XOR<XOR<CalendarSyncStatusUpdateToOneWithWhereWithoutUserInput, CalendarSyncStatusUpdateWithoutUserInput>, CalendarSyncStatusUncheckedUpdateWithoutUserInput>
+  }
+
   export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -24432,6 +27250,30 @@ export namespace Prisma {
     update?: TaskLogUpdateWithWhereUniqueWithoutAuthorInput | TaskLogUpdateWithWhereUniqueWithoutAuthorInput[]
     updateMany?: TaskLogUpdateManyWithWhereWithoutAuthorInput | TaskLogUpdateManyWithWhereWithoutAuthorInput[]
     deleteMany?: TaskLogScalarWhereInput | TaskLogScalarWhereInput[]
+  }
+
+  export type TaskCalendarEventUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<TaskCalendarEventCreateWithoutUserInput, TaskCalendarEventUncheckedCreateWithoutUserInput> | TaskCalendarEventCreateWithoutUserInput[] | TaskCalendarEventUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TaskCalendarEventCreateOrConnectWithoutUserInput | TaskCalendarEventCreateOrConnectWithoutUserInput[]
+    upsert?: TaskCalendarEventUpsertWithWhereUniqueWithoutUserInput | TaskCalendarEventUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: TaskCalendarEventCreateManyUserInputEnvelope
+    set?: TaskCalendarEventWhereUniqueInput | TaskCalendarEventWhereUniqueInput[]
+    disconnect?: TaskCalendarEventWhereUniqueInput | TaskCalendarEventWhereUniqueInput[]
+    delete?: TaskCalendarEventWhereUniqueInput | TaskCalendarEventWhereUniqueInput[]
+    connect?: TaskCalendarEventWhereUniqueInput | TaskCalendarEventWhereUniqueInput[]
+    update?: TaskCalendarEventUpdateWithWhereUniqueWithoutUserInput | TaskCalendarEventUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: TaskCalendarEventUpdateManyWithWhereWithoutUserInput | TaskCalendarEventUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: TaskCalendarEventScalarWhereInput | TaskCalendarEventScalarWhereInput[]
+  }
+
+  export type CalendarSyncStatusUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<CalendarSyncStatusCreateWithoutUserInput, CalendarSyncStatusUncheckedCreateWithoutUserInput>
+    connectOrCreate?: CalendarSyncStatusCreateOrConnectWithoutUserInput
+    upsert?: CalendarSyncStatusUpsertWithoutUserInput
+    disconnect?: CalendarSyncStatusWhereInput | boolean
+    delete?: CalendarSyncStatusWhereInput | boolean
+    connect?: CalendarSyncStatusWhereUniqueInput
+    update?: XOR<XOR<CalendarSyncStatusUpdateToOneWithWhereWithoutUserInput, CalendarSyncStatusUpdateWithoutUserInput>, CalendarSyncStatusUncheckedUpdateWithoutUserInput>
   }
 
   export type UserCreateNestedOneWithoutSessionsInput = {
@@ -24726,6 +27568,48 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutSentInvitationsInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSentInvitationsInput, UserUpdateWithoutSentInvitationsInput>, UserUncheckedUpdateWithoutSentInvitationsInput>
+  }
+
+  export type TaskCreateNestedOneWithoutCalendarEventsInput = {
+    create?: XOR<TaskCreateWithoutCalendarEventsInput, TaskUncheckedCreateWithoutCalendarEventsInput>
+    connectOrCreate?: TaskCreateOrConnectWithoutCalendarEventsInput
+    connect?: TaskWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutCalendarEventsInput = {
+    create?: XOR<UserCreateWithoutCalendarEventsInput, UserUncheckedCreateWithoutCalendarEventsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCalendarEventsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type TaskUpdateOneRequiredWithoutCalendarEventsNestedInput = {
+    create?: XOR<TaskCreateWithoutCalendarEventsInput, TaskUncheckedCreateWithoutCalendarEventsInput>
+    connectOrCreate?: TaskCreateOrConnectWithoutCalendarEventsInput
+    upsert?: TaskUpsertWithoutCalendarEventsInput
+    connect?: TaskWhereUniqueInput
+    update?: XOR<XOR<TaskUpdateToOneWithWhereWithoutCalendarEventsInput, TaskUpdateWithoutCalendarEventsInput>, TaskUncheckedUpdateWithoutCalendarEventsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutCalendarEventsNestedInput = {
+    create?: XOR<UserCreateWithoutCalendarEventsInput, UserUncheckedCreateWithoutCalendarEventsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCalendarEventsInput
+    upsert?: UserUpsertWithoutCalendarEventsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCalendarEventsInput, UserUpdateWithoutCalendarEventsInput>, UserUncheckedUpdateWithoutCalendarEventsInput>
+  }
+
+  export type UserCreateNestedOneWithoutCalendarSyncStatusInput = {
+    create?: XOR<UserCreateWithoutCalendarSyncStatusInput, UserUncheckedCreateWithoutCalendarSyncStatusInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCalendarSyncStatusInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutCalendarSyncStatusNestedInput = {
+    create?: XOR<UserCreateWithoutCalendarSyncStatusInput, UserUncheckedCreateWithoutCalendarSyncStatusInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCalendarSyncStatusInput
+    upsert?: UserUpsertWithoutCalendarSyncStatusInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCalendarSyncStatusInput, UserUpdateWithoutCalendarSyncStatusInput>, UserUncheckedUpdateWithoutCalendarSyncStatusInput>
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -25027,6 +27911,7 @@ export namespace Prisma {
     assignees?: TaskAssigneeCreateNestedManyWithoutTaskInput
     subtasks?: SubtaskCreateNestedManyWithoutTaskInput
     logs?: TaskLogCreateNestedManyWithoutTaskInput
+    calendarEvents?: TaskCalendarEventCreateNestedManyWithoutTaskInput
   }
 
   export type TaskUncheckedCreateWithoutClientInput = {
@@ -25047,6 +27932,7 @@ export namespace Prisma {
     assignees?: TaskAssigneeUncheckedCreateNestedManyWithoutTaskInput
     subtasks?: SubtaskUncheckedCreateNestedManyWithoutTaskInput
     logs?: TaskLogUncheckedCreateNestedManyWithoutTaskInput
+    calendarEvents?: TaskCalendarEventUncheckedCreateNestedManyWithoutTaskInput
   }
 
   export type TaskCreateOrConnectWithoutClientInput = {
@@ -25181,6 +28067,7 @@ export namespace Prisma {
     assignees?: TaskAssigneeCreateNestedManyWithoutTaskInput
     subtasks?: SubtaskCreateNestedManyWithoutTaskInput
     logs?: TaskLogCreateNestedManyWithoutTaskInput
+    calendarEvents?: TaskCalendarEventCreateNestedManyWithoutTaskInput
   }
 
   export type TaskUncheckedCreateWithoutLabelInput = {
@@ -25201,6 +28088,7 @@ export namespace Prisma {
     assignees?: TaskAssigneeUncheckedCreateNestedManyWithoutTaskInput
     subtasks?: SubtaskUncheckedCreateNestedManyWithoutTaskInput
     logs?: TaskLogUncheckedCreateNestedManyWithoutTaskInput
+    calendarEvents?: TaskCalendarEventUncheckedCreateNestedManyWithoutTaskInput
   }
 
   export type TaskCreateOrConnectWithoutLabelInput = {
@@ -25350,6 +28238,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeCreateNestedManyWithoutAssignedByInput
     completedSubtasks?: SubtaskCreateNestedManyWithoutCompletedByInput
     authoredLogs?: TaskLogCreateNestedManyWithoutAuthorInput
+    calendarEvents?: TaskCalendarEventCreateNestedManyWithoutUserInput
+    calendarSyncStatus?: CalendarSyncStatusCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCreatedTasksInput = {
@@ -25371,6 +28261,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeUncheckedCreateNestedManyWithoutAssignedByInput
     completedSubtasks?: SubtaskUncheckedCreateNestedManyWithoutCompletedByInput
     authoredLogs?: TaskLogUncheckedCreateNestedManyWithoutAuthorInput
+    calendarEvents?: TaskCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    calendarSyncStatus?: CalendarSyncStatusUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCreatedTasksInput = {
@@ -25464,6 +28356,27 @@ export namespace Prisma {
 
   export type TaskLogCreateManyTaskInputEnvelope = {
     data: TaskLogCreateManyTaskInput | TaskLogCreateManyTaskInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TaskCalendarEventCreateWithoutTaskInput = {
+    googleEventId: string
+    user: UserCreateNestedOneWithoutCalendarEventsInput
+  }
+
+  export type TaskCalendarEventUncheckedCreateWithoutTaskInput = {
+    id?: number
+    userId: string
+    googleEventId: string
+  }
+
+  export type TaskCalendarEventCreateOrConnectWithoutTaskInput = {
+    where: TaskCalendarEventWhereUniqueInput
+    create: XOR<TaskCalendarEventCreateWithoutTaskInput, TaskCalendarEventUncheckedCreateWithoutTaskInput>
+  }
+
+  export type TaskCalendarEventCreateManyTaskInputEnvelope = {
+    data: TaskCalendarEventCreateManyTaskInput | TaskCalendarEventCreateManyTaskInput[]
     skipDuplicates?: boolean
   }
 
@@ -25580,6 +28493,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeUpdateManyWithoutAssignedByNestedInput
     completedSubtasks?: SubtaskUpdateManyWithoutCompletedByNestedInput
     authoredLogs?: TaskLogUpdateManyWithoutAuthorNestedInput
+    calendarEvents?: TaskCalendarEventUpdateManyWithoutUserNestedInput
+    calendarSyncStatus?: CalendarSyncStatusUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedTasksInput = {
@@ -25601,6 +28516,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeUncheckedUpdateManyWithoutAssignedByNestedInput
     completedSubtasks?: SubtaskUncheckedUpdateManyWithoutCompletedByNestedInput
     authoredLogs?: TaskLogUncheckedUpdateManyWithoutAuthorNestedInput
+    calendarEvents?: TaskCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    calendarSyncStatus?: CalendarSyncStatusUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type TaskAssigneeUpsertWithWhereUniqueWithoutTaskInput = {
@@ -25692,6 +28609,32 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"TaskLog"> | Date | string
   }
 
+  export type TaskCalendarEventUpsertWithWhereUniqueWithoutTaskInput = {
+    where: TaskCalendarEventWhereUniqueInput
+    update: XOR<TaskCalendarEventUpdateWithoutTaskInput, TaskCalendarEventUncheckedUpdateWithoutTaskInput>
+    create: XOR<TaskCalendarEventCreateWithoutTaskInput, TaskCalendarEventUncheckedCreateWithoutTaskInput>
+  }
+
+  export type TaskCalendarEventUpdateWithWhereUniqueWithoutTaskInput = {
+    where: TaskCalendarEventWhereUniqueInput
+    data: XOR<TaskCalendarEventUpdateWithoutTaskInput, TaskCalendarEventUncheckedUpdateWithoutTaskInput>
+  }
+
+  export type TaskCalendarEventUpdateManyWithWhereWithoutTaskInput = {
+    where: TaskCalendarEventScalarWhereInput
+    data: XOR<TaskCalendarEventUpdateManyMutationInput, TaskCalendarEventUncheckedUpdateManyWithoutTaskInput>
+  }
+
+  export type TaskCalendarEventScalarWhereInput = {
+    AND?: TaskCalendarEventScalarWhereInput | TaskCalendarEventScalarWhereInput[]
+    OR?: TaskCalendarEventScalarWhereInput[]
+    NOT?: TaskCalendarEventScalarWhereInput | TaskCalendarEventScalarWhereInput[]
+    id?: IntFilter<"TaskCalendarEvent"> | number
+    taskId?: IntFilter<"TaskCalendarEvent"> | number
+    userId?: StringFilter<"TaskCalendarEvent"> | string
+    googleEventId?: StringFilter<"TaskCalendarEvent"> | string
+  }
+
   export type TaskCreateWithoutAssigneesInput = {
     title: string
     description?: string | null
@@ -25709,6 +28652,7 @@ export namespace Prisma {
     createdBy?: UserCreateNestedOneWithoutCreatedTasksInput
     subtasks?: SubtaskCreateNestedManyWithoutTaskInput
     logs?: TaskLogCreateNestedManyWithoutTaskInput
+    calendarEvents?: TaskCalendarEventCreateNestedManyWithoutTaskInput
   }
 
   export type TaskUncheckedCreateWithoutAssigneesInput = {
@@ -25729,6 +28673,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     subtasks?: SubtaskUncheckedCreateNestedManyWithoutTaskInput
     logs?: TaskLogUncheckedCreateNestedManyWithoutTaskInput
+    calendarEvents?: TaskCalendarEventUncheckedCreateNestedManyWithoutTaskInput
   }
 
   export type TaskCreateOrConnectWithoutAssigneesInput = {
@@ -25755,6 +28700,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeCreateNestedManyWithoutAssignedByInput
     completedSubtasks?: SubtaskCreateNestedManyWithoutCompletedByInput
     authoredLogs?: TaskLogCreateNestedManyWithoutAuthorInput
+    calendarEvents?: TaskCalendarEventCreateNestedManyWithoutUserInput
+    calendarSyncStatus?: CalendarSyncStatusCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTaskAssignmentsInput = {
@@ -25776,6 +28723,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeUncheckedCreateNestedManyWithoutAssignedByInput
     completedSubtasks?: SubtaskUncheckedCreateNestedManyWithoutCompletedByInput
     authoredLogs?: TaskLogUncheckedCreateNestedManyWithoutAuthorInput
+    calendarEvents?: TaskCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    calendarSyncStatus?: CalendarSyncStatusUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutTaskAssignmentsInput = {
@@ -25802,6 +28751,8 @@ export namespace Prisma {
     taskAssignments?: TaskAssigneeCreateNestedManyWithoutUserInput
     completedSubtasks?: SubtaskCreateNestedManyWithoutCompletedByInput
     authoredLogs?: TaskLogCreateNestedManyWithoutAuthorInput
+    calendarEvents?: TaskCalendarEventCreateNestedManyWithoutUserInput
+    calendarSyncStatus?: CalendarSyncStatusCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTaskAssignmentsGivenInput = {
@@ -25823,6 +28774,8 @@ export namespace Prisma {
     taskAssignments?: TaskAssigneeUncheckedCreateNestedManyWithoutUserInput
     completedSubtasks?: SubtaskUncheckedCreateNestedManyWithoutCompletedByInput
     authoredLogs?: TaskLogUncheckedCreateNestedManyWithoutAuthorInput
+    calendarEvents?: TaskCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    calendarSyncStatus?: CalendarSyncStatusUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutTaskAssignmentsGivenInput = {
@@ -25858,6 +28811,7 @@ export namespace Prisma {
     createdBy?: UserUpdateOneWithoutCreatedTasksNestedInput
     subtasks?: SubtaskUpdateManyWithoutTaskNestedInput
     logs?: TaskLogUpdateManyWithoutTaskNestedInput
+    calendarEvents?: TaskCalendarEventUpdateManyWithoutTaskNestedInput
   }
 
   export type TaskUncheckedUpdateWithoutAssigneesInput = {
@@ -25878,6 +28832,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     subtasks?: SubtaskUncheckedUpdateManyWithoutTaskNestedInput
     logs?: TaskLogUncheckedUpdateManyWithoutTaskNestedInput
+    calendarEvents?: TaskCalendarEventUncheckedUpdateManyWithoutTaskNestedInput
   }
 
   export type UserUpsertWithoutTaskAssignmentsInput = {
@@ -25910,6 +28865,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeUpdateManyWithoutAssignedByNestedInput
     completedSubtasks?: SubtaskUpdateManyWithoutCompletedByNestedInput
     authoredLogs?: TaskLogUpdateManyWithoutAuthorNestedInput
+    calendarEvents?: TaskCalendarEventUpdateManyWithoutUserNestedInput
+    calendarSyncStatus?: CalendarSyncStatusUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTaskAssignmentsInput = {
@@ -25931,6 +28888,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeUncheckedUpdateManyWithoutAssignedByNestedInput
     completedSubtasks?: SubtaskUncheckedUpdateManyWithoutCompletedByNestedInput
     authoredLogs?: TaskLogUncheckedUpdateManyWithoutAuthorNestedInput
+    calendarEvents?: TaskCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    calendarSyncStatus?: CalendarSyncStatusUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutTaskAssignmentsGivenInput = {
@@ -25963,6 +28922,8 @@ export namespace Prisma {
     taskAssignments?: TaskAssigneeUpdateManyWithoutUserNestedInput
     completedSubtasks?: SubtaskUpdateManyWithoutCompletedByNestedInput
     authoredLogs?: TaskLogUpdateManyWithoutAuthorNestedInput
+    calendarEvents?: TaskCalendarEventUpdateManyWithoutUserNestedInput
+    calendarSyncStatus?: CalendarSyncStatusUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTaskAssignmentsGivenInput = {
@@ -25984,6 +28945,8 @@ export namespace Prisma {
     taskAssignments?: TaskAssigneeUncheckedUpdateManyWithoutUserNestedInput
     completedSubtasks?: SubtaskUncheckedUpdateManyWithoutCompletedByNestedInput
     authoredLogs?: TaskLogUncheckedUpdateManyWithoutAuthorNestedInput
+    calendarEvents?: TaskCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    calendarSyncStatus?: CalendarSyncStatusUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type TaskCreateWithoutSubtasksInput = {
@@ -26003,6 +28966,7 @@ export namespace Prisma {
     createdBy?: UserCreateNestedOneWithoutCreatedTasksInput
     assignees?: TaskAssigneeCreateNestedManyWithoutTaskInput
     logs?: TaskLogCreateNestedManyWithoutTaskInput
+    calendarEvents?: TaskCalendarEventCreateNestedManyWithoutTaskInput
   }
 
   export type TaskUncheckedCreateWithoutSubtasksInput = {
@@ -26023,6 +28987,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     assignees?: TaskAssigneeUncheckedCreateNestedManyWithoutTaskInput
     logs?: TaskLogUncheckedCreateNestedManyWithoutTaskInput
+    calendarEvents?: TaskCalendarEventUncheckedCreateNestedManyWithoutTaskInput
   }
 
   export type TaskCreateOrConnectWithoutSubtasksInput = {
@@ -26049,6 +29014,8 @@ export namespace Prisma {
     taskAssignments?: TaskAssigneeCreateNestedManyWithoutUserInput
     taskAssignmentsGiven?: TaskAssigneeCreateNestedManyWithoutAssignedByInput
     authoredLogs?: TaskLogCreateNestedManyWithoutAuthorInput
+    calendarEvents?: TaskCalendarEventCreateNestedManyWithoutUserInput
+    calendarSyncStatus?: CalendarSyncStatusCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCompletedSubtasksInput = {
@@ -26070,6 +29037,8 @@ export namespace Prisma {
     taskAssignments?: TaskAssigneeUncheckedCreateNestedManyWithoutUserInput
     taskAssignmentsGiven?: TaskAssigneeUncheckedCreateNestedManyWithoutAssignedByInput
     authoredLogs?: TaskLogUncheckedCreateNestedManyWithoutAuthorInput
+    calendarEvents?: TaskCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    calendarSyncStatus?: CalendarSyncStatusUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCompletedSubtasksInput = {
@@ -26138,6 +29107,7 @@ export namespace Prisma {
     createdBy?: UserUpdateOneWithoutCreatedTasksNestedInput
     assignees?: TaskAssigneeUpdateManyWithoutTaskNestedInput
     logs?: TaskLogUpdateManyWithoutTaskNestedInput
+    calendarEvents?: TaskCalendarEventUpdateManyWithoutTaskNestedInput
   }
 
   export type TaskUncheckedUpdateWithoutSubtasksInput = {
@@ -26158,6 +29128,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     assignees?: TaskAssigneeUncheckedUpdateManyWithoutTaskNestedInput
     logs?: TaskLogUncheckedUpdateManyWithoutTaskNestedInput
+    calendarEvents?: TaskCalendarEventUncheckedUpdateManyWithoutTaskNestedInput
   }
 
   export type UserUpsertWithoutCompletedSubtasksInput = {
@@ -26190,6 +29161,8 @@ export namespace Prisma {
     taskAssignments?: TaskAssigneeUpdateManyWithoutUserNestedInput
     taskAssignmentsGiven?: TaskAssigneeUpdateManyWithoutAssignedByNestedInput
     authoredLogs?: TaskLogUpdateManyWithoutAuthorNestedInput
+    calendarEvents?: TaskCalendarEventUpdateManyWithoutUserNestedInput
+    calendarSyncStatus?: CalendarSyncStatusUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCompletedSubtasksInput = {
@@ -26211,6 +29184,8 @@ export namespace Prisma {
     taskAssignments?: TaskAssigneeUncheckedUpdateManyWithoutUserNestedInput
     taskAssignmentsGiven?: TaskAssigneeUncheckedUpdateManyWithoutAssignedByNestedInput
     authoredLogs?: TaskLogUncheckedUpdateManyWithoutAuthorNestedInput
+    calendarEvents?: TaskCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    calendarSyncStatus?: CalendarSyncStatusUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type TaskLogUpsertWithWhereUniqueWithoutSubtaskInput = {
@@ -26246,6 +29221,7 @@ export namespace Prisma {
     createdBy?: UserCreateNestedOneWithoutCreatedTasksInput
     assignees?: TaskAssigneeCreateNestedManyWithoutTaskInput
     subtasks?: SubtaskCreateNestedManyWithoutTaskInput
+    calendarEvents?: TaskCalendarEventCreateNestedManyWithoutTaskInput
   }
 
   export type TaskUncheckedCreateWithoutLogsInput = {
@@ -26266,6 +29242,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     assignees?: TaskAssigneeUncheckedCreateNestedManyWithoutTaskInput
     subtasks?: SubtaskUncheckedCreateNestedManyWithoutTaskInput
+    calendarEvents?: TaskCalendarEventUncheckedCreateNestedManyWithoutTaskInput
   }
 
   export type TaskCreateOrConnectWithoutLogsInput = {
@@ -26318,6 +29295,8 @@ export namespace Prisma {
     taskAssignments?: TaskAssigneeCreateNestedManyWithoutUserInput
     taskAssignmentsGiven?: TaskAssigneeCreateNestedManyWithoutAssignedByInput
     completedSubtasks?: SubtaskCreateNestedManyWithoutCompletedByInput
+    calendarEvents?: TaskCalendarEventCreateNestedManyWithoutUserInput
+    calendarSyncStatus?: CalendarSyncStatusCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAuthoredLogsInput = {
@@ -26339,6 +29318,8 @@ export namespace Prisma {
     taskAssignments?: TaskAssigneeUncheckedCreateNestedManyWithoutUserInput
     taskAssignmentsGiven?: TaskAssigneeUncheckedCreateNestedManyWithoutAssignedByInput
     completedSubtasks?: SubtaskUncheckedCreateNestedManyWithoutCompletedByInput
+    calendarEvents?: TaskCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    calendarSyncStatus?: CalendarSyncStatusUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAuthoredLogsInput = {
@@ -26397,6 +29378,7 @@ export namespace Prisma {
     createdBy?: UserUpdateOneWithoutCreatedTasksNestedInput
     assignees?: TaskAssigneeUpdateManyWithoutTaskNestedInput
     subtasks?: SubtaskUpdateManyWithoutTaskNestedInput
+    calendarEvents?: TaskCalendarEventUpdateManyWithoutTaskNestedInput
   }
 
   export type TaskUncheckedUpdateWithoutLogsInput = {
@@ -26417,6 +29399,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     assignees?: TaskAssigneeUncheckedUpdateManyWithoutTaskNestedInput
     subtasks?: SubtaskUncheckedUpdateManyWithoutTaskNestedInput
+    calendarEvents?: TaskCalendarEventUncheckedUpdateManyWithoutTaskNestedInput
   }
 
   export type SubtaskUpsertWithoutLogsInput = {
@@ -26481,6 +29464,8 @@ export namespace Prisma {
     taskAssignments?: TaskAssigneeUpdateManyWithoutUserNestedInput
     taskAssignmentsGiven?: TaskAssigneeUpdateManyWithoutAssignedByNestedInput
     completedSubtasks?: SubtaskUpdateManyWithoutCompletedByNestedInput
+    calendarEvents?: TaskCalendarEventUpdateManyWithoutUserNestedInput
+    calendarSyncStatus?: CalendarSyncStatusUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAuthoredLogsInput = {
@@ -26502,6 +29487,8 @@ export namespace Prisma {
     taskAssignments?: TaskAssigneeUncheckedUpdateManyWithoutUserNestedInput
     taskAssignmentsGiven?: TaskAssigneeUncheckedUpdateManyWithoutAssignedByNestedInput
     completedSubtasks?: SubtaskUncheckedUpdateManyWithoutCompletedByNestedInput
+    calendarEvents?: TaskCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    calendarSyncStatus?: CalendarSyncStatusUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type WorkLogImageUpsertWithWhereUniqueWithoutTaskLogInput = {
@@ -26612,6 +29599,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeCreateNestedManyWithoutAssignedByInput
     completedSubtasks?: SubtaskCreateNestedManyWithoutCompletedByInput
     authoredLogs?: TaskLogCreateNestedManyWithoutAuthorInput
+    calendarEvents?: TaskCalendarEventCreateNestedManyWithoutUserInput
+    calendarSyncStatus?: CalendarSyncStatusCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAvatarInput = {
@@ -26633,6 +29622,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeUncheckedCreateNestedManyWithoutAssignedByInput
     completedSubtasks?: SubtaskUncheckedCreateNestedManyWithoutCompletedByInput
     authoredLogs?: TaskLogUncheckedCreateNestedManyWithoutAuthorInput
+    calendarEvents?: TaskCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    calendarSyncStatus?: CalendarSyncStatusUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAvatarInput = {
@@ -26670,6 +29661,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeUpdateManyWithoutAssignedByNestedInput
     completedSubtasks?: SubtaskUpdateManyWithoutCompletedByNestedInput
     authoredLogs?: TaskLogUpdateManyWithoutAuthorNestedInput
+    calendarEvents?: TaskCalendarEventUpdateManyWithoutUserNestedInput
+    calendarSyncStatus?: CalendarSyncStatusUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAvatarInput = {
@@ -26691,6 +29684,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeUncheckedUpdateManyWithoutAssignedByNestedInput
     completedSubtasks?: SubtaskUncheckedUpdateManyWithoutCompletedByNestedInput
     authoredLogs?: TaskLogUncheckedUpdateManyWithoutAuthorNestedInput
+    calendarEvents?: TaskCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    calendarSyncStatus?: CalendarSyncStatusUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type SessionCreateWithoutUserInput = {
@@ -26852,6 +29847,7 @@ export namespace Prisma {
     assignees?: TaskAssigneeCreateNestedManyWithoutTaskInput
     subtasks?: SubtaskCreateNestedManyWithoutTaskInput
     logs?: TaskLogCreateNestedManyWithoutTaskInput
+    calendarEvents?: TaskCalendarEventCreateNestedManyWithoutTaskInput
   }
 
   export type TaskUncheckedCreateWithoutCreatedByInput = {
@@ -26872,6 +29868,7 @@ export namespace Prisma {
     assignees?: TaskAssigneeUncheckedCreateNestedManyWithoutTaskInput
     subtasks?: SubtaskUncheckedCreateNestedManyWithoutTaskInput
     logs?: TaskLogUncheckedCreateNestedManyWithoutTaskInput
+    calendarEvents?: TaskCalendarEventUncheckedCreateNestedManyWithoutTaskInput
   }
 
   export type TaskCreateOrConnectWithoutCreatedByInput = {
@@ -26996,6 +29993,44 @@ export namespace Prisma {
   export type TaskLogCreateManyAuthorInputEnvelope = {
     data: TaskLogCreateManyAuthorInput | TaskLogCreateManyAuthorInput[]
     skipDuplicates?: boolean
+  }
+
+  export type TaskCalendarEventCreateWithoutUserInput = {
+    googleEventId: string
+    task: TaskCreateNestedOneWithoutCalendarEventsInput
+  }
+
+  export type TaskCalendarEventUncheckedCreateWithoutUserInput = {
+    id?: number
+    taskId: number
+    googleEventId: string
+  }
+
+  export type TaskCalendarEventCreateOrConnectWithoutUserInput = {
+    where: TaskCalendarEventWhereUniqueInput
+    create: XOR<TaskCalendarEventCreateWithoutUserInput, TaskCalendarEventUncheckedCreateWithoutUserInput>
+  }
+
+  export type TaskCalendarEventCreateManyUserInputEnvelope = {
+    data: TaskCalendarEventCreateManyUserInput | TaskCalendarEventCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CalendarSyncStatusCreateWithoutUserInput = {
+    needsReconnect?: boolean
+    lastSyncedAt?: Date | string | null
+    updatedAt?: Date | string
+  }
+
+  export type CalendarSyncStatusUncheckedCreateWithoutUserInput = {
+    needsReconnect?: boolean
+    lastSyncedAt?: Date | string | null
+    updatedAt?: Date | string
+  }
+
+  export type CalendarSyncStatusCreateOrConnectWithoutUserInput = {
+    where: CalendarSyncStatusWhereUniqueInput
+    create: XOR<CalendarSyncStatusCreateWithoutUserInput, CalendarSyncStatusUncheckedCreateWithoutUserInput>
   }
 
   export type SessionUpsertWithWhereUniqueWithoutUserInput = {
@@ -27223,6 +30258,45 @@ export namespace Prisma {
     data: XOR<TaskLogUpdateManyMutationInput, TaskLogUncheckedUpdateManyWithoutAuthorInput>
   }
 
+  export type TaskCalendarEventUpsertWithWhereUniqueWithoutUserInput = {
+    where: TaskCalendarEventWhereUniqueInput
+    update: XOR<TaskCalendarEventUpdateWithoutUserInput, TaskCalendarEventUncheckedUpdateWithoutUserInput>
+    create: XOR<TaskCalendarEventCreateWithoutUserInput, TaskCalendarEventUncheckedCreateWithoutUserInput>
+  }
+
+  export type TaskCalendarEventUpdateWithWhereUniqueWithoutUserInput = {
+    where: TaskCalendarEventWhereUniqueInput
+    data: XOR<TaskCalendarEventUpdateWithoutUserInput, TaskCalendarEventUncheckedUpdateWithoutUserInput>
+  }
+
+  export type TaskCalendarEventUpdateManyWithWhereWithoutUserInput = {
+    where: TaskCalendarEventScalarWhereInput
+    data: XOR<TaskCalendarEventUpdateManyMutationInput, TaskCalendarEventUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type CalendarSyncStatusUpsertWithoutUserInput = {
+    update: XOR<CalendarSyncStatusUpdateWithoutUserInput, CalendarSyncStatusUncheckedUpdateWithoutUserInput>
+    create: XOR<CalendarSyncStatusCreateWithoutUserInput, CalendarSyncStatusUncheckedCreateWithoutUserInput>
+    where?: CalendarSyncStatusWhereInput
+  }
+
+  export type CalendarSyncStatusUpdateToOneWithWhereWithoutUserInput = {
+    where?: CalendarSyncStatusWhereInput
+    data: XOR<CalendarSyncStatusUpdateWithoutUserInput, CalendarSyncStatusUncheckedUpdateWithoutUserInput>
+  }
+
+  export type CalendarSyncStatusUpdateWithoutUserInput = {
+    needsReconnect?: BoolFieldUpdateOperationsInput | boolean
+    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CalendarSyncStatusUncheckedUpdateWithoutUserInput = {
+    needsReconnect?: BoolFieldUpdateOperationsInput | boolean
+    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UserCreateWithoutSessionsInput = {
     id: string
     name: string
@@ -27242,6 +30316,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeCreateNestedManyWithoutAssignedByInput
     completedSubtasks?: SubtaskCreateNestedManyWithoutCompletedByInput
     authoredLogs?: TaskLogCreateNestedManyWithoutAuthorInput
+    calendarEvents?: TaskCalendarEventCreateNestedManyWithoutUserInput
+    calendarSyncStatus?: CalendarSyncStatusCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -27263,6 +30339,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeUncheckedCreateNestedManyWithoutAssignedByInput
     completedSubtasks?: SubtaskUncheckedCreateNestedManyWithoutCompletedByInput
     authoredLogs?: TaskLogUncheckedCreateNestedManyWithoutAuthorInput
+    calendarEvents?: TaskCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    calendarSyncStatus?: CalendarSyncStatusUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -27300,6 +30378,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeUpdateManyWithoutAssignedByNestedInput
     completedSubtasks?: SubtaskUpdateManyWithoutCompletedByNestedInput
     authoredLogs?: TaskLogUpdateManyWithoutAuthorNestedInput
+    calendarEvents?: TaskCalendarEventUpdateManyWithoutUserNestedInput
+    calendarSyncStatus?: CalendarSyncStatusUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -27321,6 +30401,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeUncheckedUpdateManyWithoutAssignedByNestedInput
     completedSubtasks?: SubtaskUncheckedUpdateManyWithoutCompletedByNestedInput
     authoredLogs?: TaskLogUncheckedUpdateManyWithoutAuthorNestedInput
+    calendarEvents?: TaskCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    calendarSyncStatus?: CalendarSyncStatusUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UserCreateWithoutAccountsInput = {
@@ -27342,6 +30424,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeCreateNestedManyWithoutAssignedByInput
     completedSubtasks?: SubtaskCreateNestedManyWithoutCompletedByInput
     authoredLogs?: TaskLogCreateNestedManyWithoutAuthorInput
+    calendarEvents?: TaskCalendarEventCreateNestedManyWithoutUserInput
+    calendarSyncStatus?: CalendarSyncStatusCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -27363,6 +30447,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeUncheckedCreateNestedManyWithoutAssignedByInput
     completedSubtasks?: SubtaskUncheckedCreateNestedManyWithoutCompletedByInput
     authoredLogs?: TaskLogUncheckedCreateNestedManyWithoutAuthorInput
+    calendarEvents?: TaskCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    calendarSyncStatus?: CalendarSyncStatusUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -27400,6 +30486,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeUpdateManyWithoutAssignedByNestedInput
     completedSubtasks?: SubtaskUpdateManyWithoutCompletedByNestedInput
     authoredLogs?: TaskLogUpdateManyWithoutAuthorNestedInput
+    calendarEvents?: TaskCalendarEventUpdateManyWithoutUserNestedInput
+    calendarSyncStatus?: CalendarSyncStatusUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -27421,6 +30509,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeUncheckedUpdateManyWithoutAssignedByNestedInput
     completedSubtasks?: SubtaskUncheckedUpdateManyWithoutCompletedByNestedInput
     authoredLogs?: TaskLogUncheckedUpdateManyWithoutAuthorNestedInput
+    calendarEvents?: TaskCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    calendarSyncStatus?: CalendarSyncStatusUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type MemberCreateWithoutOrganizationInput = {
@@ -27538,6 +30628,7 @@ export namespace Prisma {
     assignees?: TaskAssigneeCreateNestedManyWithoutTaskInput
     subtasks?: SubtaskCreateNestedManyWithoutTaskInput
     logs?: TaskLogCreateNestedManyWithoutTaskInput
+    calendarEvents?: TaskCalendarEventCreateNestedManyWithoutTaskInput
   }
 
   export type TaskUncheckedCreateWithoutOrganizationInput = {
@@ -27558,6 +30649,7 @@ export namespace Prisma {
     assignees?: TaskAssigneeUncheckedCreateNestedManyWithoutTaskInput
     subtasks?: SubtaskUncheckedCreateNestedManyWithoutTaskInput
     logs?: TaskLogUncheckedCreateNestedManyWithoutTaskInput
+    calendarEvents?: TaskCalendarEventUncheckedCreateNestedManyWithoutTaskInput
   }
 
   export type TaskCreateOrConnectWithoutOrganizationInput = {
@@ -27719,6 +30811,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeCreateNestedManyWithoutAssignedByInput
     completedSubtasks?: SubtaskCreateNestedManyWithoutCompletedByInput
     authoredLogs?: TaskLogCreateNestedManyWithoutAuthorInput
+    calendarEvents?: TaskCalendarEventCreateNestedManyWithoutUserInput
+    calendarSyncStatus?: CalendarSyncStatusCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMembershipsInput = {
@@ -27740,6 +30834,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeUncheckedCreateNestedManyWithoutAssignedByInput
     completedSubtasks?: SubtaskUncheckedCreateNestedManyWithoutCompletedByInput
     authoredLogs?: TaskLogUncheckedCreateNestedManyWithoutAuthorInput
+    calendarEvents?: TaskCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    calendarSyncStatus?: CalendarSyncStatusUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMembershipsInput = {
@@ -27814,6 +30910,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeUpdateManyWithoutAssignedByNestedInput
     completedSubtasks?: SubtaskUpdateManyWithoutCompletedByNestedInput
     authoredLogs?: TaskLogUpdateManyWithoutAuthorNestedInput
+    calendarEvents?: TaskCalendarEventUpdateManyWithoutUserNestedInput
+    calendarSyncStatus?: CalendarSyncStatusUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMembershipsInput = {
@@ -27835,6 +30933,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeUncheckedUpdateManyWithoutAssignedByNestedInput
     completedSubtasks?: SubtaskUncheckedUpdateManyWithoutCompletedByNestedInput
     authoredLogs?: TaskLogUncheckedUpdateManyWithoutAuthorNestedInput
+    calendarEvents?: TaskCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    calendarSyncStatus?: CalendarSyncStatusUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type OrganizationCreateWithoutInvitationsInput = {
@@ -27887,6 +30987,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeCreateNestedManyWithoutAssignedByInput
     completedSubtasks?: SubtaskCreateNestedManyWithoutCompletedByInput
     authoredLogs?: TaskLogCreateNestedManyWithoutAuthorInput
+    calendarEvents?: TaskCalendarEventCreateNestedManyWithoutUserInput
+    calendarSyncStatus?: CalendarSyncStatusCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSentInvitationsInput = {
@@ -27908,6 +31010,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeUncheckedCreateNestedManyWithoutAssignedByInput
     completedSubtasks?: SubtaskUncheckedCreateNestedManyWithoutCompletedByInput
     authoredLogs?: TaskLogUncheckedCreateNestedManyWithoutAuthorInput
+    calendarEvents?: TaskCalendarEventUncheckedCreateNestedManyWithoutUserInput
+    calendarSyncStatus?: CalendarSyncStatusUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSentInvitationsInput = {
@@ -27982,6 +31086,8 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeUpdateManyWithoutAssignedByNestedInput
     completedSubtasks?: SubtaskUpdateManyWithoutCompletedByNestedInput
     authoredLogs?: TaskLogUpdateManyWithoutAuthorNestedInput
+    calendarEvents?: TaskCalendarEventUpdateManyWithoutUserNestedInput
+    calendarSyncStatus?: CalendarSyncStatusUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSentInvitationsInput = {
@@ -28003,6 +31109,322 @@ export namespace Prisma {
     taskAssignmentsGiven?: TaskAssigneeUncheckedUpdateManyWithoutAssignedByNestedInput
     completedSubtasks?: SubtaskUncheckedUpdateManyWithoutCompletedByNestedInput
     authoredLogs?: TaskLogUncheckedUpdateManyWithoutAuthorNestedInput
+    calendarEvents?: TaskCalendarEventUncheckedUpdateManyWithoutUserNestedInput
+    calendarSyncStatus?: CalendarSyncStatusUncheckedUpdateOneWithoutUserNestedInput
+  }
+
+  export type TaskCreateWithoutCalendarEventsInput = {
+    title: string
+    description?: string | null
+    status?: $Enums.TaskStatus
+    deadline?: Date | string | null
+    estimateMinHours?: number | null
+    estimateMaxHours?: number | null
+    archivedAt?: Date | string | null
+    sortOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutTasksInput
+    client?: ClientCreateNestedOneWithoutTasksInput
+    label?: LabelCreateNestedOneWithoutTasksInput
+    createdBy?: UserCreateNestedOneWithoutCreatedTasksInput
+    assignees?: TaskAssigneeCreateNestedManyWithoutTaskInput
+    subtasks?: SubtaskCreateNestedManyWithoutTaskInput
+    logs?: TaskLogCreateNestedManyWithoutTaskInput
+  }
+
+  export type TaskUncheckedCreateWithoutCalendarEventsInput = {
+    id?: number
+    organizationId: string
+    title: string
+    description?: string | null
+    status?: $Enums.TaskStatus
+    deadline?: Date | string | null
+    estimateMinHours?: number | null
+    estimateMaxHours?: number | null
+    archivedAt?: Date | string | null
+    sortOrder?: number
+    clientId?: number | null
+    labelId?: number | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    assignees?: TaskAssigneeUncheckedCreateNestedManyWithoutTaskInput
+    subtasks?: SubtaskUncheckedCreateNestedManyWithoutTaskInput
+    logs?: TaskLogUncheckedCreateNestedManyWithoutTaskInput
+  }
+
+  export type TaskCreateOrConnectWithoutCalendarEventsInput = {
+    where: TaskWhereUniqueInput
+    create: XOR<TaskCreateWithoutCalendarEventsInput, TaskUncheckedCreateWithoutCalendarEventsInput>
+  }
+
+  export type UserCreateWithoutCalendarEventsInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    calendarToken?: string | null
+    apiToken?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    memberships?: MemberCreateNestedManyWithoutUserInput
+    sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
+    avatar?: UserAvatarCreateNestedOneWithoutUserInput
+    createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    taskAssignments?: TaskAssigneeCreateNestedManyWithoutUserInput
+    taskAssignmentsGiven?: TaskAssigneeCreateNestedManyWithoutAssignedByInput
+    completedSubtasks?: SubtaskCreateNestedManyWithoutCompletedByInput
+    authoredLogs?: TaskLogCreateNestedManyWithoutAuthorInput
+    calendarSyncStatus?: CalendarSyncStatusCreateNestedOneWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutCalendarEventsInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    calendarToken?: string | null
+    apiToken?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    memberships?: MemberUncheckedCreateNestedManyWithoutUserInput
+    sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
+    avatar?: UserAvatarUncheckedCreateNestedOneWithoutUserInput
+    createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    taskAssignments?: TaskAssigneeUncheckedCreateNestedManyWithoutUserInput
+    taskAssignmentsGiven?: TaskAssigneeUncheckedCreateNestedManyWithoutAssignedByInput
+    completedSubtasks?: SubtaskUncheckedCreateNestedManyWithoutCompletedByInput
+    authoredLogs?: TaskLogUncheckedCreateNestedManyWithoutAuthorInput
+    calendarSyncStatus?: CalendarSyncStatusUncheckedCreateNestedOneWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutCalendarEventsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCalendarEventsInput, UserUncheckedCreateWithoutCalendarEventsInput>
+  }
+
+  export type TaskUpsertWithoutCalendarEventsInput = {
+    update: XOR<TaskUpdateWithoutCalendarEventsInput, TaskUncheckedUpdateWithoutCalendarEventsInput>
+    create: XOR<TaskCreateWithoutCalendarEventsInput, TaskUncheckedCreateWithoutCalendarEventsInput>
+    where?: TaskWhereInput
+  }
+
+  export type TaskUpdateToOneWithWhereWithoutCalendarEventsInput = {
+    where?: TaskWhereInput
+    data: XOR<TaskUpdateWithoutCalendarEventsInput, TaskUncheckedUpdateWithoutCalendarEventsInput>
+  }
+
+  export type TaskUpdateWithoutCalendarEventsInput = {
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    estimateMinHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    estimateMaxHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutTasksNestedInput
+    client?: ClientUpdateOneWithoutTasksNestedInput
+    label?: LabelUpdateOneWithoutTasksNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedTasksNestedInput
+    assignees?: TaskAssigneeUpdateManyWithoutTaskNestedInput
+    subtasks?: SubtaskUpdateManyWithoutTaskNestedInput
+    logs?: TaskLogUpdateManyWithoutTaskNestedInput
+  }
+
+  export type TaskUncheckedUpdateWithoutCalendarEventsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    organizationId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    estimateMinHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    estimateMaxHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    clientId?: NullableIntFieldUpdateOperationsInput | number | null
+    labelId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assignees?: TaskAssigneeUncheckedUpdateManyWithoutTaskNestedInput
+    subtasks?: SubtaskUncheckedUpdateManyWithoutTaskNestedInput
+    logs?: TaskLogUncheckedUpdateManyWithoutTaskNestedInput
+  }
+
+  export type UserUpsertWithoutCalendarEventsInput = {
+    update: XOR<UserUpdateWithoutCalendarEventsInput, UserUncheckedUpdateWithoutCalendarEventsInput>
+    create: XOR<UserCreateWithoutCalendarEventsInput, UserUncheckedCreateWithoutCalendarEventsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCalendarEventsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCalendarEventsInput, UserUncheckedUpdateWithoutCalendarEventsInput>
+  }
+
+  export type UserUpdateWithoutCalendarEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    calendarToken?: NullableStringFieldUpdateOperationsInput | string | null
+    apiToken?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    memberships?: MemberUpdateManyWithoutUserNestedInput
+    sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
+    avatar?: UserAvatarUpdateOneWithoutUserNestedInput
+    createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    taskAssignments?: TaskAssigneeUpdateManyWithoutUserNestedInput
+    taskAssignmentsGiven?: TaskAssigneeUpdateManyWithoutAssignedByNestedInput
+    completedSubtasks?: SubtaskUpdateManyWithoutCompletedByNestedInput
+    authoredLogs?: TaskLogUpdateManyWithoutAuthorNestedInput
+    calendarSyncStatus?: CalendarSyncStatusUpdateOneWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCalendarEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    calendarToken?: NullableStringFieldUpdateOperationsInput | string | null
+    apiToken?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    memberships?: MemberUncheckedUpdateManyWithoutUserNestedInput
+    sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
+    avatar?: UserAvatarUncheckedUpdateOneWithoutUserNestedInput
+    createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    taskAssignments?: TaskAssigneeUncheckedUpdateManyWithoutUserNestedInput
+    taskAssignmentsGiven?: TaskAssigneeUncheckedUpdateManyWithoutAssignedByNestedInput
+    completedSubtasks?: SubtaskUncheckedUpdateManyWithoutCompletedByNestedInput
+    authoredLogs?: TaskLogUncheckedUpdateManyWithoutAuthorNestedInput
+    calendarSyncStatus?: CalendarSyncStatusUncheckedUpdateOneWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutCalendarSyncStatusInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    calendarToken?: string | null
+    apiToken?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    memberships?: MemberCreateNestedManyWithoutUserInput
+    sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
+    avatar?: UserAvatarCreateNestedOneWithoutUserInput
+    createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    taskAssignments?: TaskAssigneeCreateNestedManyWithoutUserInput
+    taskAssignmentsGiven?: TaskAssigneeCreateNestedManyWithoutAssignedByInput
+    completedSubtasks?: SubtaskCreateNestedManyWithoutCompletedByInput
+    authoredLogs?: TaskLogCreateNestedManyWithoutAuthorInput
+    calendarEvents?: TaskCalendarEventCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutCalendarSyncStatusInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    calendarToken?: string | null
+    apiToken?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    memberships?: MemberUncheckedCreateNestedManyWithoutUserInput
+    sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
+    avatar?: UserAvatarUncheckedCreateNestedOneWithoutUserInput
+    createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    taskAssignments?: TaskAssigneeUncheckedCreateNestedManyWithoutUserInput
+    taskAssignmentsGiven?: TaskAssigneeUncheckedCreateNestedManyWithoutAssignedByInput
+    completedSubtasks?: SubtaskUncheckedCreateNestedManyWithoutCompletedByInput
+    authoredLogs?: TaskLogUncheckedCreateNestedManyWithoutAuthorInput
+    calendarEvents?: TaskCalendarEventUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutCalendarSyncStatusInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCalendarSyncStatusInput, UserUncheckedCreateWithoutCalendarSyncStatusInput>
+  }
+
+  export type UserUpsertWithoutCalendarSyncStatusInput = {
+    update: XOR<UserUpdateWithoutCalendarSyncStatusInput, UserUncheckedUpdateWithoutCalendarSyncStatusInput>
+    create: XOR<UserCreateWithoutCalendarSyncStatusInput, UserUncheckedCreateWithoutCalendarSyncStatusInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCalendarSyncStatusInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCalendarSyncStatusInput, UserUncheckedUpdateWithoutCalendarSyncStatusInput>
+  }
+
+  export type UserUpdateWithoutCalendarSyncStatusInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    calendarToken?: NullableStringFieldUpdateOperationsInput | string | null
+    apiToken?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    memberships?: MemberUpdateManyWithoutUserNestedInput
+    sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
+    avatar?: UserAvatarUpdateOneWithoutUserNestedInput
+    createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    taskAssignments?: TaskAssigneeUpdateManyWithoutUserNestedInput
+    taskAssignmentsGiven?: TaskAssigneeUpdateManyWithoutAssignedByNestedInput
+    completedSubtasks?: SubtaskUpdateManyWithoutCompletedByNestedInput
+    authoredLogs?: TaskLogUpdateManyWithoutAuthorNestedInput
+    calendarEvents?: TaskCalendarEventUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCalendarSyncStatusInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    calendarToken?: NullableStringFieldUpdateOperationsInput | string | null
+    apiToken?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    memberships?: MemberUncheckedUpdateManyWithoutUserNestedInput
+    sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
+    avatar?: UserAvatarUncheckedUpdateOneWithoutUserNestedInput
+    createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    taskAssignments?: TaskAssigneeUncheckedUpdateManyWithoutUserNestedInput
+    taskAssignmentsGiven?: TaskAssigneeUncheckedUpdateManyWithoutAssignedByNestedInput
+    completedSubtasks?: SubtaskUncheckedUpdateManyWithoutCompletedByNestedInput
+    authoredLogs?: TaskLogUncheckedUpdateManyWithoutAuthorNestedInput
+    calendarEvents?: TaskCalendarEventUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TaskCreateManyClientInput = {
@@ -28039,6 +31461,7 @@ export namespace Prisma {
     assignees?: TaskAssigneeUpdateManyWithoutTaskNestedInput
     subtasks?: SubtaskUpdateManyWithoutTaskNestedInput
     logs?: TaskLogUpdateManyWithoutTaskNestedInput
+    calendarEvents?: TaskCalendarEventUpdateManyWithoutTaskNestedInput
   }
 
   export type TaskUncheckedUpdateWithoutClientInput = {
@@ -28059,6 +31482,7 @@ export namespace Prisma {
     assignees?: TaskAssigneeUncheckedUpdateManyWithoutTaskNestedInput
     subtasks?: SubtaskUncheckedUpdateManyWithoutTaskNestedInput
     logs?: TaskLogUncheckedUpdateManyWithoutTaskNestedInput
+    calendarEvents?: TaskCalendarEventUncheckedUpdateManyWithoutTaskNestedInput
   }
 
   export type TaskUncheckedUpdateManyWithoutClientInput = {
@@ -28112,6 +31536,7 @@ export namespace Prisma {
     assignees?: TaskAssigneeUpdateManyWithoutTaskNestedInput
     subtasks?: SubtaskUpdateManyWithoutTaskNestedInput
     logs?: TaskLogUpdateManyWithoutTaskNestedInput
+    calendarEvents?: TaskCalendarEventUpdateManyWithoutTaskNestedInput
   }
 
   export type TaskUncheckedUpdateWithoutLabelInput = {
@@ -28132,6 +31557,7 @@ export namespace Prisma {
     assignees?: TaskAssigneeUncheckedUpdateManyWithoutTaskNestedInput
     subtasks?: SubtaskUncheckedUpdateManyWithoutTaskNestedInput
     logs?: TaskLogUncheckedUpdateManyWithoutTaskNestedInput
+    calendarEvents?: TaskCalendarEventUncheckedUpdateManyWithoutTaskNestedInput
   }
 
   export type TaskUncheckedUpdateManyWithoutLabelInput = {
@@ -28178,6 +31604,12 @@ export namespace Prisma {
     subtaskId?: number | null
     authorId?: string | null
     createdAt?: Date | string
+  }
+
+  export type TaskCalendarEventCreateManyTaskInput = {
+    id?: number
+    userId: string
+    googleEventId: string
   }
 
   export type TaskAssigneeUpdateWithoutTaskInput = {
@@ -28266,6 +31698,23 @@ export namespace Prisma {
     subtaskId?: NullableIntFieldUpdateOperationsInput | number | null
     authorId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TaskCalendarEventUpdateWithoutTaskInput = {
+    googleEventId?: StringFieldUpdateOperationsInput | string
+    user?: UserUpdateOneRequiredWithoutCalendarEventsNestedInput
+  }
+
+  export type TaskCalendarEventUncheckedUpdateWithoutTaskInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    userId?: StringFieldUpdateOperationsInput | string
+    googleEventId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type TaskCalendarEventUncheckedUpdateManyWithoutTaskInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    userId?: StringFieldUpdateOperationsInput | string
+    googleEventId?: StringFieldUpdateOperationsInput | string
   }
 
   export type TaskLogCreateManySubtaskInput = {
@@ -28437,6 +31886,12 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type TaskCalendarEventCreateManyUserInput = {
+    id?: number
+    taskId: number
+    googleEventId: string
+  }
+
   export type SessionUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28583,6 +32038,7 @@ export namespace Prisma {
     assignees?: TaskAssigneeUpdateManyWithoutTaskNestedInput
     subtasks?: SubtaskUpdateManyWithoutTaskNestedInput
     logs?: TaskLogUpdateManyWithoutTaskNestedInput
+    calendarEvents?: TaskCalendarEventUpdateManyWithoutTaskNestedInput
   }
 
   export type TaskUncheckedUpdateWithoutCreatedByInput = {
@@ -28603,6 +32059,7 @@ export namespace Prisma {
     assignees?: TaskAssigneeUncheckedUpdateManyWithoutTaskNestedInput
     subtasks?: SubtaskUncheckedUpdateManyWithoutTaskNestedInput
     logs?: TaskLogUncheckedUpdateManyWithoutTaskNestedInput
+    calendarEvents?: TaskCalendarEventUncheckedUpdateManyWithoutTaskNestedInput
   }
 
   export type TaskUncheckedUpdateManyWithoutCreatedByInput = {
@@ -28731,6 +32188,23 @@ export namespace Prisma {
     estimatedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     subtaskId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TaskCalendarEventUpdateWithoutUserInput = {
+    googleEventId?: StringFieldUpdateOperationsInput | string
+    task?: TaskUpdateOneRequiredWithoutCalendarEventsNestedInput
+  }
+
+  export type TaskCalendarEventUncheckedUpdateWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    taskId?: IntFieldUpdateOperationsInput | number
+    googleEventId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type TaskCalendarEventUncheckedUpdateManyWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    taskId?: IntFieldUpdateOperationsInput | number
+    googleEventId?: StringFieldUpdateOperationsInput | string
   }
 
   export type MemberCreateManyOrganizationInput = {
@@ -28881,6 +32355,7 @@ export namespace Prisma {
     assignees?: TaskAssigneeUpdateManyWithoutTaskNestedInput
     subtasks?: SubtaskUpdateManyWithoutTaskNestedInput
     logs?: TaskLogUpdateManyWithoutTaskNestedInput
+    calendarEvents?: TaskCalendarEventUpdateManyWithoutTaskNestedInput
   }
 
   export type TaskUncheckedUpdateWithoutOrganizationInput = {
@@ -28901,6 +32376,7 @@ export namespace Prisma {
     assignees?: TaskAssigneeUncheckedUpdateManyWithoutTaskNestedInput
     subtasks?: SubtaskUncheckedUpdateManyWithoutTaskNestedInput
     logs?: TaskLogUncheckedUpdateManyWithoutTaskNestedInput
+    calendarEvents?: TaskCalendarEventUncheckedUpdateManyWithoutTaskNestedInput
   }
 
   export type TaskUncheckedUpdateManyWithoutOrganizationInput = {
