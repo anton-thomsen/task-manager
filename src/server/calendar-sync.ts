@@ -91,7 +91,12 @@ async function calendarRequest(
 		return { ok: true, unauthorized: false, notFound: false };
 	}
 	const payload = (await response.json()) as { id?: string };
-	return { ok: true, unauthorized: false, notFound: false, eventId: payload.id };
+	return {
+		ok: true,
+		unauthorized: false,
+		notFound: false,
+		eventId: payload.id,
+	};
 }
 
 async function deleteEvent(
