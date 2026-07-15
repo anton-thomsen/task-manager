@@ -17,6 +17,8 @@ export function AuthForm({ mode }: AuthFormProps) {
 	const router = useRouter();
 	const [error, setError] = useState<string | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [useMagicLink, setUseMagicLink] = useState(false);
+	const [magicLinkSent, setMagicLinkSent] = useState(false);
 	const isSignup = mode === "signup";
 
 	async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -28,6 +30,18 @@ export function AuthForm({ mode }: AuthFormProps) {
 		const password = String(formData.get("password") ?? "");
 
 		try {
+			if (!isSignup && useMagicLink) {
+				const result = await authClient.signIn.magicLink({
+					email,
+					callbackURL: "/",
+				});
+				if (result.error) {
+					setError("The sign-in link could not be sent. Try again.");
+					return;
+				}
+				setMagicLinkSent(true);
+				return;
+			}
 			const result = isSignup
 				? await authClient.signUp.email({
 						email,
@@ -100,23 +114,33 @@ export function AuthForm({ mode }: AuthFormProps) {
 							type="email"
 						/>
 					</div>
-					<div>
-						<label
-							className="mb-1 block font-semibold text-sm"
-							htmlFor={isSignup ? "new-password" : "current-password"}
+					{isSignup || !useMagicLink ? (
+						<div>
+							<label
+								className="mb-1 block font-semibold text-sm"
+								htmlFor={isSignup ? "new-password" : "current-password"}
+							>
+								Password
+							</label>
+							<input
+								autoComplete={isSignup ? "new-password" : "current-password"}
+								className={inputClass}
+								id={isSignup ? "new-password" : "current-password"}
+								minLength={8}
+								name="password"
+								required
+								type="password"
+							/>
+						</div>
+					) : null}
+					{magicLinkSent ? (
+						<p
+							className="rounded-md bg-emerald-100 p-3 text-emerald-950 text-sm"
+							role="status"
 						>
-							Password
-						</label>
-						<input
-							autoComplete={isSignup ? "new-password" : "current-password"}
-							className={inputClass}
-							id={isSignup ? "new-password" : "current-password"}
-							minLength={8}
-							name="password"
-							required
-							type="password"
-						/>
-					</div>
+							Check your email for a sign-in link. You can close this page.
+						</p>
+					) : null}
 					{error ? (
 						<p
 							className="rounded-md bg-red-100 p-3 text-red-900 text-sm"
@@ -127,18 +151,37 @@ export function AuthForm({ mode }: AuthFormProps) {
 					) : null}
 					<button
 						className="w-full rounded-md border border-emerald-950 bg-emerald-700 px-4 py-2.5 font-bold text-white shadow-[2px_2px_0_#052e16] hover:bg-emerald-800 disabled:opacity-60"
-						disabled={isSubmitting}
+						disabled={isSubmitting || magicLinkSent}
 						type="submit"
 					>
 						{isSubmitting
 							? isSignup
 								? "Creating account..."
-								: "Signing in..."
+								: useMagicLink
+									? "Sending link..."
+									: "Signing in..."
 							: isSignup
 								? "Create account"
-								: "Sign in"}
+								: useMagicLink
+									? "Email me a sign-in link"
+									: "Sign in"}
 					</button>
 				</form>
+				{!isSignup ? (
+					<button
+						className="mt-4 font-semibold text-sm underline underline-offset-4"
+						onClick={() => {
+							setUseMagicLink((value) => !value);
+							setMagicLinkSent(false);
+							setError(null);
+						}}
+						type="button"
+					>
+						{useMagicLink
+							? "Use a password instead"
+							: "Email me a sign-in link instead"}
+					</button>
+				) : null}
 				{isSignup ? (
 					<Link
 						className="mt-5 inline-block font-semibold text-sm underline"
