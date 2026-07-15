@@ -7,10 +7,17 @@ import { type FormEvent, useRef, useState } from "react";
 import { formatHours } from "~/lib/format";
 import { addLog, deleteLog } from "~/server/actions/logs";
 import { LocalizedTime } from "./localized-time";
+import { UserAvatar } from "./user-avatar";
 
 type LogImage = {
 	id: number;
 	fileName: string;
+};
+
+type LogAuthor = {
+	id: string;
+	name: string;
+	image: string | null;
 };
 
 type Log = {
@@ -19,6 +26,7 @@ type Log = {
 	details: string | null;
 	hoursSpent: number | null;
 	createdAt: string;
+	author: LogAuthor | null;
 	images: LogImage[];
 };
 
@@ -158,7 +166,23 @@ export function WorkLog({ logs, taskId }: { logs: Log[]; taskId: number }) {
 					>
 						<header className="flex items-start justify-between gap-4">
 							<div>
-								<p className="text-stone-500 text-xs">
+								<p className="flex flex-wrap items-center gap-1.5 text-stone-500 text-xs">
+									{log.author ? (
+										<>
+											<UserAvatar
+												size="sm"
+												user={{
+													userId: log.author.id,
+													name: log.author.name,
+													image: log.author.image,
+												}}
+											/>
+											<span className="font-semibold text-stone-700">
+												{log.author.name}
+											</span>
+											<span aria-hidden="true">·</span>
+										</>
+									) : null}
 									<LocalizedTime iso={log.createdAt} />
 									{log.hoursSpent ? ` · ${formatHours(log.hoursSpent)}` : ""}
 								</p>

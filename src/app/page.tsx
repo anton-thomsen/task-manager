@@ -7,7 +7,9 @@ import { isOverdue } from "~/lib/format";
 import { int4IdSchema } from "~/lib/validation";
 import { requireMember } from "~/server/auth";
 import { db } from "~/server/db";
+import { listOrgMembers } from "~/server/org-members";
 import { taskWhereFor } from "~/server/task-access";
+import type { Prisma } from "../../generated/prisma";
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
@@ -27,11 +29,41 @@ export default async function HomePage({
 	const clientId = selectedId(filters.client);
 	const labelId = selectedId(filters.label);
 	const showArchived = filters.archived === "1";
+	const isManager = member.role === "owner" || member.role === "admin";
+	const rawScope = Array.isArray(filters.scope)
+		? filters.scope[0]
+		: filters.scope;
+	const scope =
+		isManager && (rawScope === "mine" || rawScope === "delegated")
+			? rawScope
+			: undefined;
+	const scopeWhere: Prisma.TaskWhereInput[] =
+		scope === "mine"
+			? [
+					{
+						OR: [
+							{ createdById: member.userId },
+							{ assignees: { some: { userId: member.userId } } },
+						],
+					},
+				]
+			: scope === "delegated"
+				? [
+						{
+							assignees: {
+								some: {
+									assignedById: member.userId,
+									userId: { not: member.userId },
+								},
+							},
+						},
+					]
+				: [];
 
-	const [tasks, clients, labels] = await Promise.all([
+	const [tasks, clients, labels, members] = await Promise.all([
 		db.task.findMany({
 			where: {
-				AND: [taskWhereFor(member)],
+				AND: [taskWhereFor(member), ...scopeWhere],
 				archivedAt: showArchived ? undefined : null,
 				clientId,
 				labelId,
@@ -41,6 +73,15 @@ export default async function HomePage({
 				client: true,
 				label: true,
 				subtasks: { select: { status: true } },
+				assignees: {
+					orderBy: { createdAt: "asc" },
+					select: {
+						userId: true,
+						acceptedAt: true,
+						user: { select: { name: true, image: true } },
+						assignedBy: { select: { name: true } },
+					},
+				},
 				_count: { select: { logs: true } },
 			},
 		}),
@@ -52,10 +93,14 @@ export default async function HomePage({
 			where: { organizationId: member.orgId },
 			orderBy: { name: "asc" },
 		}),
+		listOrgMembers(member.orgId),
 	]);
 
 	const taskValues: TaskCardValue[] = tasks.map((task) => {
 		const deadline = task.deadline?.toISOString().slice(0, 10) ?? null;
+		const myAssignment = task.assignees.find(
+			({ userId }) => userId === member.userId,
+		);
 		return {
 			id: task.id,
 			title: task.title,
@@ -66,6 +111,7 @@ export default async function HomePage({
 			estimateMaxHours: task.estimateMaxHours,
 			clientId: task.clientId,
 			labelId: task.labelId,
+			assigneeIds: task.assignees.map(({ userId }) => userId),
 			client: task.client,
 			label: task.label,
 			archivedAt: task.archivedAt?.toISOString() ?? null,
@@ -75,6 +121,21 @@ export default async function HomePage({
 			).length,
 			logCount: task._count.logs,
 			overdue: isOverdue(deadline, task.status),
+			// Only surface avatars when someone besides the viewer participates;
+			// a solo task showing your own face is noise.
+			participants: task.assignees.some(
+				({ userId }) => userId !== member.userId,
+			)
+				? task.assignees.map(({ userId, user }) => ({
+						userId,
+						name: user.name,
+						image: user.image,
+					}))
+				: undefined,
+			pendingFrom:
+				myAssignment && myAssignment.acceptedAt === null
+					? (myAssignment.assignedBy?.name ?? "a teammate")
+					: null,
 		};
 	});
 
@@ -107,9 +168,37 @@ export default async function HomePage({
 							Settings
 						</Link>
 						<SignOutButton />
-						<TaskForm clients={clients} labels={labels} />
+						<TaskForm clients={clients} labels={labels} members={members} />
 					</div>
 				</div>
+				{isManager && members.length > 1 ? (
+					<nav aria-label="Board scope" className="mt-4 flex flex-wrap gap-2">
+						{(
+							[
+								["", "Everyone"],
+								["mine", "Mine"],
+								["delegated", "Delegated by me"],
+							] as const
+						).map(([value, label]) => {
+							const params = new URLSearchParams();
+							if (clientId) params.set("client", String(clientId));
+							if (labelId) params.set("label", String(labelId));
+							if (showArchived) params.set("archived", "1");
+							if (value) params.set("scope", value);
+							const query = params.toString();
+							const active = (scope ?? "") === value;
+							return (
+								<Link
+									className={`rounded-full border border-stone-900 px-3 py-1 font-bold text-xs ${active ? "bg-stone-900 text-white" : "bg-white hover:bg-stone-100"}`}
+									href={query ? `/?${query}` : "/"}
+									key={label}
+								>
+									{label}
+								</Link>
+							);
+						})}
+					</nav>
+				) : null}
 			</header>
 
 			<form
@@ -181,7 +270,12 @@ export default async function HomePage({
 				</div>
 			</form>
 
-			<TaskBoard clients={clients} labels={labels} tasks={taskValues} />
+			<TaskBoard
+				clients={clients}
+				labels={labels}
+				members={members}
+				tasks={taskValues}
+			/>
 		</main>
 	);
 }

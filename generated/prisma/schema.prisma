@@ -72,14 +72,15 @@ model Task {
 }
 
 model TaskAssignee {
-  id           Int      @id @default(autoincrement())
+  id           Int       @id @default(autoincrement())
   taskId       Int
-  task         Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  task         Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
   userId       String
-  user         User     @relation("taskAssignments", fields: [userId], references: [id], onDelete: Cascade)
+  user         User      @relation("taskAssignments", fields: [userId], references: [id], onDelete: Cascade)
   assignedById String?
-  assignedBy   User?    @relation("taskAssignmentsGiven", fields: [assignedById], references: [id], onDelete: SetNull)
-  createdAt    DateTime @default(now())
+  assignedBy   User?     @relation("taskAssignmentsGiven", fields: [assignedById], references: [id], onDelete: SetNull)
+  acceptedAt   DateTime?
+  createdAt    DateTime  @default(now())
 
   @@unique([taskId, userId])
   @@index([userId])

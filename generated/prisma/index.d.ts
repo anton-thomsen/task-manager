@@ -6137,6 +6137,7 @@ export namespace Prisma {
     taskId: number | null
     userId: string | null
     assignedById: string | null
+    acceptedAt: Date | null
     createdAt: Date | null
   }
 
@@ -6145,6 +6146,7 @@ export namespace Prisma {
     taskId: number | null
     userId: string | null
     assignedById: string | null
+    acceptedAt: Date | null
     createdAt: Date | null
   }
 
@@ -6153,6 +6155,7 @@ export namespace Prisma {
     taskId: number
     userId: number
     assignedById: number
+    acceptedAt: number
     createdAt: number
     _all: number
   }
@@ -6173,6 +6176,7 @@ export namespace Prisma {
     taskId?: true
     userId?: true
     assignedById?: true
+    acceptedAt?: true
     createdAt?: true
   }
 
@@ -6181,6 +6185,7 @@ export namespace Prisma {
     taskId?: true
     userId?: true
     assignedById?: true
+    acceptedAt?: true
     createdAt?: true
   }
 
@@ -6189,6 +6194,7 @@ export namespace Prisma {
     taskId?: true
     userId?: true
     assignedById?: true
+    acceptedAt?: true
     createdAt?: true
     _all?: true
   }
@@ -6284,6 +6290,7 @@ export namespace Prisma {
     taskId: number
     userId: string
     assignedById: string | null
+    acceptedAt: Date | null
     createdAt: Date
     _count: TaskAssigneeCountAggregateOutputType | null
     _avg: TaskAssigneeAvgAggregateOutputType | null
@@ -6311,6 +6318,7 @@ export namespace Prisma {
     taskId?: boolean
     userId?: boolean
     assignedById?: boolean
+    acceptedAt?: boolean
     createdAt?: boolean
     task?: boolean | TaskDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -6322,6 +6330,7 @@ export namespace Prisma {
     taskId?: boolean
     userId?: boolean
     assignedById?: boolean
+    acceptedAt?: boolean
     createdAt?: boolean
     task?: boolean | TaskDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -6333,6 +6342,7 @@ export namespace Prisma {
     taskId?: boolean
     userId?: boolean
     assignedById?: boolean
+    acceptedAt?: boolean
     createdAt?: boolean
     task?: boolean | TaskDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -6344,10 +6354,11 @@ export namespace Prisma {
     taskId?: boolean
     userId?: boolean
     assignedById?: boolean
+    acceptedAt?: boolean
     createdAt?: boolean
   }
 
-  export type TaskAssigneeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "taskId" | "userId" | "assignedById" | "createdAt", ExtArgs["result"]["taskAssignee"]>
+  export type TaskAssigneeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "taskId" | "userId" | "assignedById" | "acceptedAt" | "createdAt", ExtArgs["result"]["taskAssignee"]>
   export type TaskAssigneeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     task?: boolean | TaskDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -6376,6 +6387,7 @@ export namespace Prisma {
       taskId: number
       userId: string
       assignedById: string | null
+      acceptedAt: Date | null
       createdAt: Date
     }, ExtArgs["result"]["taskAssignee"]>
     composites: {}
@@ -6807,6 +6819,7 @@ export namespace Prisma {
     readonly taskId: FieldRef<"TaskAssignee", 'Int'>
     readonly userId: FieldRef<"TaskAssignee", 'String'>
     readonly assignedById: FieldRef<"TaskAssignee", 'String'>
+    readonly acceptedAt: FieldRef<"TaskAssignee", 'DateTime'>
     readonly createdAt: FieldRef<"TaskAssignee", 'DateTime'>
   }
     
@@ -19934,6 +19947,7 @@ export namespace Prisma {
     taskId: 'taskId',
     userId: 'userId',
     assignedById: 'assignedById',
+    acceptedAt: 'acceptedAt',
     createdAt: 'createdAt'
   };
 
@@ -20451,6 +20465,7 @@ export namespace Prisma {
     taskId?: IntFilter<"TaskAssignee"> | number
     userId?: StringFilter<"TaskAssignee"> | string
     assignedById?: StringNullableFilter<"TaskAssignee"> | string | null
+    acceptedAt?: DateTimeNullableFilter<"TaskAssignee"> | Date | string | null
     createdAt?: DateTimeFilter<"TaskAssignee"> | Date | string
     task?: XOR<TaskScalarRelationFilter, TaskWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -20462,6 +20477,7 @@ export namespace Prisma {
     taskId?: SortOrder
     userId?: SortOrder
     assignedById?: SortOrderInput | SortOrder
+    acceptedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     task?: TaskOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
@@ -20477,6 +20493,7 @@ export namespace Prisma {
     taskId?: IntFilter<"TaskAssignee"> | number
     userId?: StringFilter<"TaskAssignee"> | string
     assignedById?: StringNullableFilter<"TaskAssignee"> | string | null
+    acceptedAt?: DateTimeNullableFilter<"TaskAssignee"> | Date | string | null
     createdAt?: DateTimeFilter<"TaskAssignee"> | Date | string
     task?: XOR<TaskScalarRelationFilter, TaskWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -20488,6 +20505,7 @@ export namespace Prisma {
     taskId?: SortOrder
     userId?: SortOrder
     assignedById?: SortOrderInput | SortOrder
+    acceptedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: TaskAssigneeCountOrderByAggregateInput
     _avg?: TaskAssigneeAvgOrderByAggregateInput
@@ -20504,6 +20522,7 @@ export namespace Prisma {
     taskId?: IntWithAggregatesFilter<"TaskAssignee"> | number
     userId?: StringWithAggregatesFilter<"TaskAssignee"> | string
     assignedById?: StringNullableWithAggregatesFilter<"TaskAssignee"> | string | null
+    acceptedAt?: DateTimeNullableWithAggregatesFilter<"TaskAssignee"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"TaskAssignee"> | Date | string
   }
 
@@ -21536,6 +21555,7 @@ export namespace Prisma {
   }
 
   export type TaskAssigneeCreateInput = {
+    acceptedAt?: Date | string | null
     createdAt?: Date | string
     task: TaskCreateNestedOneWithoutAssigneesInput
     user: UserCreateNestedOneWithoutTaskAssignmentsInput
@@ -21547,10 +21567,12 @@ export namespace Prisma {
     taskId: number
     userId: string
     assignedById?: string | null
+    acceptedAt?: Date | string | null
     createdAt?: Date | string
   }
 
   export type TaskAssigneeUpdateInput = {
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     task?: TaskUpdateOneRequiredWithoutAssigneesNestedInput
     user?: UserUpdateOneRequiredWithoutTaskAssignmentsNestedInput
@@ -21562,6 +21584,7 @@ export namespace Prisma {
     taskId?: IntFieldUpdateOperationsInput | number
     userId?: StringFieldUpdateOperationsInput | string
     assignedById?: NullableStringFieldUpdateOperationsInput | string | null
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -21570,10 +21593,12 @@ export namespace Prisma {
     taskId: number
     userId: string
     assignedById?: string | null
+    acceptedAt?: Date | string | null
     createdAt?: Date | string
   }
 
   export type TaskAssigneeUpdateManyMutationInput = {
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -21582,6 +21607,7 @@ export namespace Prisma {
     taskId?: IntFieldUpdateOperationsInput | number
     userId?: StringFieldUpdateOperationsInput | string
     assignedById?: NullableStringFieldUpdateOperationsInput | string | null
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -22869,6 +22895,7 @@ export namespace Prisma {
     taskId?: SortOrder
     userId?: SortOrder
     assignedById?: SortOrder
+    acceptedAt?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -22882,6 +22909,7 @@ export namespace Prisma {
     taskId?: SortOrder
     userId?: SortOrder
     assignedById?: SortOrder
+    acceptedAt?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -22890,6 +22918,7 @@ export namespace Prisma {
     taskId?: SortOrder
     userId?: SortOrder
     assignedById?: SortOrder
+    acceptedAt?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -25350,6 +25379,7 @@ export namespace Prisma {
   }
 
   export type TaskAssigneeCreateWithoutTaskInput = {
+    acceptedAt?: Date | string | null
     createdAt?: Date | string
     user: UserCreateNestedOneWithoutTaskAssignmentsInput
     assignedBy?: UserCreateNestedOneWithoutTaskAssignmentsGivenInput
@@ -25359,6 +25389,7 @@ export namespace Prisma {
     id?: number
     userId: string
     assignedById?: string | null
+    acceptedAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -25596,6 +25627,7 @@ export namespace Prisma {
     taskId?: IntFilter<"TaskAssignee"> | number
     userId?: StringFilter<"TaskAssignee"> | string
     assignedById?: StringNullableFilter<"TaskAssignee"> | string | null
+    acceptedAt?: DateTimeNullableFilter<"TaskAssignee"> | Date | string | null
     createdAt?: DateTimeFilter<"TaskAssignee"> | Date | string
   }
 
@@ -26853,6 +26885,7 @@ export namespace Prisma {
   }
 
   export type TaskAssigneeCreateWithoutUserInput = {
+    acceptedAt?: Date | string | null
     createdAt?: Date | string
     task: TaskCreateNestedOneWithoutAssigneesInput
     assignedBy?: UserCreateNestedOneWithoutTaskAssignmentsGivenInput
@@ -26862,6 +26895,7 @@ export namespace Prisma {
     id?: number
     taskId: number
     assignedById?: string | null
+    acceptedAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -26876,6 +26910,7 @@ export namespace Prisma {
   }
 
   export type TaskAssigneeCreateWithoutAssignedByInput = {
+    acceptedAt?: Date | string | null
     createdAt?: Date | string
     task: TaskCreateNestedOneWithoutAssigneesInput
     user: UserCreateNestedOneWithoutTaskAssignmentsInput
@@ -26885,6 +26920,7 @@ export namespace Prisma {
     id?: number
     taskId: number
     userId: string
+    acceptedAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -28119,6 +28155,7 @@ export namespace Prisma {
     id?: number
     userId: string
     assignedById?: string | null
+    acceptedAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -28144,6 +28181,7 @@ export namespace Prisma {
   }
 
   export type TaskAssigneeUpdateWithoutTaskInput = {
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutTaskAssignmentsNestedInput
     assignedBy?: UserUpdateOneWithoutTaskAssignmentsGivenNestedInput
@@ -28153,6 +28191,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     userId?: StringFieldUpdateOperationsInput | string
     assignedById?: NullableStringFieldUpdateOperationsInput | string | null
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -28160,6 +28199,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     userId?: StringFieldUpdateOperationsInput | string
     assignedById?: NullableStringFieldUpdateOperationsInput | string | null
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -28364,6 +28404,7 @@ export namespace Prisma {
     id?: number
     taskId: number
     assignedById?: string | null
+    acceptedAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -28371,6 +28412,7 @@ export namespace Prisma {
     id?: number
     taskId: number
     userId: string
+    acceptedAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -28581,6 +28623,7 @@ export namespace Prisma {
   }
 
   export type TaskAssigneeUpdateWithoutUserInput = {
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     task?: TaskUpdateOneRequiredWithoutAssigneesNestedInput
     assignedBy?: UserUpdateOneWithoutTaskAssignmentsGivenNestedInput
@@ -28590,6 +28633,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     taskId?: IntFieldUpdateOperationsInput | number
     assignedById?: NullableStringFieldUpdateOperationsInput | string | null
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -28597,10 +28641,12 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     taskId?: IntFieldUpdateOperationsInput | number
     assignedById?: NullableStringFieldUpdateOperationsInput | string | null
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TaskAssigneeUpdateWithoutAssignedByInput = {
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     task?: TaskUpdateOneRequiredWithoutAssigneesNestedInput
     user?: UserUpdateOneRequiredWithoutTaskAssignmentsNestedInput
@@ -28610,6 +28656,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     taskId?: IntFieldUpdateOperationsInput | number
     userId?: StringFieldUpdateOperationsInput | string
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -28617,6 +28664,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     taskId?: IntFieldUpdateOperationsInput | number
     userId?: StringFieldUpdateOperationsInput | string
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

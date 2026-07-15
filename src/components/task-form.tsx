@@ -9,6 +9,7 @@ import { taskStatuses } from "~/lib/tasks";
 import { createClient } from "~/server/actions/clients";
 import { createLabel } from "~/server/actions/labels";
 import { createTask, updateTask } from "~/server/actions/tasks";
+import { UserAvatar, type UserRef } from "./user-avatar";
 
 export type TaskFormValue = {
 	id: number;
@@ -20,11 +21,13 @@ export type TaskFormValue = {
 	estimateMaxHours: number | null;
 	clientId: number | null;
 	labelId: number | null;
+	assigneeIds?: string[];
 };
 
 type TaskFormProps = {
 	clients: TaskOption[];
 	labels: LabelOption[];
+	members?: UserRef[];
 	task?: TaskFormValue;
 	triggerLabel?: string;
 	triggerVariant?: "default" | "card";
@@ -58,6 +61,7 @@ function mergeById<T extends { id: number }>(server: T[], local: T[]): T[] {
 export function TaskForm({
 	clients,
 	labels,
+	members,
 	task,
 	triggerLabel,
 	triggerVariant = "default",
@@ -319,6 +323,39 @@ export function TaskForm({
 							</select>
 						</label>
 					</div>
+
+					{members && members.length > 1 ? (
+						<fieldset className="rounded-xl border border-stone-400 bg-white/60 p-3">
+							<legend className="px-1 font-semibold text-sm">
+								Participants
+							</legend>
+							<input name="assigneesPresent" type="hidden" value="1" />
+							<div className="flex flex-wrap gap-2">
+								{members.map((person) => (
+									<label
+										className="interactive-field flex cursor-pointer items-center gap-2 rounded-full border border-stone-900 bg-white px-3 py-1.5 text-sm has-[:checked]:bg-emerald-100"
+										key={person.userId}
+									>
+										<input
+											className="size-4 accent-emerald-700"
+											defaultChecked={task?.assigneeIds?.includes(
+												person.userId,
+											)}
+											name="assignees"
+											type="checkbox"
+											value={person.userId}
+										/>
+										<UserAvatar size="sm" user={person} />
+										<span className="font-semibold">{person.name}</span>
+									</label>
+								))}
+							</div>
+							<p className="mt-2 text-stone-600 text-xs">
+								Assigning only someone else delegates the task to them. Leave
+								everyone unchecked to keep it as yours.
+							</p>
+						</fieldset>
+					) : null}
 
 					<div className="rounded-xl border border-stone-400 bg-white/60 p-3">
 						<p className="mb-2 font-semibold text-sm">Estimate range (hours)</p>

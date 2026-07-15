@@ -14,10 +14,22 @@ import {
 	taskDescriptionSchema,
 	taskTitleSchema,
 } from "~/lib/validation";
+import { reconcileAssignees, verifyOrgMembers } from "~/server/assignment";
 import { requireMember, type SessionMember } from "~/server/auth";
 import { db } from "~/server/db";
 import { requireTaskAccess, taskWhereFor } from "~/server/task-access";
 import { createTaskAtLaneEnd } from "~/server/task-creation";
+
+const assigneeIdsSchema = z.array(z.string().trim().min(1).max(100)).max(50);
+
+function assigneeInput(formData: FormData): string[] | undefined {
+	// The form always submits this marker when the picker is rendered, so an
+	// empty selection is distinguishable from a form without the picker.
+	if (!formData.has("assigneesPresent")) return undefined;
+	return assigneeIdsSchema.parse(
+		formData.getAll("assignees").map((value) => value.toString()),
+	);
+}
 
 const taskFields = {
 	title: taskTitleSchema,
@@ -109,12 +121,15 @@ export async function createTask(formData: FormData): Promise<ActionResult> {
 			};
 		}
 		await verifyRelations(member, parsed.clientId, parsed.labelId);
+		const assigneeIds = assigneeInput(formData) ?? [];
+		await verifyOrgMembers(member, assigneeIds);
 		await createTaskAtLaneEnd(
 			{ orgId: member.orgId, userId: member.userId },
 			{
 				...parsed,
 				description: nullableText(parsed.description),
 			},
+			assigneeIds,
 		);
 		revalidatePath("/");
 		revalidatePath("/archived");
@@ -232,6 +247,17 @@ export async function updateTask(formData: FormData): Promise<ActionResult> {
 				...(has("labelId") ? { labelId: parsed.labelId ?? null } : {}),
 			},
 		});
+		const assigneeIds = assigneeInput(formData);
+		if (assigneeIds) {
+			// An emptied picker mirrors create semantics: the task falls back to
+			// its creator (or the editor) as sole participant.
+			const fallback = existing.createdById ?? member.userId;
+			await reconcileAssignees(
+				member,
+				parsed.id,
+				assigneeIds.length > 0 ? assigneeIds : [fallback],
+			);
+		}
 		revalidatePath("/");
 		revalidatePath(`/tasks/${parsed.id}`);
 		return { ok: true };
