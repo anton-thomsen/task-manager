@@ -296,7 +296,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/anton/DevFolder/Personal/task-manager/.claude/worktrees/agent-a2d7e3bbc218b8e46/generated/prisma",
+      "value": "/Users/anton/.no-mistakes/worktrees/6d1ee54eb237/01KXK79CZSYHKGH29XZXB1MZQ4/generated/prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -310,12 +310,11 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/Users/anton/DevFolder/Personal/task-manager/.claude/worktrees/agent-a2d7e3bbc218b8e46/prisma/schema.prisma",
+    "sourceFilePath": "/Users/anton/.no-mistakes/worktrees/6d1ee54eb237/01KXK79CZSYHKGH29XZXB1MZQ4/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": null,
-    "schemaEnvPath": "../../.env"
+    "rootEnvPath": null
   },
   "relativePath": "../../prisma",
   "clientVersion": "6.19.3",
