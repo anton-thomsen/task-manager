@@ -11,6 +11,25 @@ import { env } from "~/env";
 import { db } from "~/server/db";
 import { sendEmail } from "~/server/email";
 
+async function isEligibleForMagicLink(email: string): Promise<boolean> {
+	if (env.AUTH_ALLOW_SIGNUP === "true") return true;
+	const existingUser = await db.user.findFirst({
+		where: { email: { equals: email, mode: "insensitive" } },
+		select: { id: true },
+	});
+	if (existingUser) return true;
+	if ((await db.user.count()) === 0) return true;
+	const invitation = await db.invitation.findFirst({
+		where: {
+			email: { equals: email, mode: "insensitive" },
+			status: "pending",
+			expiresAt: { gt: new Date() },
+		},
+		select: { id: true },
+	});
+	return invitation !== null;
+}
+
 export const auth = betterAuth({
 	baseURL: env.BETTER_AUTH_URL,
 	database: prismaAdapter(db, { provider: "postgresql" }),
@@ -76,6 +95,7 @@ export const auth = betterAuth({
 	plugins: [
 		magicLink({
 			async sendMagicLink({ email, url }) {
+				if (!(await isEligibleForMagicLink(email))) return;
 				await sendEmail({
 					to: email,
 					subject: "Sign in to Task Manager",
