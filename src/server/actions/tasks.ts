@@ -16,6 +16,10 @@ import {
 } from "~/lib/validation";
 import { reconcileAssignees, verifyOrgMembers } from "~/server/assignment";
 import { requireMember, type SessionMember } from "~/server/auth";
+import {
+	prepareTaskEventCleanup,
+	scheduleTaskSync,
+} from "~/server/calendar-sync";
 import { db } from "~/server/db";
 import { requireTaskAccess, taskWhereFor } from "~/server/task-access";
 import { createTaskAtLaneEnd } from "~/server/task-creation";
@@ -123,7 +127,7 @@ export async function createTask(formData: FormData): Promise<ActionResult> {
 		await verifyRelations(member, parsed.clientId, parsed.labelId);
 		const assigneeIds = assigneeInput(formData) ?? [];
 		await verifyOrgMembers(member, assigneeIds);
-		await createTaskAtLaneEnd(
+		const task = await createTaskAtLaneEnd(
 			{ orgId: member.orgId, userId: member.userId },
 			{
 				...parsed,
@@ -131,6 +135,7 @@ export async function createTask(formData: FormData): Promise<ActionResult> {
 			},
 			assigneeIds,
 		);
+		if (task.deadline) scheduleTaskSync(task.id);
 		revalidatePath("/");
 		revalidatePath("/archived");
 		return { ok: true };
@@ -258,6 +263,11 @@ export async function updateTask(formData: FormData): Promise<ActionResult> {
 				assigneeIds.length > 0 ? assigneeIds : [fallback],
 			);
 		}
+		const deadlineChanged =
+			has("deadline") &&
+			(parsed.deadline ?? null)?.getTime() !== existing.deadline?.getTime();
+		const titleChanged = has("title") && parsed.title !== existing.title;
+		if (deadlineChanged || titleChanged) scheduleTaskSync(parsed.id);
 		revalidatePath("/");
 		revalidatePath(`/tasks/${parsed.id}`);
 		return { ok: true };
@@ -271,7 +281,9 @@ export async function deleteTask(idInput: number): Promise<ActionResult> {
 	try {
 		const id = int4IdSchema.parse(idInput);
 		await requireTaskAccess(member, id);
+		const cleanupCalendarEvents = await prepareTaskEventCleanup(id);
 		await db.task.delete({ where: { id } });
+		cleanupCalendarEvents();
 		revalidatePath("/");
 		revalidatePath("/archived");
 		return { ok: true };
@@ -293,6 +305,7 @@ export async function setArchived(
 			where: { id },
 			data: { archivedAt: archived ? new Date() : null },
 		});
+		scheduleTaskSync(id);
 		revalidatePath("/");
 		revalidatePath("/archived");
 		revalidatePath(`/tasks/${id}`);

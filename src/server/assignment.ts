@@ -1,4 +1,5 @@
 import type { SessionMember } from "~/server/auth";
+import { scheduleAssigneeSync } from "~/server/calendar-sync";
 import { db } from "~/server/db";
 
 /** Throws unless every id is a user belonging to the caller's organization. */
@@ -58,4 +59,5 @@ export async function reconcileAssignees(
 			}),
 		),
 	]);
+	scheduleAssigneeSync(taskId, toAdd, toRemove);
 }

@@ -15,6 +15,7 @@ A small, focused task manager for keeping client work visible and moving.
 - Keep completed subtasks separate from detailed manual work logs
 - Compare estimates with logged hours and attach supporting images
 - Search, restore, or permanently delete archived tasks
+- Sync task deadlines to your own Google Calendar as all-day events
 - Keyboard, touch, mobile, and reduced-motion support
 
 ## Teams and delegation
@@ -39,7 +40,10 @@ filters - **Everyone**, **Mine**, and **Delegated by me** - to narrow what the
 board shows.
 
 From **Settings > Tokens** each person can copy a personal calendar feed to
-subscribe to their tasks and mint an API token for programmatic access.
+subscribe to their tasks and mint an API token for programmatic access. From
+**Settings > Integrations** each person can connect their own Google Calendar,
+which syncs the deadlines of tasks they participate in as all-day events; see
+[GOOGLE_CALENDAR.md](GOOGLE_CALENDAR.md) for setup.
 
 ## Task details
 

@@ -276,6 +276,20 @@ exports.Prisma.InvitationScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.TaskCalendarEventScalarFieldEnum = {
+  id: 'id',
+  taskId: 'taskId',
+  userId: 'userId',
+  googleEventId: 'googleEventId'
+};
+
+exports.Prisma.CalendarSyncStatusScalarFieldEnum = {
+  userId: 'userId',
+  needsReconnect: 'needsReconnect',
+  lastSyncedAt: 'lastSyncedAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -312,7 +326,9 @@ exports.Prisma.ModelName = {
   Verification: 'Verification',
   Organization: 'Organization',
   Member: 'Member',
-  Invitation: 'Invitation'
+  Invitation: 'Invitation',
+  TaskCalendarEvent: 'TaskCalendarEvent',
+  CalendarSyncStatus: 'CalendarSyncStatus'
 };
 
 /**

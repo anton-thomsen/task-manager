@@ -40,30 +40,31 @@ model Label {
 }
 
 model Task {
-  id                 Int            @id @default(autoincrement())
+  id                 Int                 @id @default(autoincrement())
   organizationId     String
-  organization       Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organization       Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   title              String
   description        String?
-  status             TaskStatus     @default(Inbox)
+  status             TaskStatus          @default(Inbox)
   deadline           DateTime?
   estimateMinHours   Float?
   estimateMaxHours   Float?
-  estimateMinMinutes Int?           @ignore
-  estimateMaxMinutes Int?           @ignore
+  estimateMinMinutes Int?                @ignore
+  estimateMaxMinutes Int?                @ignore
   archivedAt         DateTime?
-  sortOrder          Int            @default(0)
+  sortOrder          Int                 @default(0)
   clientId           Int?
-  client             Client?        @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  client             Client?             @relation(fields: [clientId], references: [id], onDelete: SetNull)
   labelId            Int?
-  label              Label?         @relation(fields: [labelId], references: [id], onDelete: SetNull)
+  label              Label?              @relation(fields: [labelId], references: [id], onDelete: SetNull)
   createdById        String?
-  createdBy          User?          @relation("createdTasks", fields: [createdById], references: [id], onDelete: SetNull)
+  createdBy          User?               @relation("createdTasks", fields: [createdById], references: [id], onDelete: SetNull)
   assignees          TaskAssignee[]
   subtasks           Subtask[]
   logs               TaskLog[]
-  createdAt          DateTime       @default(now())
-  updatedAt          DateTime       @updatedAt
+  calendarEvents     TaskCalendarEvent[]
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
 
   @@index([organizationId, status, sortOrder])
   @@index([clientId])
@@ -143,25 +144,27 @@ model UserAvatar {
 }
 
 model User {
-  id                   String         @id
+  id                   String              @id
   name                 String
   email                String
-  emailVerified        Boolean        @default(false)
+  emailVerified        Boolean             @default(false)
   image                String?
   calendarToken        String?
   apiToken             String?
-  createdAt            DateTime       @default(now())
-  updatedAt            DateTime       @updatedAt
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
   sessions             Session[]
   accounts             Account[]
   memberships          Member[]
   sentInvitations      Invitation[]
   avatar               UserAvatar?
-  createdTasks         Task[]         @relation("createdTasks")
-  taskAssignments      TaskAssignee[] @relation("taskAssignments")
-  taskAssignmentsGiven TaskAssignee[] @relation("taskAssignmentsGiven")
-  completedSubtasks    Subtask[]      @relation("completedSubtasks")
-  authoredLogs         TaskLog[]      @relation("authoredLogs")
+  createdTasks         Task[]              @relation("createdTasks")
+  taskAssignments      TaskAssignee[]      @relation("taskAssignments")
+  taskAssignmentsGiven TaskAssignee[]      @relation("taskAssignmentsGiven")
+  completedSubtasks    Subtask[]           @relation("completedSubtasks")
+  authoredLogs         TaskLog[]           @relation("authoredLogs")
+  calendarEvents       TaskCalendarEvent[]
+  calendarSyncStatus   CalendarSyncStatus?
 
   @@unique([email])
   @@unique([calendarToken])
@@ -264,4 +267,24 @@ model Invitation {
   @@index([organizationId])
   @@index([email])
   @@map("invitation")
+}
+
+model TaskCalendarEvent {
+  id            Int    @id @default(autoincrement())
+  taskId        Int
+  task          Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  googleEventId String
+
+  @@unique([taskId, userId])
+  @@index([userId])
+}
+
+model CalendarSyncStatus {
+  userId         String    @id
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  needsReconnect Boolean   @default(false)
+  lastSyncedAt   DateTime?
+  updatedAt      DateTime  @updatedAt
 }
