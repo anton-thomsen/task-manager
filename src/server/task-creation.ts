@@ -16,6 +16,7 @@ type TaskCreator = {
 export async function createTaskAtLaneEnd(
 	creator: TaskCreator,
 	data: TaskCreationData,
+	assigneeIds: string[] = [],
 ) {
 	const status = data.status ?? "Inbox";
 	const lastTask = await db.task.findFirst({
@@ -23,6 +24,11 @@ export async function createTaskAtLaneEnd(
 		orderBy: { sortOrder: "desc" },
 		select: { sortOrder: true },
 	});
+	// Delegating to others only does not assign the creator; they keep
+	// visibility through createdById. With no explicit assignees the creator
+	// is the sole participant.
+	const participantIds =
+		assigneeIds.length > 0 ? [...new Set(assigneeIds)] : [creator.userId];
 	return db.task.create({
 		data: {
 			...data,
@@ -31,7 +37,11 @@ export async function createTaskAtLaneEnd(
 			status,
 			sortOrder: (lastTask?.sortOrder ?? 0) + 1024,
 			assignees: {
-				create: [{ userId: creator.userId, assignedById: creator.userId }],
+				create: participantIds.map((userId) => ({
+					userId,
+					assignedById: creator.userId,
+					acceptedAt: userId === creator.userId ? new Date() : null,
+				})),
 			},
 		},
 	});

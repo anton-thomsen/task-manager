@@ -79,6 +79,7 @@ model TaskAssignee {
   user         User     @relation("taskAssignments", fields: [userId], references: [id], onDelete: Cascade)
   assignedById String?
   assignedBy   User?    @relation("taskAssignmentsGiven", fields: [assignedById], references: [id], onDelete: SetNull)
+  acceptedAt   DateTime?
   createdAt    DateTime @default(now())
 
   @@unique([taskId, userId])
