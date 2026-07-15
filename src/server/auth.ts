@@ -23,7 +23,7 @@ export const auth = betterAuth({
 					if (userCount === 0) return;
 					const invitation = await db.invitation.findFirst({
 						where: {
-							email: user.email.toLowerCase(),
+							email: { equals: user.email, mode: "insensitive" },
 							status: "pending",
 							expiresAt: { gt: new Date() },
 						},
