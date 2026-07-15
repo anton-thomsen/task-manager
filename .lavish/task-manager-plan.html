@@ -25,7 +25,7 @@
         <h1 class="min-w-0 text-3xl lg:text-4xl font-bold leading-normal">Task Manager: Agency Workflow Upgrade</h1>
         <span class="badge badge-primary badge-lg">Historical plan</span>
       </div>
-      <p class="max-w-3xl opacity-80">Turn the current single-board prototype into a client-aware task manager: per-task actions (edit / delete / archive), a task detail page with a rich manual work log and subtasks, labels with board filtering, client grouping for agency work, and deadlines + decimal-hour estimates. Top-level estimates can cover large projects; only subtasks keep a 5-hour cap.</p>
+      <p class="max-w-3xl opacity-80">Turn the current single-board prototype into a client-aware task manager: per-task actions (edit / delete / archive), a task detail page with a rich manual work log and subtasks, labels with board filtering, client grouping for agency work, and deadlines + decimal-hour estimates. Top-level estimates can cover large projects; subtasks use 15-minute increments and keep a 5-hour cap.</p>
       <div class="stats stats-vertical sm:stats-horizontal shadow mt-2">
         <div class="stat py-3">
           <div class="stat-title">Phases</div>
@@ -341,7 +341,7 @@ erDiagram
       <div class="card card-border bg-base-100">
         <div class="card-body">
           <h3 class="card-title text-base">Large project estimates in the form</h3>
-          <p class="text-sm opacity-80">Task estimates are entered as a positive min-max range in decimal hours and may cover large projects. Only subtask estimates are capped at 5 hours.</p>
+          <p class="text-sm opacity-80">Task estimates are entered as a positive min-max range in decimal hours and may cover large projects. Subtask estimates use 15-minute increments and are capped at 5 hours.</p>
           <section data-theme="light" class="rounded-box border border-black bg-white p-4 space-y-2">
             <div class="mx-auto max-w-sm space-y-2">
               <label class="block text-sm font-medium">Estimate (hours)</label>
@@ -488,7 +488,7 @@ erDiagram
           <tr><td class="font-medium">A &middot; Labels</td><td>Single label per task - one optional <code>labelId</code>, one badge per card</td></tr>
           <tr><td class="font-medium">B &middot; Subtask UI</td><td>Compact list with a status dropdown per row, beside the work log</td></tr>
           <tr><td class="font-medium">C &middot; Client view</td><td>Filter on the main board via <code>?client=</code> - no dedicated client pages yet</td></tr>
-          <tr><td class="font-medium">D &middot; Time targets</td><td>Tasks support large decimal-hour ranges; subtasks use a single decimal-hour estimate capped at 5h</td></tr>
+          <tr><td class="font-medium">D &middot; Time targets</td><td>Tasks support large decimal-hour ranges; subtasks use a single estimate in 15-minute increments capped at 5h</td></tr>
         </tbody>
       </table>
     </div>

@@ -11,7 +11,10 @@ import { db } from "~/server/db";
 const createSubtaskSchema = z.object({
 	taskId: int4IdSchema,
 	title: z.string().trim().min(1).max(200),
-	estimatedHours: optionalPositiveNumber(5),
+	estimatedHours: optionalPositiveNumber(5).refine(
+		(value) => value === undefined || Number.isInteger(value * 4),
+		"Estimate must use 15-minute increments.",
+	),
 });
 
 export async function createSubtask(formData: FormData): Promise<void> {

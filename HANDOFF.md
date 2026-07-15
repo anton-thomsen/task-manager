@@ -54,7 +54,7 @@ allowance still leaves room for the other form fields.
 - `prisma/migrations/20260715120100_backfill_hours/migration.sql`: exact value
   preservation during conversion.
 - `src/server/actions/tasks.ts`: task-hour parsing and estimate-range invariant.
-- `src/server/actions/subtasks.ts`: decimal-hour parsing and the 5-hour cap.
+- `src/server/actions/subtasks.ts`: 15-minute hour increments and the 5-hour cap.
 - `src/server/actions/logs.ts`: required log fields, upload bounds, decoded-image
   validation, and permanent deletion.
 - `src/app/api/work-log-images/[id]/route.ts`: authenticated image delivery and

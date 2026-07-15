@@ -24,7 +24,7 @@ side, and 20 megapixels. Deleting a work log permanently removes its images.
 
 The task header compares total logged hours with the task's estimate range.
 Top-level task estimates can cover large projects; individual subtask estimates
-are capped at 5 hours.
+use 15-minute increments and are capped at 5 hours.
 
 ## Archive
 

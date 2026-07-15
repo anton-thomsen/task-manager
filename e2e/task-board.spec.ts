@@ -105,9 +105,15 @@ test("tracks a project in hours and keeps rich work logs", async ({
 		),
 	).toBe(true);
 	await estimatedHours.fill("0.1");
+	expect(
+		await estimatedHours.evaluate(
+			(input: HTMLInputElement) => input.validity.stepMismatch,
+		),
+	).toBe(true);
+	await estimatedHours.fill("0.25");
 	await page.getByRole("button", { name: "Add", exact: true }).click();
 	await expect(page.getByText(subtaskTitle)).toBeVisible();
-	await expect(page.getByText("0.1h", { exact: true })).toBeVisible();
+	await expect(page.getByText("0.25h", { exact: true })).toBeVisible();
 	await page.getByLabel(`Status for ${subtaskTitle}`).selectOption("Finished");
 	const completedSubtasks = page.getByRole("region", {
 		name: "Completed subtasks",

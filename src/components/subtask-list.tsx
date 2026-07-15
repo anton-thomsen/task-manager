@@ -198,10 +198,10 @@ export function SubtaskList({
 					aria-label="Estimated hours"
 					className="min-w-0 rounded-md border border-stone-900 bg-white px-2 py-1.5 text-sm"
 					max={5}
-					min={Number.MIN_VALUE}
+					min={0.25}
 					name="estimatedHours"
 					placeholder="hours"
-					step="any"
+					step={0.25}
 					type="number"
 				/>
 				<button
