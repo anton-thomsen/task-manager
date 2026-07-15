@@ -41,6 +41,12 @@ export default async function SettingsLayout({
 				>
 					Tokens
 				</Link>
+				<Link
+					className="rounded-full border border-stone-900 bg-white px-4 py-1.5 font-bold text-sm hover:bg-stone-900 hover:text-white"
+					href="/settings/integrations"
+				>
+					Integrations
+				</Link>
 			</nav>
 			{children}
 		</main>
