@@ -5,10 +5,7 @@ import { z } from "zod";
 import { taskStatuses } from "~/lib/tasks";
 import { int4IdSchema } from "~/lib/validation";
 import type { SessionMember } from "~/server/auth";
-import {
-	scheduleAssigneeSync,
-	scheduleTaskSync,
-} from "~/server/calendar-sync";
+import { scheduleAssigneeSync, scheduleTaskSync } from "~/server/calendar-sync";
 import { db } from "~/server/db";
 import {
 	resolveClientId,

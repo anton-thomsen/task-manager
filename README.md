@@ -40,10 +40,11 @@ filters - **Everyone**, **Mine**, and **Delegated by me** - to narrow what the
 board shows.
 
 From **Settings > Tokens** each person can copy a personal calendar feed to
-subscribe to their tasks and mint an API token for programmatic access. From
-**Settings > Integrations** each person can connect their own Google Calendar,
-which syncs the deadlines of tasks they participate in as all-day events; see
-[GOOGLE_CALENDAR.md](GOOGLE_CALENDAR.md) for setup.
+subscribe to their tasks and mint an API token for programmatic access,
+including the [MCP toolbox](MCP.md) that lets an AI assistant manage tasks on
+their behalf. From **Settings > Integrations** each person can connect their
+own Google Calendar, which syncs the deadlines of tasks they participate in as
+all-day events; see [GOOGLE_CALENDAR.md](GOOGLE_CALENDAR.md) for setup.
 
 ## Task details
 
