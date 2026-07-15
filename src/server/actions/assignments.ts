@@ -6,6 +6,7 @@ import { z } from "zod";
 import { type ActionResult, actionError, int4IdSchema } from "~/lib/validation";
 import { verifyOrgMembers } from "~/server/assignment";
 import { requireMember } from "~/server/auth";
+import { scheduleAssigneeSync } from "~/server/calendar-sync";
 import { db } from "~/server/db";
 import { requireTaskAccess } from "~/server/task-access";
 
@@ -31,6 +32,7 @@ export async function assignTask(
 			},
 			update: {},
 		});
+		scheduleAssigneeSync(taskId, [userId], []);
 		revalidatePath("/");
 		revalidatePath(`/tasks/${taskId}`);
 		return { ok: true };
@@ -58,6 +60,7 @@ export async function unassignTask(
 			return { ok: false, error: "A task needs at least one participant." };
 		}
 		await db.taskAssignee.delete({ where: { id: row.id } });
+		scheduleAssigneeSync(taskId, [], [userId]);
 		revalidatePath("/");
 		revalidatePath(`/tasks/${taskId}`);
 		return { ok: true };

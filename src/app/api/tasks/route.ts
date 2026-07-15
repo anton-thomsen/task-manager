@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { taskDescriptionSchema, taskTitleSchema } from "~/lib/validation";
+import { scheduleTaskSync } from "~/server/calendar-sync";
 import { createTaskAtLaneEnd } from "~/server/task-creation";
 import { memberFromToken } from "~/server/token-auth";
 
@@ -98,5 +99,6 @@ export async function POST(request: Request) {
 			title: parsed.data.title,
 		},
 	);
+	if (task.deadline) scheduleTaskSync(task.id);
 	return Response.json({ id: task.id, title: task.title }, { status: 201 });
 }

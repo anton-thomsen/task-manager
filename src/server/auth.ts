@@ -92,6 +92,23 @@ export const auth = betterAuth({
 		disableSignUp: env.AUTH_ALLOW_SIGNUP !== "true",
 		enabled: true,
 	},
+	socialProviders:
+		env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET
+			? {
+					google: {
+						clientId: env.GOOGLE_CLIENT_ID,
+						clientSecret: env.GOOGLE_CLIENT_SECRET,
+						// Linking-only: Google can never create an account, it can
+						// only be attached to a signed-in user from Settings.
+						disableSignUp: true,
+						// Offline access + forced consent so Google returns a
+						// refresh token the calendar sync can use long-term.
+						accessType: "offline",
+						prompt: "consent",
+						scope: ["https://www.googleapis.com/auth/calendar.events"],
+					},
+				}
+			: undefined,
 	plugins: [
 		magicLink({
 			async sendMagicLink({ email, url }) {
