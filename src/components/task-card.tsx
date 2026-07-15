@@ -33,8 +33,8 @@ export function TaskCard({ clients, labels, task }: TaskCardProps) {
 		"archive" | "delete" | null
 	>(null);
 	const estimate = formatEstimateRange(
-		task.estimateMinMinutes,
-		task.estimateMaxMinutes,
+		task.estimateMinHours,
+		task.estimateMaxHours,
 	);
 
 	async function archive(archived: boolean): Promise<boolean> {

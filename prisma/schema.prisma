@@ -37,8 +37,8 @@ model Task {
   description        String?
   status             TaskStatus @default(Inbox)
   deadline           DateTime?
-  estimateMinMinutes Int?
-  estimateMaxMinutes Int?
+  estimateMinHours   Float?
+  estimateMaxHours   Float?
   archivedAt         DateTime?
   sortOrder          Int        @default(0)
   clientId           Int?
@@ -61,7 +61,7 @@ model Subtask {
   task             Task       @relation(fields: [taskId], references: [id], onDelete: Cascade)
   title            String
   status           TaskStatus @default(Inbox)
-  estimatedMinutes Int?
+  estimatedHours   Float?
   sortOrder        Int        @default(0)
   createdAt        DateTime   @default(now())
 
@@ -69,14 +69,27 @@ model Subtask {
 }
 
 model TaskLog {
-  id           Int      @id @default(autoincrement())
-  taskId       Int
-  task         Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  note         String
-  minutesSpent Int?
-  createdAt    DateTime @default(now())
+  id         Int            @id @default(autoincrement())
+  taskId     Int
+  task       Task           @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  note       String
+  details    String?
+  hoursSpent Float?
+  images     WorkLogImage[]
+  createdAt  DateTime       @default(now())
 
   @@index([taskId])
+}
+
+model WorkLogImage {
+  id        Int     @id @default(autoincrement())
+  taskLogId Int
+  taskLog   TaskLog @relation(fields: [taskLogId], references: [id], onDelete: Cascade)
+  fileName  String
+  mimeType  String
+  data      Bytes
+
+  @@index([taskLogId])
 }
 
 model User {

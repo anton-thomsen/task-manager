@@ -1,17 +1,12 @@
 import type { TaskStatus } from "~/lib/tasks";
 
-export function formatMinutes(total: number): string {
-	const hours = Math.floor(total / 60);
-	const minutes = total % 60;
-	if (hours === 0) return `${minutes}m`;
-	if (minutes === 0) return `${hours}h`;
-	return `${hours}h ${minutes}m`;
+export function hoursInputValue(hours: number | null | undefined): string {
+	if (!hours) return "";
+	return String(Number(hours.toFixed(2)));
 }
 
-export function minutesAsHours(minutes: number | null | undefined): string {
-	if (!minutes) return "";
-	const hours = minutes / 60;
-	return Number.isInteger(hours) ? String(hours) : hours.toFixed(1);
+export function formatHours(hours: number): string {
+	return `${hoursInputValue(hours) || "0"}h`;
 }
 
 export function formatEstimateRange(
@@ -20,11 +15,11 @@ export function formatEstimateRange(
 ): string | null {
 	if (min !== null && max !== null) {
 		return min === max
-			? `${minutesAsHours(min)}h`
-			: `${minutesAsHours(min)}-${minutesAsHours(max)}h`;
+			? formatHours(min)
+			: `${hoursInputValue(min)}-${formatHours(max)}`;
 	}
-	if (max !== null) return `up to ${minutesAsHours(max)}h`;
-	if (min !== null) return `${minutesAsHours(min)}h+`;
+	if (max !== null) return `up to ${formatHours(max)}`;
+	if (min !== null) return `${formatHours(min)}+`;
 	return null;
 }
 

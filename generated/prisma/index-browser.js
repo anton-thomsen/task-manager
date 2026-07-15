@@ -138,8 +138,8 @@ exports.Prisma.TaskScalarFieldEnum = {
   description: 'description',
   status: 'status',
   deadline: 'deadline',
-  estimateMinMinutes: 'estimateMinMinutes',
-  estimateMaxMinutes: 'estimateMaxMinutes',
+  estimateMinHours: 'estimateMinHours',
+  estimateMaxHours: 'estimateMaxHours',
   archivedAt: 'archivedAt',
   sortOrder: 'sortOrder',
   clientId: 'clientId',
@@ -153,7 +153,7 @@ exports.Prisma.SubtaskScalarFieldEnum = {
   taskId: 'taskId',
   title: 'title',
   status: 'status',
-  estimatedMinutes: 'estimatedMinutes',
+  estimatedHours: 'estimatedHours',
   sortOrder: 'sortOrder',
   createdAt: 'createdAt'
 };
@@ -162,8 +162,17 @@ exports.Prisma.TaskLogScalarFieldEnum = {
   id: 'id',
   taskId: 'taskId',
   note: 'note',
-  minutesSpent: 'minutesSpent',
+  details: 'details',
+  hoursSpent: 'hoursSpent',
   createdAt: 'createdAt'
+};
+
+exports.Prisma.WorkLogImageScalarFieldEnum = {
+  id: 'id',
+  taskLogId: 'taskLogId',
+  fileName: 'fileName',
+  mimeType: 'mimeType',
+  data: 'data'
 };
 
 exports.Prisma.UserScalarFieldEnum = {
@@ -239,6 +248,7 @@ exports.Prisma.ModelName = {
   Task: 'Task',
   Subtask: 'Subtask',
   TaskLog: 'TaskLog',
+  WorkLogImage: 'WorkLogImage',
   User: 'User',
   Session: 'Session',
   Account: 'Account',

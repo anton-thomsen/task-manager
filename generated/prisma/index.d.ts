@@ -39,6 +39,11 @@ export type Subtask = $Result.DefaultSelection<Prisma.$SubtaskPayload>
  */
 export type TaskLog = $Result.DefaultSelection<Prisma.$TaskLogPayload>
 /**
+ * Model WorkLogImage
+ * 
+ */
+export type WorkLogImage = $Result.DefaultSelection<Prisma.$WorkLogImagePayload>
+/**
  * Model User
  * 
  */
@@ -245,6 +250,16 @@ export class PrismaClient<
     * ```
     */
   get taskLog(): Prisma.TaskLogDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.workLogImage`: Exposes CRUD operations for the **WorkLogImage** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more WorkLogImages
+    * const workLogImages = await prisma.workLogImage.findMany()
+    * ```
+    */
+  get workLogImage(): Prisma.WorkLogImageDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.user`: Exposes CRUD operations for the **User** model.
@@ -731,6 +746,7 @@ export namespace Prisma {
     Task: 'Task',
     Subtask: 'Subtask',
     TaskLog: 'TaskLog',
+    WorkLogImage: 'WorkLogImage',
     User: 'User',
     Session: 'Session',
     Account: 'Account',
@@ -753,7 +769,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "client" | "label" | "task" | "subtask" | "taskLog" | "user" | "session" | "account" | "verification"
+      modelProps: "client" | "label" | "task" | "subtask" | "taskLog" | "workLogImage" | "user" | "session" | "account" | "verification"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1124,6 +1140,80 @@ export namespace Prisma {
           count: {
             args: Prisma.TaskLogCountArgs<ExtArgs>
             result: $Utils.Optional<TaskLogCountAggregateOutputType> | number
+          }
+        }
+      }
+      WorkLogImage: {
+        payload: Prisma.$WorkLogImagePayload<ExtArgs>
+        fields: Prisma.WorkLogImageFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.WorkLogImageFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkLogImagePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.WorkLogImageFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkLogImagePayload>
+          }
+          findFirst: {
+            args: Prisma.WorkLogImageFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkLogImagePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.WorkLogImageFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkLogImagePayload>
+          }
+          findMany: {
+            args: Prisma.WorkLogImageFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkLogImagePayload>[]
+          }
+          create: {
+            args: Prisma.WorkLogImageCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkLogImagePayload>
+          }
+          createMany: {
+            args: Prisma.WorkLogImageCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.WorkLogImageCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkLogImagePayload>[]
+          }
+          delete: {
+            args: Prisma.WorkLogImageDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkLogImagePayload>
+          }
+          update: {
+            args: Prisma.WorkLogImageUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkLogImagePayload>
+          }
+          deleteMany: {
+            args: Prisma.WorkLogImageDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.WorkLogImageUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.WorkLogImageUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkLogImagePayload>[]
+          }
+          upsert: {
+            args: Prisma.WorkLogImageUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkLogImagePayload>
+          }
+          aggregate: {
+            args: Prisma.WorkLogImageAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWorkLogImage>
+          }
+          groupBy: {
+            args: Prisma.WorkLogImageGroupByArgs<ExtArgs>
+            result: $Utils.Optional<WorkLogImageGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.WorkLogImageCountArgs<ExtArgs>
+            result: $Utils.Optional<WorkLogImageCountAggregateOutputType> | number
           }
         }
       }
@@ -1524,6 +1614,7 @@ export namespace Prisma {
     task?: TaskOmit
     subtask?: SubtaskOmit
     taskLog?: TaskLogOmit
+    workLogImage?: WorkLogImageOmit
     user?: UserOmit
     session?: SessionOmit
     account?: AccountOmit
@@ -1702,6 +1793,37 @@ export namespace Prisma {
    */
   export type TaskCountOutputTypeCountLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TaskLogWhereInput
+  }
+
+
+  /**
+   * Count Type TaskLogCountOutputType
+   */
+
+  export type TaskLogCountOutputType = {
+    images: number
+  }
+
+  export type TaskLogCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    images?: boolean | TaskLogCountOutputTypeCountImagesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * TaskLogCountOutputType without action
+   */
+  export type TaskLogCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskLogCountOutputType
+     */
+    select?: TaskLogCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * TaskLogCountOutputType without action
+   */
+  export type TaskLogCountOutputTypeCountImagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WorkLogImageWhereInput
   }
 
 
@@ -3906,8 +4028,8 @@ export namespace Prisma {
 
   export type TaskAvgAggregateOutputType = {
     id: number | null
-    estimateMinMinutes: number | null
-    estimateMaxMinutes: number | null
+    estimateMinHours: number | null
+    estimateMaxHours: number | null
     sortOrder: number | null
     clientId: number | null
     labelId: number | null
@@ -3915,8 +4037,8 @@ export namespace Prisma {
 
   export type TaskSumAggregateOutputType = {
     id: number | null
-    estimateMinMinutes: number | null
-    estimateMaxMinutes: number | null
+    estimateMinHours: number | null
+    estimateMaxHours: number | null
     sortOrder: number | null
     clientId: number | null
     labelId: number | null
@@ -3928,8 +4050,8 @@ export namespace Prisma {
     description: string | null
     status: $Enums.TaskStatus | null
     deadline: Date | null
-    estimateMinMinutes: number | null
-    estimateMaxMinutes: number | null
+    estimateMinHours: number | null
+    estimateMaxHours: number | null
     archivedAt: Date | null
     sortOrder: number | null
     clientId: number | null
@@ -3944,8 +4066,8 @@ export namespace Prisma {
     description: string | null
     status: $Enums.TaskStatus | null
     deadline: Date | null
-    estimateMinMinutes: number | null
-    estimateMaxMinutes: number | null
+    estimateMinHours: number | null
+    estimateMaxHours: number | null
     archivedAt: Date | null
     sortOrder: number | null
     clientId: number | null
@@ -3960,8 +4082,8 @@ export namespace Prisma {
     description: number
     status: number
     deadline: number
-    estimateMinMinutes: number
-    estimateMaxMinutes: number
+    estimateMinHours: number
+    estimateMaxHours: number
     archivedAt: number
     sortOrder: number
     clientId: number
@@ -3974,8 +4096,8 @@ export namespace Prisma {
 
   export type TaskAvgAggregateInputType = {
     id?: true
-    estimateMinMinutes?: true
-    estimateMaxMinutes?: true
+    estimateMinHours?: true
+    estimateMaxHours?: true
     sortOrder?: true
     clientId?: true
     labelId?: true
@@ -3983,8 +4105,8 @@ export namespace Prisma {
 
   export type TaskSumAggregateInputType = {
     id?: true
-    estimateMinMinutes?: true
-    estimateMaxMinutes?: true
+    estimateMinHours?: true
+    estimateMaxHours?: true
     sortOrder?: true
     clientId?: true
     labelId?: true
@@ -3996,8 +4118,8 @@ export namespace Prisma {
     description?: true
     status?: true
     deadline?: true
-    estimateMinMinutes?: true
-    estimateMaxMinutes?: true
+    estimateMinHours?: true
+    estimateMaxHours?: true
     archivedAt?: true
     sortOrder?: true
     clientId?: true
@@ -4012,8 +4134,8 @@ export namespace Prisma {
     description?: true
     status?: true
     deadline?: true
-    estimateMinMinutes?: true
-    estimateMaxMinutes?: true
+    estimateMinHours?: true
+    estimateMaxHours?: true
     archivedAt?: true
     sortOrder?: true
     clientId?: true
@@ -4028,8 +4150,8 @@ export namespace Prisma {
     description?: true
     status?: true
     deadline?: true
-    estimateMinMinutes?: true
-    estimateMaxMinutes?: true
+    estimateMinHours?: true
+    estimateMaxHours?: true
     archivedAt?: true
     sortOrder?: true
     clientId?: true
@@ -4131,8 +4253,8 @@ export namespace Prisma {
     description: string | null
     status: $Enums.TaskStatus
     deadline: Date | null
-    estimateMinMinutes: number | null
-    estimateMaxMinutes: number | null
+    estimateMinHours: number | null
+    estimateMaxHours: number | null
     archivedAt: Date | null
     sortOrder: number
     clientId: number | null
@@ -4166,8 +4288,8 @@ export namespace Prisma {
     description?: boolean
     status?: boolean
     deadline?: boolean
-    estimateMinMinutes?: boolean
-    estimateMaxMinutes?: boolean
+    estimateMinHours?: boolean
+    estimateMaxHours?: boolean
     archivedAt?: boolean
     sortOrder?: boolean
     clientId?: boolean
@@ -4187,8 +4309,8 @@ export namespace Prisma {
     description?: boolean
     status?: boolean
     deadline?: boolean
-    estimateMinMinutes?: boolean
-    estimateMaxMinutes?: boolean
+    estimateMinHours?: boolean
+    estimateMaxHours?: boolean
     archivedAt?: boolean
     sortOrder?: boolean
     clientId?: boolean
@@ -4205,8 +4327,8 @@ export namespace Prisma {
     description?: boolean
     status?: boolean
     deadline?: boolean
-    estimateMinMinutes?: boolean
-    estimateMaxMinutes?: boolean
+    estimateMinHours?: boolean
+    estimateMaxHours?: boolean
     archivedAt?: boolean
     sortOrder?: boolean
     clientId?: boolean
@@ -4223,8 +4345,8 @@ export namespace Prisma {
     description?: boolean
     status?: boolean
     deadline?: boolean
-    estimateMinMinutes?: boolean
-    estimateMaxMinutes?: boolean
+    estimateMinHours?: boolean
+    estimateMaxHours?: boolean
     archivedAt?: boolean
     sortOrder?: boolean
     clientId?: boolean
@@ -4233,7 +4355,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type TaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "status" | "deadline" | "estimateMinMinutes" | "estimateMaxMinutes" | "archivedAt" | "sortOrder" | "clientId" | "labelId" | "createdAt" | "updatedAt", ExtArgs["result"]["task"]>
+  export type TaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "status" | "deadline" | "estimateMinHours" | "estimateMaxHours" | "archivedAt" | "sortOrder" | "clientId" | "labelId" | "createdAt" | "updatedAt", ExtArgs["result"]["task"]>
   export type TaskInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     client?: boolean | Task$clientArgs<ExtArgs>
     label?: boolean | Task$labelArgs<ExtArgs>
@@ -4264,8 +4386,8 @@ export namespace Prisma {
       description: string | null
       status: $Enums.TaskStatus
       deadline: Date | null
-      estimateMinMinutes: number | null
-      estimateMaxMinutes: number | null
+      estimateMinHours: number | null
+      estimateMaxHours: number | null
       archivedAt: Date | null
       sortOrder: number
       clientId: number | null
@@ -4704,8 +4826,8 @@ export namespace Prisma {
     readonly description: FieldRef<"Task", 'String'>
     readonly status: FieldRef<"Task", 'TaskStatus'>
     readonly deadline: FieldRef<"Task", 'DateTime'>
-    readonly estimateMinMinutes: FieldRef<"Task", 'Int'>
-    readonly estimateMaxMinutes: FieldRef<"Task", 'Int'>
+    readonly estimateMinHours: FieldRef<"Task", 'Float'>
+    readonly estimateMaxHours: FieldRef<"Task", 'Float'>
     readonly archivedAt: FieldRef<"Task", 'DateTime'>
     readonly sortOrder: FieldRef<"Task", 'Int'>
     readonly clientId: FieldRef<"Task", 'Int'>
@@ -5227,14 +5349,14 @@ export namespace Prisma {
   export type SubtaskAvgAggregateOutputType = {
     id: number | null
     taskId: number | null
-    estimatedMinutes: number | null
+    estimatedHours: number | null
     sortOrder: number | null
   }
 
   export type SubtaskSumAggregateOutputType = {
     id: number | null
     taskId: number | null
-    estimatedMinutes: number | null
+    estimatedHours: number | null
     sortOrder: number | null
   }
 
@@ -5243,7 +5365,7 @@ export namespace Prisma {
     taskId: number | null
     title: string | null
     status: $Enums.TaskStatus | null
-    estimatedMinutes: number | null
+    estimatedHours: number | null
     sortOrder: number | null
     createdAt: Date | null
   }
@@ -5253,7 +5375,7 @@ export namespace Prisma {
     taskId: number | null
     title: string | null
     status: $Enums.TaskStatus | null
-    estimatedMinutes: number | null
+    estimatedHours: number | null
     sortOrder: number | null
     createdAt: Date | null
   }
@@ -5263,7 +5385,7 @@ export namespace Prisma {
     taskId: number
     title: number
     status: number
-    estimatedMinutes: number
+    estimatedHours: number
     sortOrder: number
     createdAt: number
     _all: number
@@ -5273,14 +5395,14 @@ export namespace Prisma {
   export type SubtaskAvgAggregateInputType = {
     id?: true
     taskId?: true
-    estimatedMinutes?: true
+    estimatedHours?: true
     sortOrder?: true
   }
 
   export type SubtaskSumAggregateInputType = {
     id?: true
     taskId?: true
-    estimatedMinutes?: true
+    estimatedHours?: true
     sortOrder?: true
   }
 
@@ -5289,7 +5411,7 @@ export namespace Prisma {
     taskId?: true
     title?: true
     status?: true
-    estimatedMinutes?: true
+    estimatedHours?: true
     sortOrder?: true
     createdAt?: true
   }
@@ -5299,7 +5421,7 @@ export namespace Prisma {
     taskId?: true
     title?: true
     status?: true
-    estimatedMinutes?: true
+    estimatedHours?: true
     sortOrder?: true
     createdAt?: true
   }
@@ -5309,7 +5431,7 @@ export namespace Prisma {
     taskId?: true
     title?: true
     status?: true
-    estimatedMinutes?: true
+    estimatedHours?: true
     sortOrder?: true
     createdAt?: true
     _all?: true
@@ -5406,7 +5528,7 @@ export namespace Prisma {
     taskId: number
     title: string
     status: $Enums.TaskStatus
-    estimatedMinutes: number | null
+    estimatedHours: number | null
     sortOrder: number
     createdAt: Date
     _count: SubtaskCountAggregateOutputType | null
@@ -5435,7 +5557,7 @@ export namespace Prisma {
     taskId?: boolean
     title?: boolean
     status?: boolean
-    estimatedMinutes?: boolean
+    estimatedHours?: boolean
     sortOrder?: boolean
     createdAt?: boolean
     task?: boolean | TaskDefaultArgs<ExtArgs>
@@ -5446,7 +5568,7 @@ export namespace Prisma {
     taskId?: boolean
     title?: boolean
     status?: boolean
-    estimatedMinutes?: boolean
+    estimatedHours?: boolean
     sortOrder?: boolean
     createdAt?: boolean
     task?: boolean | TaskDefaultArgs<ExtArgs>
@@ -5457,7 +5579,7 @@ export namespace Prisma {
     taskId?: boolean
     title?: boolean
     status?: boolean
-    estimatedMinutes?: boolean
+    estimatedHours?: boolean
     sortOrder?: boolean
     createdAt?: boolean
     task?: boolean | TaskDefaultArgs<ExtArgs>
@@ -5468,12 +5590,12 @@ export namespace Prisma {
     taskId?: boolean
     title?: boolean
     status?: boolean
-    estimatedMinutes?: boolean
+    estimatedHours?: boolean
     sortOrder?: boolean
     createdAt?: boolean
   }
 
-  export type SubtaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "taskId" | "title" | "status" | "estimatedMinutes" | "sortOrder" | "createdAt", ExtArgs["result"]["subtask"]>
+  export type SubtaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "taskId" | "title" | "status" | "estimatedHours" | "sortOrder" | "createdAt", ExtArgs["result"]["subtask"]>
   export type SubtaskInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     task?: boolean | TaskDefaultArgs<ExtArgs>
   }
@@ -5494,7 +5616,7 @@ export namespace Prisma {
       taskId: number
       title: string
       status: $Enums.TaskStatus
-      estimatedMinutes: number | null
+      estimatedHours: number | null
       sortOrder: number
       createdAt: Date
     }, ExtArgs["result"]["subtask"]>
@@ -5925,7 +6047,7 @@ export namespace Prisma {
     readonly taskId: FieldRef<"Subtask", 'Int'>
     readonly title: FieldRef<"Subtask", 'String'>
     readonly status: FieldRef<"Subtask", 'TaskStatus'>
-    readonly estimatedMinutes: FieldRef<"Subtask", 'Int'>
+    readonly estimatedHours: FieldRef<"Subtask", 'Float'>
     readonly sortOrder: FieldRef<"Subtask", 'Int'>
     readonly createdAt: FieldRef<"Subtask", 'DateTime'>
   }
@@ -6357,20 +6479,21 @@ export namespace Prisma {
   export type TaskLogAvgAggregateOutputType = {
     id: number | null
     taskId: number | null
-    minutesSpent: number | null
+    hoursSpent: number | null
   }
 
   export type TaskLogSumAggregateOutputType = {
     id: number | null
     taskId: number | null
-    minutesSpent: number | null
+    hoursSpent: number | null
   }
 
   export type TaskLogMinAggregateOutputType = {
     id: number | null
     taskId: number | null
     note: string | null
-    minutesSpent: number | null
+    details: string | null
+    hoursSpent: number | null
     createdAt: Date | null
   }
 
@@ -6378,7 +6501,8 @@ export namespace Prisma {
     id: number | null
     taskId: number | null
     note: string | null
-    minutesSpent: number | null
+    details: string | null
+    hoursSpent: number | null
     createdAt: Date | null
   }
 
@@ -6386,7 +6510,8 @@ export namespace Prisma {
     id: number
     taskId: number
     note: number
-    minutesSpent: number
+    details: number
+    hoursSpent: number
     createdAt: number
     _all: number
   }
@@ -6395,20 +6520,21 @@ export namespace Prisma {
   export type TaskLogAvgAggregateInputType = {
     id?: true
     taskId?: true
-    minutesSpent?: true
+    hoursSpent?: true
   }
 
   export type TaskLogSumAggregateInputType = {
     id?: true
     taskId?: true
-    minutesSpent?: true
+    hoursSpent?: true
   }
 
   export type TaskLogMinAggregateInputType = {
     id?: true
     taskId?: true
     note?: true
-    minutesSpent?: true
+    details?: true
+    hoursSpent?: true
     createdAt?: true
   }
 
@@ -6416,7 +6542,8 @@ export namespace Prisma {
     id?: true
     taskId?: true
     note?: true
-    minutesSpent?: true
+    details?: true
+    hoursSpent?: true
     createdAt?: true
   }
 
@@ -6424,7 +6551,8 @@ export namespace Prisma {
     id?: true
     taskId?: true
     note?: true
-    minutesSpent?: true
+    details?: true
+    hoursSpent?: true
     createdAt?: true
     _all?: true
   }
@@ -6519,7 +6647,8 @@ export namespace Prisma {
     id: number
     taskId: number
     note: string
-    minutesSpent: number | null
+    details: string | null
+    hoursSpent: number | null
     createdAt: Date
     _count: TaskLogCountAggregateOutputType | null
     _avg: TaskLogAvgAggregateOutputType | null
@@ -6546,16 +6675,20 @@ export namespace Prisma {
     id?: boolean
     taskId?: boolean
     note?: boolean
-    minutesSpent?: boolean
+    details?: boolean
+    hoursSpent?: boolean
     createdAt?: boolean
     task?: boolean | TaskDefaultArgs<ExtArgs>
+    images?: boolean | TaskLog$imagesArgs<ExtArgs>
+    _count?: boolean | TaskLogCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["taskLog"]>
 
   export type TaskLogSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     taskId?: boolean
     note?: boolean
-    minutesSpent?: boolean
+    details?: boolean
+    hoursSpent?: boolean
     createdAt?: boolean
     task?: boolean | TaskDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["taskLog"]>
@@ -6564,7 +6697,8 @@ export namespace Prisma {
     id?: boolean
     taskId?: boolean
     note?: boolean
-    minutesSpent?: boolean
+    details?: boolean
+    hoursSpent?: boolean
     createdAt?: boolean
     task?: boolean | TaskDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["taskLog"]>
@@ -6573,13 +6707,16 @@ export namespace Prisma {
     id?: boolean
     taskId?: boolean
     note?: boolean
-    minutesSpent?: boolean
+    details?: boolean
+    hoursSpent?: boolean
     createdAt?: boolean
   }
 
-  export type TaskLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "taskId" | "note" | "minutesSpent" | "createdAt", ExtArgs["result"]["taskLog"]>
+  export type TaskLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "taskId" | "note" | "details" | "hoursSpent" | "createdAt", ExtArgs["result"]["taskLog"]>
   export type TaskLogInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     task?: boolean | TaskDefaultArgs<ExtArgs>
+    images?: boolean | TaskLog$imagesArgs<ExtArgs>
+    _count?: boolean | TaskLogCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type TaskLogIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     task?: boolean | TaskDefaultArgs<ExtArgs>
@@ -6592,12 +6729,14 @@ export namespace Prisma {
     name: "TaskLog"
     objects: {
       task: Prisma.$TaskPayload<ExtArgs>
+      images: Prisma.$WorkLogImagePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
       taskId: number
       note: string
-      minutesSpent: number | null
+      details: string | null
+      hoursSpent: number | null
       createdAt: Date
     }, ExtArgs["result"]["taskLog"]>
     composites: {}
@@ -6994,6 +7133,7 @@ export namespace Prisma {
   export interface Prisma__TaskLogClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     task<T extends TaskDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TaskDefaultArgs<ExtArgs>>): Prisma__TaskClient<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    images<T extends TaskLog$imagesArgs<ExtArgs> = {}>(args?: Subset<T, TaskLog$imagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkLogImagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7026,7 +7166,8 @@ export namespace Prisma {
     readonly id: FieldRef<"TaskLog", 'Int'>
     readonly taskId: FieldRef<"TaskLog", 'Int'>
     readonly note: FieldRef<"TaskLog", 'String'>
-    readonly minutesSpent: FieldRef<"TaskLog", 'Int'>
+    readonly details: FieldRef<"TaskLog", 'String'>
+    readonly hoursSpent: FieldRef<"TaskLog", 'Float'>
     readonly createdAt: FieldRef<"TaskLog", 'DateTime'>
   }
     
@@ -7424,6 +7565,30 @@ export namespace Prisma {
   }
 
   /**
+   * TaskLog.images
+   */
+  export type TaskLog$imagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkLogImage
+     */
+    select?: WorkLogImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkLogImage
+     */
+    omit?: WorkLogImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkLogImageInclude<ExtArgs> | null
+    where?: WorkLogImageWhereInput
+    orderBy?: WorkLogImageOrderByWithRelationInput | WorkLogImageOrderByWithRelationInput[]
+    cursor?: WorkLogImageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: WorkLogImageScalarFieldEnum | WorkLogImageScalarFieldEnum[]
+  }
+
+  /**
    * TaskLog without action
    */
   export type TaskLogDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7439,6 +7604,1102 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: TaskLogInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model WorkLogImage
+   */
+
+  export type AggregateWorkLogImage = {
+    _count: WorkLogImageCountAggregateOutputType | null
+    _avg: WorkLogImageAvgAggregateOutputType | null
+    _sum: WorkLogImageSumAggregateOutputType | null
+    _min: WorkLogImageMinAggregateOutputType | null
+    _max: WorkLogImageMaxAggregateOutputType | null
+  }
+
+  export type WorkLogImageAvgAggregateOutputType = {
+    id: number | null
+    taskLogId: number | null
+  }
+
+  export type WorkLogImageSumAggregateOutputType = {
+    id: number | null
+    taskLogId: number | null
+  }
+
+  export type WorkLogImageMinAggregateOutputType = {
+    id: number | null
+    taskLogId: number | null
+    fileName: string | null
+    mimeType: string | null
+    data: Bytes | null
+  }
+
+  export type WorkLogImageMaxAggregateOutputType = {
+    id: number | null
+    taskLogId: number | null
+    fileName: string | null
+    mimeType: string | null
+    data: Bytes | null
+  }
+
+  export type WorkLogImageCountAggregateOutputType = {
+    id: number
+    taskLogId: number
+    fileName: number
+    mimeType: number
+    data: number
+    _all: number
+  }
+
+
+  export type WorkLogImageAvgAggregateInputType = {
+    id?: true
+    taskLogId?: true
+  }
+
+  export type WorkLogImageSumAggregateInputType = {
+    id?: true
+    taskLogId?: true
+  }
+
+  export type WorkLogImageMinAggregateInputType = {
+    id?: true
+    taskLogId?: true
+    fileName?: true
+    mimeType?: true
+    data?: true
+  }
+
+  export type WorkLogImageMaxAggregateInputType = {
+    id?: true
+    taskLogId?: true
+    fileName?: true
+    mimeType?: true
+    data?: true
+  }
+
+  export type WorkLogImageCountAggregateInputType = {
+    id?: true
+    taskLogId?: true
+    fileName?: true
+    mimeType?: true
+    data?: true
+    _all?: true
+  }
+
+  export type WorkLogImageAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WorkLogImage to aggregate.
+     */
+    where?: WorkLogImageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkLogImages to fetch.
+     */
+    orderBy?: WorkLogImageOrderByWithRelationInput | WorkLogImageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: WorkLogImageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkLogImages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkLogImages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned WorkLogImages
+    **/
+    _count?: true | WorkLogImageCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: WorkLogImageAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: WorkLogImageSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WorkLogImageMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WorkLogImageMaxAggregateInputType
+  }
+
+  export type GetWorkLogImageAggregateType<T extends WorkLogImageAggregateArgs> = {
+        [P in keyof T & keyof AggregateWorkLogImage]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWorkLogImage[P]>
+      : GetScalarType<T[P], AggregateWorkLogImage[P]>
+  }
+
+
+
+
+  export type WorkLogImageGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WorkLogImageWhereInput
+    orderBy?: WorkLogImageOrderByWithAggregationInput | WorkLogImageOrderByWithAggregationInput[]
+    by: WorkLogImageScalarFieldEnum[] | WorkLogImageScalarFieldEnum
+    having?: WorkLogImageScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WorkLogImageCountAggregateInputType | true
+    _avg?: WorkLogImageAvgAggregateInputType
+    _sum?: WorkLogImageSumAggregateInputType
+    _min?: WorkLogImageMinAggregateInputType
+    _max?: WorkLogImageMaxAggregateInputType
+  }
+
+  export type WorkLogImageGroupByOutputType = {
+    id: number
+    taskLogId: number
+    fileName: string
+    mimeType: string
+    data: Bytes
+    _count: WorkLogImageCountAggregateOutputType | null
+    _avg: WorkLogImageAvgAggregateOutputType | null
+    _sum: WorkLogImageSumAggregateOutputType | null
+    _min: WorkLogImageMinAggregateOutputType | null
+    _max: WorkLogImageMaxAggregateOutputType | null
+  }
+
+  type GetWorkLogImageGroupByPayload<T extends WorkLogImageGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<WorkLogImageGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WorkLogImageGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WorkLogImageGroupByOutputType[P]>
+            : GetScalarType<T[P], WorkLogImageGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type WorkLogImageSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    taskLogId?: boolean
+    fileName?: boolean
+    mimeType?: boolean
+    data?: boolean
+    taskLog?: boolean | TaskLogDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["workLogImage"]>
+
+  export type WorkLogImageSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    taskLogId?: boolean
+    fileName?: boolean
+    mimeType?: boolean
+    data?: boolean
+    taskLog?: boolean | TaskLogDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["workLogImage"]>
+
+  export type WorkLogImageSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    taskLogId?: boolean
+    fileName?: boolean
+    mimeType?: boolean
+    data?: boolean
+    taskLog?: boolean | TaskLogDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["workLogImage"]>
+
+  export type WorkLogImageSelectScalar = {
+    id?: boolean
+    taskLogId?: boolean
+    fileName?: boolean
+    mimeType?: boolean
+    data?: boolean
+  }
+
+  export type WorkLogImageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "taskLogId" | "fileName" | "mimeType" | "data", ExtArgs["result"]["workLogImage"]>
+  export type WorkLogImageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    taskLog?: boolean | TaskLogDefaultArgs<ExtArgs>
+  }
+  export type WorkLogImageIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    taskLog?: boolean | TaskLogDefaultArgs<ExtArgs>
+  }
+  export type WorkLogImageIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    taskLog?: boolean | TaskLogDefaultArgs<ExtArgs>
+  }
+
+  export type $WorkLogImagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "WorkLogImage"
+    objects: {
+      taskLog: Prisma.$TaskLogPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      taskLogId: number
+      fileName: string
+      mimeType: string
+      data: Prisma.Bytes
+    }, ExtArgs["result"]["workLogImage"]>
+    composites: {}
+  }
+
+  type WorkLogImageGetPayload<S extends boolean | null | undefined | WorkLogImageDefaultArgs> = $Result.GetResult<Prisma.$WorkLogImagePayload, S>
+
+  type WorkLogImageCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<WorkLogImageFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: WorkLogImageCountAggregateInputType | true
+    }
+
+  export interface WorkLogImageDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['WorkLogImage'], meta: { name: 'WorkLogImage' } }
+    /**
+     * Find zero or one WorkLogImage that matches the filter.
+     * @param {WorkLogImageFindUniqueArgs} args - Arguments to find a WorkLogImage
+     * @example
+     * // Get one WorkLogImage
+     * const workLogImage = await prisma.workLogImage.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends WorkLogImageFindUniqueArgs>(args: SelectSubset<T, WorkLogImageFindUniqueArgs<ExtArgs>>): Prisma__WorkLogImageClient<$Result.GetResult<Prisma.$WorkLogImagePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one WorkLogImage that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {WorkLogImageFindUniqueOrThrowArgs} args - Arguments to find a WorkLogImage
+     * @example
+     * // Get one WorkLogImage
+     * const workLogImage = await prisma.workLogImage.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends WorkLogImageFindUniqueOrThrowArgs>(args: SelectSubset<T, WorkLogImageFindUniqueOrThrowArgs<ExtArgs>>): Prisma__WorkLogImageClient<$Result.GetResult<Prisma.$WorkLogImagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WorkLogImage that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkLogImageFindFirstArgs} args - Arguments to find a WorkLogImage
+     * @example
+     * // Get one WorkLogImage
+     * const workLogImage = await prisma.workLogImage.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends WorkLogImageFindFirstArgs>(args?: SelectSubset<T, WorkLogImageFindFirstArgs<ExtArgs>>): Prisma__WorkLogImageClient<$Result.GetResult<Prisma.$WorkLogImagePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WorkLogImage that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkLogImageFindFirstOrThrowArgs} args - Arguments to find a WorkLogImage
+     * @example
+     * // Get one WorkLogImage
+     * const workLogImage = await prisma.workLogImage.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends WorkLogImageFindFirstOrThrowArgs>(args?: SelectSubset<T, WorkLogImageFindFirstOrThrowArgs<ExtArgs>>): Prisma__WorkLogImageClient<$Result.GetResult<Prisma.$WorkLogImagePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more WorkLogImages that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkLogImageFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all WorkLogImages
+     * const workLogImages = await prisma.workLogImage.findMany()
+     * 
+     * // Get first 10 WorkLogImages
+     * const workLogImages = await prisma.workLogImage.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const workLogImageWithIdOnly = await prisma.workLogImage.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends WorkLogImageFindManyArgs>(args?: SelectSubset<T, WorkLogImageFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkLogImagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a WorkLogImage.
+     * @param {WorkLogImageCreateArgs} args - Arguments to create a WorkLogImage.
+     * @example
+     * // Create one WorkLogImage
+     * const WorkLogImage = await prisma.workLogImage.create({
+     *   data: {
+     *     // ... data to create a WorkLogImage
+     *   }
+     * })
+     * 
+     */
+    create<T extends WorkLogImageCreateArgs>(args: SelectSubset<T, WorkLogImageCreateArgs<ExtArgs>>): Prisma__WorkLogImageClient<$Result.GetResult<Prisma.$WorkLogImagePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many WorkLogImages.
+     * @param {WorkLogImageCreateManyArgs} args - Arguments to create many WorkLogImages.
+     * @example
+     * // Create many WorkLogImages
+     * const workLogImage = await prisma.workLogImage.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends WorkLogImageCreateManyArgs>(args?: SelectSubset<T, WorkLogImageCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many WorkLogImages and returns the data saved in the database.
+     * @param {WorkLogImageCreateManyAndReturnArgs} args - Arguments to create many WorkLogImages.
+     * @example
+     * // Create many WorkLogImages
+     * const workLogImage = await prisma.workLogImage.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many WorkLogImages and only return the `id`
+     * const workLogImageWithIdOnly = await prisma.workLogImage.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends WorkLogImageCreateManyAndReturnArgs>(args?: SelectSubset<T, WorkLogImageCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkLogImagePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a WorkLogImage.
+     * @param {WorkLogImageDeleteArgs} args - Arguments to delete one WorkLogImage.
+     * @example
+     * // Delete one WorkLogImage
+     * const WorkLogImage = await prisma.workLogImage.delete({
+     *   where: {
+     *     // ... filter to delete one WorkLogImage
+     *   }
+     * })
+     * 
+     */
+    delete<T extends WorkLogImageDeleteArgs>(args: SelectSubset<T, WorkLogImageDeleteArgs<ExtArgs>>): Prisma__WorkLogImageClient<$Result.GetResult<Prisma.$WorkLogImagePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one WorkLogImage.
+     * @param {WorkLogImageUpdateArgs} args - Arguments to update one WorkLogImage.
+     * @example
+     * // Update one WorkLogImage
+     * const workLogImage = await prisma.workLogImage.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends WorkLogImageUpdateArgs>(args: SelectSubset<T, WorkLogImageUpdateArgs<ExtArgs>>): Prisma__WorkLogImageClient<$Result.GetResult<Prisma.$WorkLogImagePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more WorkLogImages.
+     * @param {WorkLogImageDeleteManyArgs} args - Arguments to filter WorkLogImages to delete.
+     * @example
+     * // Delete a few WorkLogImages
+     * const { count } = await prisma.workLogImage.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends WorkLogImageDeleteManyArgs>(args?: SelectSubset<T, WorkLogImageDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WorkLogImages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkLogImageUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many WorkLogImages
+     * const workLogImage = await prisma.workLogImage.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends WorkLogImageUpdateManyArgs>(args: SelectSubset<T, WorkLogImageUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WorkLogImages and returns the data updated in the database.
+     * @param {WorkLogImageUpdateManyAndReturnArgs} args - Arguments to update many WorkLogImages.
+     * @example
+     * // Update many WorkLogImages
+     * const workLogImage = await prisma.workLogImage.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more WorkLogImages and only return the `id`
+     * const workLogImageWithIdOnly = await prisma.workLogImage.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends WorkLogImageUpdateManyAndReturnArgs>(args: SelectSubset<T, WorkLogImageUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkLogImagePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one WorkLogImage.
+     * @param {WorkLogImageUpsertArgs} args - Arguments to update or create a WorkLogImage.
+     * @example
+     * // Update or create a WorkLogImage
+     * const workLogImage = await prisma.workLogImage.upsert({
+     *   create: {
+     *     // ... data to create a WorkLogImage
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the WorkLogImage we want to update
+     *   }
+     * })
+     */
+    upsert<T extends WorkLogImageUpsertArgs>(args: SelectSubset<T, WorkLogImageUpsertArgs<ExtArgs>>): Prisma__WorkLogImageClient<$Result.GetResult<Prisma.$WorkLogImagePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of WorkLogImages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkLogImageCountArgs} args - Arguments to filter WorkLogImages to count.
+     * @example
+     * // Count the number of WorkLogImages
+     * const count = await prisma.workLogImage.count({
+     *   where: {
+     *     // ... the filter for the WorkLogImages we want to count
+     *   }
+     * })
+    **/
+    count<T extends WorkLogImageCountArgs>(
+      args?: Subset<T, WorkLogImageCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WorkLogImageCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a WorkLogImage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkLogImageAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WorkLogImageAggregateArgs>(args: Subset<T, WorkLogImageAggregateArgs>): Prisma.PrismaPromise<GetWorkLogImageAggregateType<T>>
+
+    /**
+     * Group by WorkLogImage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkLogImageGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends WorkLogImageGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: WorkLogImageGroupByArgs['orderBy'] }
+        : { orderBy?: WorkLogImageGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, WorkLogImageGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWorkLogImageGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the WorkLogImage model
+   */
+  readonly fields: WorkLogImageFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for WorkLogImage.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__WorkLogImageClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    taskLog<T extends TaskLogDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TaskLogDefaultArgs<ExtArgs>>): Prisma__TaskLogClient<$Result.GetResult<Prisma.$TaskLogPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the WorkLogImage model
+   */
+  interface WorkLogImageFieldRefs {
+    readonly id: FieldRef<"WorkLogImage", 'Int'>
+    readonly taskLogId: FieldRef<"WorkLogImage", 'Int'>
+    readonly fileName: FieldRef<"WorkLogImage", 'String'>
+    readonly mimeType: FieldRef<"WorkLogImage", 'String'>
+    readonly data: FieldRef<"WorkLogImage", 'Bytes'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * WorkLogImage findUnique
+   */
+  export type WorkLogImageFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkLogImage
+     */
+    select?: WorkLogImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkLogImage
+     */
+    omit?: WorkLogImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkLogImageInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkLogImage to fetch.
+     */
+    where: WorkLogImageWhereUniqueInput
+  }
+
+  /**
+   * WorkLogImage findUniqueOrThrow
+   */
+  export type WorkLogImageFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkLogImage
+     */
+    select?: WorkLogImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkLogImage
+     */
+    omit?: WorkLogImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkLogImageInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkLogImage to fetch.
+     */
+    where: WorkLogImageWhereUniqueInput
+  }
+
+  /**
+   * WorkLogImage findFirst
+   */
+  export type WorkLogImageFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkLogImage
+     */
+    select?: WorkLogImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkLogImage
+     */
+    omit?: WorkLogImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkLogImageInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkLogImage to fetch.
+     */
+    where?: WorkLogImageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkLogImages to fetch.
+     */
+    orderBy?: WorkLogImageOrderByWithRelationInput | WorkLogImageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WorkLogImages.
+     */
+    cursor?: WorkLogImageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkLogImages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkLogImages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkLogImages.
+     */
+    distinct?: WorkLogImageScalarFieldEnum | WorkLogImageScalarFieldEnum[]
+  }
+
+  /**
+   * WorkLogImage findFirstOrThrow
+   */
+  export type WorkLogImageFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkLogImage
+     */
+    select?: WorkLogImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkLogImage
+     */
+    omit?: WorkLogImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkLogImageInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkLogImage to fetch.
+     */
+    where?: WorkLogImageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkLogImages to fetch.
+     */
+    orderBy?: WorkLogImageOrderByWithRelationInput | WorkLogImageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WorkLogImages.
+     */
+    cursor?: WorkLogImageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkLogImages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkLogImages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkLogImages.
+     */
+    distinct?: WorkLogImageScalarFieldEnum | WorkLogImageScalarFieldEnum[]
+  }
+
+  /**
+   * WorkLogImage findMany
+   */
+  export type WorkLogImageFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkLogImage
+     */
+    select?: WorkLogImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkLogImage
+     */
+    omit?: WorkLogImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkLogImageInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkLogImages to fetch.
+     */
+    where?: WorkLogImageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkLogImages to fetch.
+     */
+    orderBy?: WorkLogImageOrderByWithRelationInput | WorkLogImageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing WorkLogImages.
+     */
+    cursor?: WorkLogImageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkLogImages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkLogImages.
+     */
+    skip?: number
+    distinct?: WorkLogImageScalarFieldEnum | WorkLogImageScalarFieldEnum[]
+  }
+
+  /**
+   * WorkLogImage create
+   */
+  export type WorkLogImageCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkLogImage
+     */
+    select?: WorkLogImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkLogImage
+     */
+    omit?: WorkLogImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkLogImageInclude<ExtArgs> | null
+    /**
+     * The data needed to create a WorkLogImage.
+     */
+    data: XOR<WorkLogImageCreateInput, WorkLogImageUncheckedCreateInput>
+  }
+
+  /**
+   * WorkLogImage createMany
+   */
+  export type WorkLogImageCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many WorkLogImages.
+     */
+    data: WorkLogImageCreateManyInput | WorkLogImageCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WorkLogImage createManyAndReturn
+   */
+  export type WorkLogImageCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkLogImage
+     */
+    select?: WorkLogImageSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkLogImage
+     */
+    omit?: WorkLogImageOmit<ExtArgs> | null
+    /**
+     * The data used to create many WorkLogImages.
+     */
+    data: WorkLogImageCreateManyInput | WorkLogImageCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkLogImageIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * WorkLogImage update
+   */
+  export type WorkLogImageUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkLogImage
+     */
+    select?: WorkLogImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkLogImage
+     */
+    omit?: WorkLogImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkLogImageInclude<ExtArgs> | null
+    /**
+     * The data needed to update a WorkLogImage.
+     */
+    data: XOR<WorkLogImageUpdateInput, WorkLogImageUncheckedUpdateInput>
+    /**
+     * Choose, which WorkLogImage to update.
+     */
+    where: WorkLogImageWhereUniqueInput
+  }
+
+  /**
+   * WorkLogImage updateMany
+   */
+  export type WorkLogImageUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update WorkLogImages.
+     */
+    data: XOR<WorkLogImageUpdateManyMutationInput, WorkLogImageUncheckedUpdateManyInput>
+    /**
+     * Filter which WorkLogImages to update
+     */
+    where?: WorkLogImageWhereInput
+    /**
+     * Limit how many WorkLogImages to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkLogImage updateManyAndReturn
+   */
+  export type WorkLogImageUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkLogImage
+     */
+    select?: WorkLogImageSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkLogImage
+     */
+    omit?: WorkLogImageOmit<ExtArgs> | null
+    /**
+     * The data used to update WorkLogImages.
+     */
+    data: XOR<WorkLogImageUpdateManyMutationInput, WorkLogImageUncheckedUpdateManyInput>
+    /**
+     * Filter which WorkLogImages to update
+     */
+    where?: WorkLogImageWhereInput
+    /**
+     * Limit how many WorkLogImages to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkLogImageIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * WorkLogImage upsert
+   */
+  export type WorkLogImageUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkLogImage
+     */
+    select?: WorkLogImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkLogImage
+     */
+    omit?: WorkLogImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkLogImageInclude<ExtArgs> | null
+    /**
+     * The filter to search for the WorkLogImage to update in case it exists.
+     */
+    where: WorkLogImageWhereUniqueInput
+    /**
+     * In case the WorkLogImage found by the `where` argument doesn't exist, create a new WorkLogImage with this data.
+     */
+    create: XOR<WorkLogImageCreateInput, WorkLogImageUncheckedCreateInput>
+    /**
+     * In case the WorkLogImage was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<WorkLogImageUpdateInput, WorkLogImageUncheckedUpdateInput>
+  }
+
+  /**
+   * WorkLogImage delete
+   */
+  export type WorkLogImageDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkLogImage
+     */
+    select?: WorkLogImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkLogImage
+     */
+    omit?: WorkLogImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkLogImageInclude<ExtArgs> | null
+    /**
+     * Filter which WorkLogImage to delete.
+     */
+    where: WorkLogImageWhereUniqueInput
+  }
+
+  /**
+   * WorkLogImage deleteMany
+   */
+  export type WorkLogImageDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WorkLogImages to delete
+     */
+    where?: WorkLogImageWhereInput
+    /**
+     * Limit how many WorkLogImages to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkLogImage without action
+   */
+  export type WorkLogImageDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkLogImage
+     */
+    select?: WorkLogImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkLogImage
+     */
+    omit?: WorkLogImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkLogImageInclude<ExtArgs> | null
   }
 
 
@@ -11870,8 +13131,8 @@ export namespace Prisma {
     description: 'description',
     status: 'status',
     deadline: 'deadline',
-    estimateMinMinutes: 'estimateMinMinutes',
-    estimateMaxMinutes: 'estimateMaxMinutes',
+    estimateMinHours: 'estimateMinHours',
+    estimateMaxHours: 'estimateMaxHours',
     archivedAt: 'archivedAt',
     sortOrder: 'sortOrder',
     clientId: 'clientId',
@@ -11888,7 +13149,7 @@ export namespace Prisma {
     taskId: 'taskId',
     title: 'title',
     status: 'status',
-    estimatedMinutes: 'estimatedMinutes',
+    estimatedHours: 'estimatedHours',
     sortOrder: 'sortOrder',
     createdAt: 'createdAt'
   };
@@ -11900,11 +13161,23 @@ export namespace Prisma {
     id: 'id',
     taskId: 'taskId',
     note: 'note',
-    minutesSpent: 'minutesSpent',
+    details: 'details',
+    hoursSpent: 'hoursSpent',
     createdAt: 'createdAt'
   };
 
   export type TaskLogScalarFieldEnum = (typeof TaskLogScalarFieldEnum)[keyof typeof TaskLogScalarFieldEnum]
+
+
+  export const WorkLogImageScalarFieldEnum: {
+    id: 'id',
+    taskLogId: 'taskLogId',
+    fileName: 'fileName',
+    mimeType: 'mimeType',
+    data: 'data'
+  };
+
+  export type WorkLogImageScalarFieldEnum = (typeof WorkLogImageScalarFieldEnum)[keyof typeof WorkLogImageScalarFieldEnum]
 
 
   export const UserScalarFieldEnum: {
@@ -12051,13 +13324,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Boolean'
-   */
-  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
-    
-
-
-  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -12068,6 +13334,27 @@ export namespace Prisma {
    * Reference to a field of type 'Float[]'
    */
   export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Bytes'
+   */
+  export type BytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes'>
+    
+
+
+  /**
+   * Reference to a field of type 'Bytes[]'
+   */
+  export type ListBytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
   /**
    * Deep Input Types
@@ -12172,8 +13459,8 @@ export namespace Prisma {
     description?: StringNullableFilter<"Task"> | string | null
     status?: EnumTaskStatusFilter<"Task"> | $Enums.TaskStatus
     deadline?: DateTimeNullableFilter<"Task"> | Date | string | null
-    estimateMinMinutes?: IntNullableFilter<"Task"> | number | null
-    estimateMaxMinutes?: IntNullableFilter<"Task"> | number | null
+    estimateMinHours?: FloatNullableFilter<"Task"> | number | null
+    estimateMaxHours?: FloatNullableFilter<"Task"> | number | null
     archivedAt?: DateTimeNullableFilter<"Task"> | Date | string | null
     sortOrder?: IntFilter<"Task"> | number
     clientId?: IntNullableFilter<"Task"> | number | null
@@ -12192,8 +13479,8 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     status?: SortOrder
     deadline?: SortOrderInput | SortOrder
-    estimateMinMinutes?: SortOrderInput | SortOrder
-    estimateMaxMinutes?: SortOrderInput | SortOrder
+    estimateMinHours?: SortOrderInput | SortOrder
+    estimateMaxHours?: SortOrderInput | SortOrder
     archivedAt?: SortOrderInput | SortOrder
     sortOrder?: SortOrder
     clientId?: SortOrderInput | SortOrder
@@ -12215,8 +13502,8 @@ export namespace Prisma {
     description?: StringNullableFilter<"Task"> | string | null
     status?: EnumTaskStatusFilter<"Task"> | $Enums.TaskStatus
     deadline?: DateTimeNullableFilter<"Task"> | Date | string | null
-    estimateMinMinutes?: IntNullableFilter<"Task"> | number | null
-    estimateMaxMinutes?: IntNullableFilter<"Task"> | number | null
+    estimateMinHours?: FloatNullableFilter<"Task"> | number | null
+    estimateMaxHours?: FloatNullableFilter<"Task"> | number | null
     archivedAt?: DateTimeNullableFilter<"Task"> | Date | string | null
     sortOrder?: IntFilter<"Task"> | number
     clientId?: IntNullableFilter<"Task"> | number | null
@@ -12235,8 +13522,8 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     status?: SortOrder
     deadline?: SortOrderInput | SortOrder
-    estimateMinMinutes?: SortOrderInput | SortOrder
-    estimateMaxMinutes?: SortOrderInput | SortOrder
+    estimateMinHours?: SortOrderInput | SortOrder
+    estimateMaxHours?: SortOrderInput | SortOrder
     archivedAt?: SortOrderInput | SortOrder
     sortOrder?: SortOrder
     clientId?: SortOrderInput | SortOrder
@@ -12259,8 +13546,8 @@ export namespace Prisma {
     description?: StringNullableWithAggregatesFilter<"Task"> | string | null
     status?: EnumTaskStatusWithAggregatesFilter<"Task"> | $Enums.TaskStatus
     deadline?: DateTimeNullableWithAggregatesFilter<"Task"> | Date | string | null
-    estimateMinMinutes?: IntNullableWithAggregatesFilter<"Task"> | number | null
-    estimateMaxMinutes?: IntNullableWithAggregatesFilter<"Task"> | number | null
+    estimateMinHours?: FloatNullableWithAggregatesFilter<"Task"> | number | null
+    estimateMaxHours?: FloatNullableWithAggregatesFilter<"Task"> | number | null
     archivedAt?: DateTimeNullableWithAggregatesFilter<"Task"> | Date | string | null
     sortOrder?: IntWithAggregatesFilter<"Task"> | number
     clientId?: IntNullableWithAggregatesFilter<"Task"> | number | null
@@ -12277,7 +13564,7 @@ export namespace Prisma {
     taskId?: IntFilter<"Subtask"> | number
     title?: StringFilter<"Subtask"> | string
     status?: EnumTaskStatusFilter<"Subtask"> | $Enums.TaskStatus
-    estimatedMinutes?: IntNullableFilter<"Subtask"> | number | null
+    estimatedHours?: FloatNullableFilter<"Subtask"> | number | null
     sortOrder?: IntFilter<"Subtask"> | number
     createdAt?: DateTimeFilter<"Subtask"> | Date | string
     task?: XOR<TaskScalarRelationFilter, TaskWhereInput>
@@ -12288,7 +13575,7 @@ export namespace Prisma {
     taskId?: SortOrder
     title?: SortOrder
     status?: SortOrder
-    estimatedMinutes?: SortOrderInput | SortOrder
+    estimatedHours?: SortOrderInput | SortOrder
     sortOrder?: SortOrder
     createdAt?: SortOrder
     task?: TaskOrderByWithRelationInput
@@ -12302,7 +13589,7 @@ export namespace Prisma {
     taskId?: IntFilter<"Subtask"> | number
     title?: StringFilter<"Subtask"> | string
     status?: EnumTaskStatusFilter<"Subtask"> | $Enums.TaskStatus
-    estimatedMinutes?: IntNullableFilter<"Subtask"> | number | null
+    estimatedHours?: FloatNullableFilter<"Subtask"> | number | null
     sortOrder?: IntFilter<"Subtask"> | number
     createdAt?: DateTimeFilter<"Subtask"> | Date | string
     task?: XOR<TaskScalarRelationFilter, TaskWhereInput>
@@ -12313,7 +13600,7 @@ export namespace Prisma {
     taskId?: SortOrder
     title?: SortOrder
     status?: SortOrder
-    estimatedMinutes?: SortOrderInput | SortOrder
+    estimatedHours?: SortOrderInput | SortOrder
     sortOrder?: SortOrder
     createdAt?: SortOrder
     _count?: SubtaskCountOrderByAggregateInput
@@ -12331,7 +13618,7 @@ export namespace Prisma {
     taskId?: IntWithAggregatesFilter<"Subtask"> | number
     title?: StringWithAggregatesFilter<"Subtask"> | string
     status?: EnumTaskStatusWithAggregatesFilter<"Subtask"> | $Enums.TaskStatus
-    estimatedMinutes?: IntNullableWithAggregatesFilter<"Subtask"> | number | null
+    estimatedHours?: FloatNullableWithAggregatesFilter<"Subtask"> | number | null
     sortOrder?: IntWithAggregatesFilter<"Subtask"> | number
     createdAt?: DateTimeWithAggregatesFilter<"Subtask"> | Date | string
   }
@@ -12343,18 +13630,22 @@ export namespace Prisma {
     id?: IntFilter<"TaskLog"> | number
     taskId?: IntFilter<"TaskLog"> | number
     note?: StringFilter<"TaskLog"> | string
-    minutesSpent?: IntNullableFilter<"TaskLog"> | number | null
+    details?: StringNullableFilter<"TaskLog"> | string | null
+    hoursSpent?: FloatNullableFilter<"TaskLog"> | number | null
     createdAt?: DateTimeFilter<"TaskLog"> | Date | string
     task?: XOR<TaskScalarRelationFilter, TaskWhereInput>
+    images?: WorkLogImageListRelationFilter
   }
 
   export type TaskLogOrderByWithRelationInput = {
     id?: SortOrder
     taskId?: SortOrder
     note?: SortOrder
-    minutesSpent?: SortOrderInput | SortOrder
+    details?: SortOrderInput | SortOrder
+    hoursSpent?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     task?: TaskOrderByWithRelationInput
+    images?: WorkLogImageOrderByRelationAggregateInput
   }
 
   export type TaskLogWhereUniqueInput = Prisma.AtLeast<{
@@ -12364,16 +13655,19 @@ export namespace Prisma {
     NOT?: TaskLogWhereInput | TaskLogWhereInput[]
     taskId?: IntFilter<"TaskLog"> | number
     note?: StringFilter<"TaskLog"> | string
-    minutesSpent?: IntNullableFilter<"TaskLog"> | number | null
+    details?: StringNullableFilter<"TaskLog"> | string | null
+    hoursSpent?: FloatNullableFilter<"TaskLog"> | number | null
     createdAt?: DateTimeFilter<"TaskLog"> | Date | string
     task?: XOR<TaskScalarRelationFilter, TaskWhereInput>
+    images?: WorkLogImageListRelationFilter
   }, "id">
 
   export type TaskLogOrderByWithAggregationInput = {
     id?: SortOrder
     taskId?: SortOrder
     note?: SortOrder
-    minutesSpent?: SortOrderInput | SortOrder
+    details?: SortOrderInput | SortOrder
+    hoursSpent?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: TaskLogCountOrderByAggregateInput
     _avg?: TaskLogAvgOrderByAggregateInput
@@ -12389,8 +13683,66 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"TaskLog"> | number
     taskId?: IntWithAggregatesFilter<"TaskLog"> | number
     note?: StringWithAggregatesFilter<"TaskLog"> | string
-    minutesSpent?: IntNullableWithAggregatesFilter<"TaskLog"> | number | null
+    details?: StringNullableWithAggregatesFilter<"TaskLog"> | string | null
+    hoursSpent?: FloatNullableWithAggregatesFilter<"TaskLog"> | number | null
     createdAt?: DateTimeWithAggregatesFilter<"TaskLog"> | Date | string
+  }
+
+  export type WorkLogImageWhereInput = {
+    AND?: WorkLogImageWhereInput | WorkLogImageWhereInput[]
+    OR?: WorkLogImageWhereInput[]
+    NOT?: WorkLogImageWhereInput | WorkLogImageWhereInput[]
+    id?: IntFilter<"WorkLogImage"> | number
+    taskLogId?: IntFilter<"WorkLogImage"> | number
+    fileName?: StringFilter<"WorkLogImage"> | string
+    mimeType?: StringFilter<"WorkLogImage"> | string
+    data?: BytesFilter<"WorkLogImage"> | Bytes
+    taskLog?: XOR<TaskLogScalarRelationFilter, TaskLogWhereInput>
+  }
+
+  export type WorkLogImageOrderByWithRelationInput = {
+    id?: SortOrder
+    taskLogId?: SortOrder
+    fileName?: SortOrder
+    mimeType?: SortOrder
+    data?: SortOrder
+    taskLog?: TaskLogOrderByWithRelationInput
+  }
+
+  export type WorkLogImageWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: WorkLogImageWhereInput | WorkLogImageWhereInput[]
+    OR?: WorkLogImageWhereInput[]
+    NOT?: WorkLogImageWhereInput | WorkLogImageWhereInput[]
+    taskLogId?: IntFilter<"WorkLogImage"> | number
+    fileName?: StringFilter<"WorkLogImage"> | string
+    mimeType?: StringFilter<"WorkLogImage"> | string
+    data?: BytesFilter<"WorkLogImage"> | Bytes
+    taskLog?: XOR<TaskLogScalarRelationFilter, TaskLogWhereInput>
+  }, "id">
+
+  export type WorkLogImageOrderByWithAggregationInput = {
+    id?: SortOrder
+    taskLogId?: SortOrder
+    fileName?: SortOrder
+    mimeType?: SortOrder
+    data?: SortOrder
+    _count?: WorkLogImageCountOrderByAggregateInput
+    _avg?: WorkLogImageAvgOrderByAggregateInput
+    _max?: WorkLogImageMaxOrderByAggregateInput
+    _min?: WorkLogImageMinOrderByAggregateInput
+    _sum?: WorkLogImageSumOrderByAggregateInput
+  }
+
+  export type WorkLogImageScalarWhereWithAggregatesInput = {
+    AND?: WorkLogImageScalarWhereWithAggregatesInput | WorkLogImageScalarWhereWithAggregatesInput[]
+    OR?: WorkLogImageScalarWhereWithAggregatesInput[]
+    NOT?: WorkLogImageScalarWhereWithAggregatesInput | WorkLogImageScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"WorkLogImage"> | number
+    taskLogId?: IntWithAggregatesFilter<"WorkLogImage"> | number
+    fileName?: StringWithAggregatesFilter<"WorkLogImage"> | string
+    mimeType?: StringWithAggregatesFilter<"WorkLogImage"> | string
+    data?: BytesWithAggregatesFilter<"WorkLogImage"> | Bytes
   }
 
   export type UserWhereInput = {
@@ -12767,8 +14119,8 @@ export namespace Prisma {
     description?: string | null
     status?: $Enums.TaskStatus
     deadline?: Date | string | null
-    estimateMinMinutes?: number | null
-    estimateMaxMinutes?: number | null
+    estimateMinHours?: number | null
+    estimateMaxHours?: number | null
     archivedAt?: Date | string | null
     sortOrder?: number
     createdAt?: Date | string
@@ -12785,8 +14137,8 @@ export namespace Prisma {
     description?: string | null
     status?: $Enums.TaskStatus
     deadline?: Date | string | null
-    estimateMinMinutes?: number | null
-    estimateMaxMinutes?: number | null
+    estimateMinHours?: number | null
+    estimateMaxHours?: number | null
     archivedAt?: Date | string | null
     sortOrder?: number
     clientId?: number | null
@@ -12802,8 +14154,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    estimateMinMinutes?: NullableIntFieldUpdateOperationsInput | number | null
-    estimateMaxMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    estimateMinHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    estimateMaxHours?: NullableFloatFieldUpdateOperationsInput | number | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12820,8 +14172,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    estimateMinMinutes?: NullableIntFieldUpdateOperationsInput | number | null
-    estimateMaxMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    estimateMinHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    estimateMaxHours?: NullableFloatFieldUpdateOperationsInput | number | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     clientId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -12838,8 +14190,8 @@ export namespace Prisma {
     description?: string | null
     status?: $Enums.TaskStatus
     deadline?: Date | string | null
-    estimateMinMinutes?: number | null
-    estimateMaxMinutes?: number | null
+    estimateMinHours?: number | null
+    estimateMaxHours?: number | null
     archivedAt?: Date | string | null
     sortOrder?: number
     clientId?: number | null
@@ -12853,8 +14205,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    estimateMinMinutes?: NullableIntFieldUpdateOperationsInput | number | null
-    estimateMaxMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    estimateMinHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    estimateMaxHours?: NullableFloatFieldUpdateOperationsInput | number | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12867,8 +14219,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    estimateMinMinutes?: NullableIntFieldUpdateOperationsInput | number | null
-    estimateMaxMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    estimateMinHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    estimateMaxHours?: NullableFloatFieldUpdateOperationsInput | number | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     clientId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -12880,7 +14232,7 @@ export namespace Prisma {
   export type SubtaskCreateInput = {
     title: string
     status?: $Enums.TaskStatus
-    estimatedMinutes?: number | null
+    estimatedHours?: number | null
     sortOrder?: number
     createdAt?: Date | string
     task: TaskCreateNestedOneWithoutSubtasksInput
@@ -12891,7 +14243,7 @@ export namespace Prisma {
     taskId: number
     title: string
     status?: $Enums.TaskStatus
-    estimatedMinutes?: number | null
+    estimatedHours?: number | null
     sortOrder?: number
     createdAt?: Date | string
   }
@@ -12899,7 +14251,7 @@ export namespace Prisma {
   export type SubtaskUpdateInput = {
     title?: StringFieldUpdateOperationsInput | string
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
-    estimatedMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    estimatedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     task?: TaskUpdateOneRequiredWithoutSubtasksNestedInput
@@ -12910,7 +14262,7 @@ export namespace Prisma {
     taskId?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
-    estimatedMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    estimatedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12920,7 +14272,7 @@ export namespace Prisma {
     taskId: number
     title: string
     status?: $Enums.TaskStatus
-    estimatedMinutes?: number | null
+    estimatedHours?: number | null
     sortOrder?: number
     createdAt?: Date | string
   }
@@ -12928,7 +14280,7 @@ export namespace Prisma {
   export type SubtaskUpdateManyMutationInput = {
     title?: StringFieldUpdateOperationsInput | string
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
-    estimatedMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    estimatedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12938,52 +14290,62 @@ export namespace Prisma {
     taskId?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
-    estimatedMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    estimatedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TaskLogCreateInput = {
     note: string
-    minutesSpent?: number | null
+    details?: string | null
+    hoursSpent?: number | null
     createdAt?: Date | string
     task: TaskCreateNestedOneWithoutLogsInput
+    images?: WorkLogImageCreateNestedManyWithoutTaskLogInput
   }
 
   export type TaskLogUncheckedCreateInput = {
     id?: number
     taskId: number
     note: string
-    minutesSpent?: number | null
+    details?: string | null
+    hoursSpent?: number | null
     createdAt?: Date | string
+    images?: WorkLogImageUncheckedCreateNestedManyWithoutTaskLogInput
   }
 
   export type TaskLogUpdateInput = {
     note?: StringFieldUpdateOperationsInput | string
-    minutesSpent?: NullableIntFieldUpdateOperationsInput | number | null
+    details?: NullableStringFieldUpdateOperationsInput | string | null
+    hoursSpent?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     task?: TaskUpdateOneRequiredWithoutLogsNestedInput
+    images?: WorkLogImageUpdateManyWithoutTaskLogNestedInput
   }
 
   export type TaskLogUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     taskId?: IntFieldUpdateOperationsInput | number
     note?: StringFieldUpdateOperationsInput | string
-    minutesSpent?: NullableIntFieldUpdateOperationsInput | number | null
+    details?: NullableStringFieldUpdateOperationsInput | string | null
+    hoursSpent?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    images?: WorkLogImageUncheckedUpdateManyWithoutTaskLogNestedInput
   }
 
   export type TaskLogCreateManyInput = {
     id?: number
     taskId: number
     note: string
-    minutesSpent?: number | null
+    details?: string | null
+    hoursSpent?: number | null
     createdAt?: Date | string
   }
 
   export type TaskLogUpdateManyMutationInput = {
     note?: StringFieldUpdateOperationsInput | string
-    minutesSpent?: NullableIntFieldUpdateOperationsInput | number | null
+    details?: NullableStringFieldUpdateOperationsInput | string | null
+    hoursSpent?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -12991,8 +14353,61 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     taskId?: IntFieldUpdateOperationsInput | number
     note?: StringFieldUpdateOperationsInput | string
-    minutesSpent?: NullableIntFieldUpdateOperationsInput | number | null
+    details?: NullableStringFieldUpdateOperationsInput | string | null
+    hoursSpent?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkLogImageCreateInput = {
+    fileName: string
+    mimeType: string
+    data: Bytes
+    taskLog: TaskLogCreateNestedOneWithoutImagesInput
+  }
+
+  export type WorkLogImageUncheckedCreateInput = {
+    id?: number
+    taskLogId: number
+    fileName: string
+    mimeType: string
+    data: Bytes
+  }
+
+  export type WorkLogImageUpdateInput = {
+    fileName?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    data?: BytesFieldUpdateOperationsInput | Bytes
+    taskLog?: TaskLogUpdateOneRequiredWithoutImagesNestedInput
+  }
+
+  export type WorkLogImageUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    taskLogId?: IntFieldUpdateOperationsInput | number
+    fileName?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    data?: BytesFieldUpdateOperationsInput | Bytes
+  }
+
+  export type WorkLogImageCreateManyInput = {
+    id?: number
+    taskLogId: number
+    fileName: string
+    mimeType: string
+    data: Bytes
+  }
+
+  export type WorkLogImageUpdateManyMutationInput = {
+    fileName?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    data?: BytesFieldUpdateOperationsInput | Bytes
+  }
+
+  export type WorkLogImageUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    taskLogId?: IntFieldUpdateOperationsInput | number
+    fileName?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    data?: BytesFieldUpdateOperationsInput | Bytes
   }
 
   export type UserCreateInput = {
@@ -13475,6 +14890,17 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type IntNullableFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
@@ -13538,8 +14964,8 @@ export namespace Prisma {
     description?: SortOrder
     status?: SortOrder
     deadline?: SortOrder
-    estimateMinMinutes?: SortOrder
-    estimateMaxMinutes?: SortOrder
+    estimateMinHours?: SortOrder
+    estimateMaxHours?: SortOrder
     archivedAt?: SortOrder
     sortOrder?: SortOrder
     clientId?: SortOrder
@@ -13550,8 +14976,8 @@ export namespace Prisma {
 
   export type TaskAvgOrderByAggregateInput = {
     id?: SortOrder
-    estimateMinMinutes?: SortOrder
-    estimateMaxMinutes?: SortOrder
+    estimateMinHours?: SortOrder
+    estimateMaxHours?: SortOrder
     sortOrder?: SortOrder
     clientId?: SortOrder
     labelId?: SortOrder
@@ -13563,8 +14989,8 @@ export namespace Prisma {
     description?: SortOrder
     status?: SortOrder
     deadline?: SortOrder
-    estimateMinMinutes?: SortOrder
-    estimateMaxMinutes?: SortOrder
+    estimateMinHours?: SortOrder
+    estimateMaxHours?: SortOrder
     archivedAt?: SortOrder
     sortOrder?: SortOrder
     clientId?: SortOrder
@@ -13579,8 +15005,8 @@ export namespace Prisma {
     description?: SortOrder
     status?: SortOrder
     deadline?: SortOrder
-    estimateMinMinutes?: SortOrder
-    estimateMaxMinutes?: SortOrder
+    estimateMinHours?: SortOrder
+    estimateMaxHours?: SortOrder
     archivedAt?: SortOrder
     sortOrder?: SortOrder
     clientId?: SortOrder
@@ -13591,8 +15017,8 @@ export namespace Prisma {
 
   export type TaskSumOrderByAggregateInput = {
     id?: SortOrder
-    estimateMinMinutes?: SortOrder
-    estimateMaxMinutes?: SortOrder
+    estimateMinHours?: SortOrder
+    estimateMaxHours?: SortOrder
     sortOrder?: SortOrder
     clientId?: SortOrder
     labelId?: SortOrder
@@ -13640,6 +15066,22 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
   export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
@@ -13680,7 +15122,7 @@ export namespace Prisma {
     taskId?: SortOrder
     title?: SortOrder
     status?: SortOrder
-    estimatedMinutes?: SortOrder
+    estimatedHours?: SortOrder
     sortOrder?: SortOrder
     createdAt?: SortOrder
   }
@@ -13688,7 +15130,7 @@ export namespace Prisma {
   export type SubtaskAvgOrderByAggregateInput = {
     id?: SortOrder
     taskId?: SortOrder
-    estimatedMinutes?: SortOrder
+    estimatedHours?: SortOrder
     sortOrder?: SortOrder
   }
 
@@ -13697,7 +15139,7 @@ export namespace Prisma {
     taskId?: SortOrder
     title?: SortOrder
     status?: SortOrder
-    estimatedMinutes?: SortOrder
+    estimatedHours?: SortOrder
     sortOrder?: SortOrder
     createdAt?: SortOrder
   }
@@ -13707,7 +15149,7 @@ export namespace Prisma {
     taskId?: SortOrder
     title?: SortOrder
     status?: SortOrder
-    estimatedMinutes?: SortOrder
+    estimatedHours?: SortOrder
     sortOrder?: SortOrder
     createdAt?: SortOrder
   }
@@ -13715,29 +15157,41 @@ export namespace Prisma {
   export type SubtaskSumOrderByAggregateInput = {
     id?: SortOrder
     taskId?: SortOrder
-    estimatedMinutes?: SortOrder
+    estimatedHours?: SortOrder
     sortOrder?: SortOrder
+  }
+
+  export type WorkLogImageListRelationFilter = {
+    every?: WorkLogImageWhereInput
+    some?: WorkLogImageWhereInput
+    none?: WorkLogImageWhereInput
+  }
+
+  export type WorkLogImageOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type TaskLogCountOrderByAggregateInput = {
     id?: SortOrder
     taskId?: SortOrder
     note?: SortOrder
-    minutesSpent?: SortOrder
+    details?: SortOrder
+    hoursSpent?: SortOrder
     createdAt?: SortOrder
   }
 
   export type TaskLogAvgOrderByAggregateInput = {
     id?: SortOrder
     taskId?: SortOrder
-    minutesSpent?: SortOrder
+    hoursSpent?: SortOrder
   }
 
   export type TaskLogMaxOrderByAggregateInput = {
     id?: SortOrder
     taskId?: SortOrder
     note?: SortOrder
-    minutesSpent?: SortOrder
+    details?: SortOrder
+    hoursSpent?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -13745,14 +15199,71 @@ export namespace Prisma {
     id?: SortOrder
     taskId?: SortOrder
     note?: SortOrder
-    minutesSpent?: SortOrder
+    details?: SortOrder
+    hoursSpent?: SortOrder
     createdAt?: SortOrder
   }
 
   export type TaskLogSumOrderByAggregateInput = {
     id?: SortOrder
     taskId?: SortOrder
-    minutesSpent?: SortOrder
+    hoursSpent?: SortOrder
+  }
+
+  export type BytesFilter<$PrismaModel = never> = {
+    equals?: Bytes | BytesFieldRefInput<$PrismaModel>
+    in?: Bytes[] | ListBytesFieldRefInput<$PrismaModel>
+    notIn?: Bytes[] | ListBytesFieldRefInput<$PrismaModel>
+    not?: NestedBytesFilter<$PrismaModel> | Bytes
+  }
+
+  export type TaskLogScalarRelationFilter = {
+    is?: TaskLogWhereInput
+    isNot?: TaskLogWhereInput
+  }
+
+  export type WorkLogImageCountOrderByAggregateInput = {
+    id?: SortOrder
+    taskLogId?: SortOrder
+    fileName?: SortOrder
+    mimeType?: SortOrder
+    data?: SortOrder
+  }
+
+  export type WorkLogImageAvgOrderByAggregateInput = {
+    id?: SortOrder
+    taskLogId?: SortOrder
+  }
+
+  export type WorkLogImageMaxOrderByAggregateInput = {
+    id?: SortOrder
+    taskLogId?: SortOrder
+    fileName?: SortOrder
+    mimeType?: SortOrder
+    data?: SortOrder
+  }
+
+  export type WorkLogImageMinOrderByAggregateInput = {
+    id?: SortOrder
+    taskLogId?: SortOrder
+    fileName?: SortOrder
+    mimeType?: SortOrder
+    data?: SortOrder
+  }
+
+  export type WorkLogImageSumOrderByAggregateInput = {
+    id?: SortOrder
+    taskLogId?: SortOrder
+  }
+
+  export type BytesWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Bytes | BytesFieldRefInput<$PrismaModel>
+    in?: Bytes[] | ListBytesFieldRefInput<$PrismaModel>
+    notIn?: Bytes[] | ListBytesFieldRefInput<$PrismaModel>
+    not?: NestedBytesWithAggregatesFilter<$PrismaModel> | Bytes
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBytesFilter<$PrismaModel>
+    _max?: NestedBytesFilter<$PrismaModel>
   }
 
   export type BoolFilter<$PrismaModel = never> = {
@@ -14079,7 +15590,7 @@ export namespace Prisma {
     set?: Date | string | null
   }
 
-  export type NullableIntFieldUpdateOperationsInput = {
+  export type NullableFloatFieldUpdateOperationsInput = {
     set?: number | null
     increment?: number
     decrement?: number
@@ -14139,6 +15650,14 @@ export namespace Prisma {
     deleteMany?: TaskLogScalarWhereInput | TaskLogScalarWhereInput[]
   }
 
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type SubtaskUncheckedUpdateManyWithoutTaskNestedInput = {
     create?: XOR<SubtaskCreateWithoutTaskInput, SubtaskUncheckedCreateWithoutTaskInput> | SubtaskCreateWithoutTaskInput[] | SubtaskUncheckedCreateWithoutTaskInput[]
     connectOrCreate?: SubtaskCreateOrConnectWithoutTaskInput | SubtaskCreateOrConnectWithoutTaskInput[]
@@ -14187,12 +15706,72 @@ export namespace Prisma {
     connect?: TaskWhereUniqueInput
   }
 
+  export type WorkLogImageCreateNestedManyWithoutTaskLogInput = {
+    create?: XOR<WorkLogImageCreateWithoutTaskLogInput, WorkLogImageUncheckedCreateWithoutTaskLogInput> | WorkLogImageCreateWithoutTaskLogInput[] | WorkLogImageUncheckedCreateWithoutTaskLogInput[]
+    connectOrCreate?: WorkLogImageCreateOrConnectWithoutTaskLogInput | WorkLogImageCreateOrConnectWithoutTaskLogInput[]
+    createMany?: WorkLogImageCreateManyTaskLogInputEnvelope
+    connect?: WorkLogImageWhereUniqueInput | WorkLogImageWhereUniqueInput[]
+  }
+
+  export type WorkLogImageUncheckedCreateNestedManyWithoutTaskLogInput = {
+    create?: XOR<WorkLogImageCreateWithoutTaskLogInput, WorkLogImageUncheckedCreateWithoutTaskLogInput> | WorkLogImageCreateWithoutTaskLogInput[] | WorkLogImageUncheckedCreateWithoutTaskLogInput[]
+    connectOrCreate?: WorkLogImageCreateOrConnectWithoutTaskLogInput | WorkLogImageCreateOrConnectWithoutTaskLogInput[]
+    createMany?: WorkLogImageCreateManyTaskLogInputEnvelope
+    connect?: WorkLogImageWhereUniqueInput | WorkLogImageWhereUniqueInput[]
+  }
+
   export type TaskUpdateOneRequiredWithoutLogsNestedInput = {
     create?: XOR<TaskCreateWithoutLogsInput, TaskUncheckedCreateWithoutLogsInput>
     connectOrCreate?: TaskCreateOrConnectWithoutLogsInput
     upsert?: TaskUpsertWithoutLogsInput
     connect?: TaskWhereUniqueInput
     update?: XOR<XOR<TaskUpdateToOneWithWhereWithoutLogsInput, TaskUpdateWithoutLogsInput>, TaskUncheckedUpdateWithoutLogsInput>
+  }
+
+  export type WorkLogImageUpdateManyWithoutTaskLogNestedInput = {
+    create?: XOR<WorkLogImageCreateWithoutTaskLogInput, WorkLogImageUncheckedCreateWithoutTaskLogInput> | WorkLogImageCreateWithoutTaskLogInput[] | WorkLogImageUncheckedCreateWithoutTaskLogInput[]
+    connectOrCreate?: WorkLogImageCreateOrConnectWithoutTaskLogInput | WorkLogImageCreateOrConnectWithoutTaskLogInput[]
+    upsert?: WorkLogImageUpsertWithWhereUniqueWithoutTaskLogInput | WorkLogImageUpsertWithWhereUniqueWithoutTaskLogInput[]
+    createMany?: WorkLogImageCreateManyTaskLogInputEnvelope
+    set?: WorkLogImageWhereUniqueInput | WorkLogImageWhereUniqueInput[]
+    disconnect?: WorkLogImageWhereUniqueInput | WorkLogImageWhereUniqueInput[]
+    delete?: WorkLogImageWhereUniqueInput | WorkLogImageWhereUniqueInput[]
+    connect?: WorkLogImageWhereUniqueInput | WorkLogImageWhereUniqueInput[]
+    update?: WorkLogImageUpdateWithWhereUniqueWithoutTaskLogInput | WorkLogImageUpdateWithWhereUniqueWithoutTaskLogInput[]
+    updateMany?: WorkLogImageUpdateManyWithWhereWithoutTaskLogInput | WorkLogImageUpdateManyWithWhereWithoutTaskLogInput[]
+    deleteMany?: WorkLogImageScalarWhereInput | WorkLogImageScalarWhereInput[]
+  }
+
+  export type WorkLogImageUncheckedUpdateManyWithoutTaskLogNestedInput = {
+    create?: XOR<WorkLogImageCreateWithoutTaskLogInput, WorkLogImageUncheckedCreateWithoutTaskLogInput> | WorkLogImageCreateWithoutTaskLogInput[] | WorkLogImageUncheckedCreateWithoutTaskLogInput[]
+    connectOrCreate?: WorkLogImageCreateOrConnectWithoutTaskLogInput | WorkLogImageCreateOrConnectWithoutTaskLogInput[]
+    upsert?: WorkLogImageUpsertWithWhereUniqueWithoutTaskLogInput | WorkLogImageUpsertWithWhereUniqueWithoutTaskLogInput[]
+    createMany?: WorkLogImageCreateManyTaskLogInputEnvelope
+    set?: WorkLogImageWhereUniqueInput | WorkLogImageWhereUniqueInput[]
+    disconnect?: WorkLogImageWhereUniqueInput | WorkLogImageWhereUniqueInput[]
+    delete?: WorkLogImageWhereUniqueInput | WorkLogImageWhereUniqueInput[]
+    connect?: WorkLogImageWhereUniqueInput | WorkLogImageWhereUniqueInput[]
+    update?: WorkLogImageUpdateWithWhereUniqueWithoutTaskLogInput | WorkLogImageUpdateWithWhereUniqueWithoutTaskLogInput[]
+    updateMany?: WorkLogImageUpdateManyWithWhereWithoutTaskLogInput | WorkLogImageUpdateManyWithWhereWithoutTaskLogInput[]
+    deleteMany?: WorkLogImageScalarWhereInput | WorkLogImageScalarWhereInput[]
+  }
+
+  export type TaskLogCreateNestedOneWithoutImagesInput = {
+    create?: XOR<TaskLogCreateWithoutImagesInput, TaskLogUncheckedCreateWithoutImagesInput>
+    connectOrCreate?: TaskLogCreateOrConnectWithoutImagesInput
+    connect?: TaskLogWhereUniqueInput
+  }
+
+  export type BytesFieldUpdateOperationsInput = {
+    set?: Bytes
+  }
+
+  export type TaskLogUpdateOneRequiredWithoutImagesNestedInput = {
+    create?: XOR<TaskLogCreateWithoutImagesInput, TaskLogUncheckedCreateWithoutImagesInput>
+    connectOrCreate?: TaskLogCreateOrConnectWithoutImagesInput
+    upsert?: TaskLogUpsertWithoutImagesInput
+    connect?: TaskLogWhereUniqueInput
+    update?: XOR<XOR<TaskLogUpdateToOneWithWhereWithoutImagesInput, TaskLogUpdateWithoutImagesInput>, TaskLogUncheckedUpdateWithoutImagesInput>
   }
 
   export type SessionCreateNestedManyWithoutUserInput = {
@@ -14412,6 +15991,17 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type NestedIntNullableFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
@@ -14475,6 +16065,22 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
+  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
@@ -14491,17 +16097,6 @@ export namespace Prisma {
     _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
-  }
-
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -14514,6 +16109,23 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type NestedBytesFilter<$PrismaModel = never> = {
+    equals?: Bytes | BytesFieldRefInput<$PrismaModel>
+    in?: Bytes[] | ListBytesFieldRefInput<$PrismaModel>
+    notIn?: Bytes[] | ListBytesFieldRefInput<$PrismaModel>
+    not?: NestedBytesFilter<$PrismaModel> | Bytes
+  }
+
+  export type NestedBytesWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Bytes | BytesFieldRefInput<$PrismaModel>
+    in?: Bytes[] | ListBytesFieldRefInput<$PrismaModel>
+    notIn?: Bytes[] | ListBytesFieldRefInput<$PrismaModel>
+    not?: NestedBytesWithAggregatesFilter<$PrismaModel> | Bytes
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBytesFilter<$PrismaModel>
+    _max?: NestedBytesFilter<$PrismaModel>
   }
 
   export type NestedBoolFilter<$PrismaModel = never> = {
@@ -14534,8 +16146,8 @@ export namespace Prisma {
     description?: string | null
     status?: $Enums.TaskStatus
     deadline?: Date | string | null
-    estimateMinMinutes?: number | null
-    estimateMaxMinutes?: number | null
+    estimateMinHours?: number | null
+    estimateMaxHours?: number | null
     archivedAt?: Date | string | null
     sortOrder?: number
     createdAt?: Date | string
@@ -14551,8 +16163,8 @@ export namespace Prisma {
     description?: string | null
     status?: $Enums.TaskStatus
     deadline?: Date | string | null
-    estimateMinMinutes?: number | null
-    estimateMaxMinutes?: number | null
+    estimateMinHours?: number | null
+    estimateMaxHours?: number | null
     archivedAt?: Date | string | null
     sortOrder?: number
     labelId?: number | null
@@ -14597,8 +16209,8 @@ export namespace Prisma {
     description?: StringNullableFilter<"Task"> | string | null
     status?: EnumTaskStatusFilter<"Task"> | $Enums.TaskStatus
     deadline?: DateTimeNullableFilter<"Task"> | Date | string | null
-    estimateMinMinutes?: IntNullableFilter<"Task"> | number | null
-    estimateMaxMinutes?: IntNullableFilter<"Task"> | number | null
+    estimateMinHours?: FloatNullableFilter<"Task"> | number | null
+    estimateMaxHours?: FloatNullableFilter<"Task"> | number | null
     archivedAt?: DateTimeNullableFilter<"Task"> | Date | string | null
     sortOrder?: IntFilter<"Task"> | number
     clientId?: IntNullableFilter<"Task"> | number | null
@@ -14612,8 +16224,8 @@ export namespace Prisma {
     description?: string | null
     status?: $Enums.TaskStatus
     deadline?: Date | string | null
-    estimateMinMinutes?: number | null
-    estimateMaxMinutes?: number | null
+    estimateMinHours?: number | null
+    estimateMaxHours?: number | null
     archivedAt?: Date | string | null
     sortOrder?: number
     createdAt?: Date | string
@@ -14629,8 +16241,8 @@ export namespace Prisma {
     description?: string | null
     status?: $Enums.TaskStatus
     deadline?: Date | string | null
-    estimateMinMinutes?: number | null
-    estimateMaxMinutes?: number | null
+    estimateMinHours?: number | null
+    estimateMaxHours?: number | null
     archivedAt?: Date | string | null
     sortOrder?: number
     clientId?: number | null
@@ -14699,7 +16311,7 @@ export namespace Prisma {
   export type SubtaskCreateWithoutTaskInput = {
     title: string
     status?: $Enums.TaskStatus
-    estimatedMinutes?: number | null
+    estimatedHours?: number | null
     sortOrder?: number
     createdAt?: Date | string
   }
@@ -14708,7 +16320,7 @@ export namespace Prisma {
     id?: number
     title: string
     status?: $Enums.TaskStatus
-    estimatedMinutes?: number | null
+    estimatedHours?: number | null
     sortOrder?: number
     createdAt?: Date | string
   }
@@ -14725,15 +16337,19 @@ export namespace Prisma {
 
   export type TaskLogCreateWithoutTaskInput = {
     note: string
-    minutesSpent?: number | null
+    details?: string | null
+    hoursSpent?: number | null
     createdAt?: Date | string
+    images?: WorkLogImageCreateNestedManyWithoutTaskLogInput
   }
 
   export type TaskLogUncheckedCreateWithoutTaskInput = {
     id?: number
     note: string
-    minutesSpent?: number | null
+    details?: string | null
+    hoursSpent?: number | null
     createdAt?: Date | string
+    images?: WorkLogImageUncheckedCreateNestedManyWithoutTaskLogInput
   }
 
   export type TaskLogCreateOrConnectWithoutTaskInput = {
@@ -14812,7 +16428,7 @@ export namespace Prisma {
     taskId?: IntFilter<"Subtask"> | number
     title?: StringFilter<"Subtask"> | string
     status?: EnumTaskStatusFilter<"Subtask"> | $Enums.TaskStatus
-    estimatedMinutes?: IntNullableFilter<"Subtask"> | number | null
+    estimatedHours?: FloatNullableFilter<"Subtask"> | number | null
     sortOrder?: IntFilter<"Subtask"> | number
     createdAt?: DateTimeFilter<"Subtask"> | Date | string
   }
@@ -14840,7 +16456,8 @@ export namespace Prisma {
     id?: IntFilter<"TaskLog"> | number
     taskId?: IntFilter<"TaskLog"> | number
     note?: StringFilter<"TaskLog"> | string
-    minutesSpent?: IntNullableFilter<"TaskLog"> | number | null
+    details?: StringNullableFilter<"TaskLog"> | string | null
+    hoursSpent?: FloatNullableFilter<"TaskLog"> | number | null
     createdAt?: DateTimeFilter<"TaskLog"> | Date | string
   }
 
@@ -14849,8 +16466,8 @@ export namespace Prisma {
     description?: string | null
     status?: $Enums.TaskStatus
     deadline?: Date | string | null
-    estimateMinMinutes?: number | null
-    estimateMaxMinutes?: number | null
+    estimateMinHours?: number | null
+    estimateMaxHours?: number | null
     archivedAt?: Date | string | null
     sortOrder?: number
     createdAt?: Date | string
@@ -14866,8 +16483,8 @@ export namespace Prisma {
     description?: string | null
     status?: $Enums.TaskStatus
     deadline?: Date | string | null
-    estimateMinMinutes?: number | null
-    estimateMaxMinutes?: number | null
+    estimateMinHours?: number | null
+    estimateMaxHours?: number | null
     archivedAt?: Date | string | null
     sortOrder?: number
     clientId?: number | null
@@ -14898,8 +16515,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    estimateMinMinutes?: NullableIntFieldUpdateOperationsInput | number | null
-    estimateMaxMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    estimateMinHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    estimateMaxHours?: NullableFloatFieldUpdateOperationsInput | number | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14915,8 +16532,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    estimateMinMinutes?: NullableIntFieldUpdateOperationsInput | number | null
-    estimateMaxMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    estimateMinHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    estimateMaxHours?: NullableFloatFieldUpdateOperationsInput | number | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     clientId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -14931,8 +16548,8 @@ export namespace Prisma {
     description?: string | null
     status?: $Enums.TaskStatus
     deadline?: Date | string | null
-    estimateMinMinutes?: number | null
-    estimateMaxMinutes?: number | null
+    estimateMinHours?: number | null
+    estimateMaxHours?: number | null
     archivedAt?: Date | string | null
     sortOrder?: number
     createdAt?: Date | string
@@ -14948,8 +16565,8 @@ export namespace Prisma {
     description?: string | null
     status?: $Enums.TaskStatus
     deadline?: Date | string | null
-    estimateMinMinutes?: number | null
-    estimateMaxMinutes?: number | null
+    estimateMinHours?: number | null
+    estimateMaxHours?: number | null
     archivedAt?: Date | string | null
     sortOrder?: number
     clientId?: number | null
@@ -14962,6 +16579,29 @@ export namespace Prisma {
   export type TaskCreateOrConnectWithoutLogsInput = {
     where: TaskWhereUniqueInput
     create: XOR<TaskCreateWithoutLogsInput, TaskUncheckedCreateWithoutLogsInput>
+  }
+
+  export type WorkLogImageCreateWithoutTaskLogInput = {
+    fileName: string
+    mimeType: string
+    data: Bytes
+  }
+
+  export type WorkLogImageUncheckedCreateWithoutTaskLogInput = {
+    id?: number
+    fileName: string
+    mimeType: string
+    data: Bytes
+  }
+
+  export type WorkLogImageCreateOrConnectWithoutTaskLogInput = {
+    where: WorkLogImageWhereUniqueInput
+    create: XOR<WorkLogImageCreateWithoutTaskLogInput, WorkLogImageUncheckedCreateWithoutTaskLogInput>
+  }
+
+  export type WorkLogImageCreateManyTaskLogInputEnvelope = {
+    data: WorkLogImageCreateManyTaskLogInput | WorkLogImageCreateManyTaskLogInput[]
+    skipDuplicates?: boolean
   }
 
   export type TaskUpsertWithoutLogsInput = {
@@ -14980,8 +16620,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    estimateMinMinutes?: NullableIntFieldUpdateOperationsInput | number | null
-    estimateMaxMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    estimateMinHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    estimateMaxHours?: NullableFloatFieldUpdateOperationsInput | number | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14997,8 +16637,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    estimateMinMinutes?: NullableIntFieldUpdateOperationsInput | number | null
-    estimateMaxMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    estimateMinHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    estimateMaxHours?: NullableFloatFieldUpdateOperationsInput | number | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     clientId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -15006,6 +16646,83 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     subtasks?: SubtaskUncheckedUpdateManyWithoutTaskNestedInput
+  }
+
+  export type WorkLogImageUpsertWithWhereUniqueWithoutTaskLogInput = {
+    where: WorkLogImageWhereUniqueInput
+    update: XOR<WorkLogImageUpdateWithoutTaskLogInput, WorkLogImageUncheckedUpdateWithoutTaskLogInput>
+    create: XOR<WorkLogImageCreateWithoutTaskLogInput, WorkLogImageUncheckedCreateWithoutTaskLogInput>
+  }
+
+  export type WorkLogImageUpdateWithWhereUniqueWithoutTaskLogInput = {
+    where: WorkLogImageWhereUniqueInput
+    data: XOR<WorkLogImageUpdateWithoutTaskLogInput, WorkLogImageUncheckedUpdateWithoutTaskLogInput>
+  }
+
+  export type WorkLogImageUpdateManyWithWhereWithoutTaskLogInput = {
+    where: WorkLogImageScalarWhereInput
+    data: XOR<WorkLogImageUpdateManyMutationInput, WorkLogImageUncheckedUpdateManyWithoutTaskLogInput>
+  }
+
+  export type WorkLogImageScalarWhereInput = {
+    AND?: WorkLogImageScalarWhereInput | WorkLogImageScalarWhereInput[]
+    OR?: WorkLogImageScalarWhereInput[]
+    NOT?: WorkLogImageScalarWhereInput | WorkLogImageScalarWhereInput[]
+    id?: IntFilter<"WorkLogImage"> | number
+    taskLogId?: IntFilter<"WorkLogImage"> | number
+    fileName?: StringFilter<"WorkLogImage"> | string
+    mimeType?: StringFilter<"WorkLogImage"> | string
+    data?: BytesFilter<"WorkLogImage"> | Bytes
+  }
+
+  export type TaskLogCreateWithoutImagesInput = {
+    note: string
+    details?: string | null
+    hoursSpent?: number | null
+    createdAt?: Date | string
+    task: TaskCreateNestedOneWithoutLogsInput
+  }
+
+  export type TaskLogUncheckedCreateWithoutImagesInput = {
+    id?: number
+    taskId: number
+    note: string
+    details?: string | null
+    hoursSpent?: number | null
+    createdAt?: Date | string
+  }
+
+  export type TaskLogCreateOrConnectWithoutImagesInput = {
+    where: TaskLogWhereUniqueInput
+    create: XOR<TaskLogCreateWithoutImagesInput, TaskLogUncheckedCreateWithoutImagesInput>
+  }
+
+  export type TaskLogUpsertWithoutImagesInput = {
+    update: XOR<TaskLogUpdateWithoutImagesInput, TaskLogUncheckedUpdateWithoutImagesInput>
+    create: XOR<TaskLogCreateWithoutImagesInput, TaskLogUncheckedCreateWithoutImagesInput>
+    where?: TaskLogWhereInput
+  }
+
+  export type TaskLogUpdateToOneWithWhereWithoutImagesInput = {
+    where?: TaskLogWhereInput
+    data: XOR<TaskLogUpdateWithoutImagesInput, TaskLogUncheckedUpdateWithoutImagesInput>
+  }
+
+  export type TaskLogUpdateWithoutImagesInput = {
+    note?: StringFieldUpdateOperationsInput | string
+    details?: NullableStringFieldUpdateOperationsInput | string | null
+    hoursSpent?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    task?: TaskUpdateOneRequiredWithoutLogsNestedInput
+  }
+
+  export type TaskLogUncheckedUpdateWithoutImagesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    taskId?: IntFieldUpdateOperationsInput | number
+    note?: StringFieldUpdateOperationsInput | string
+    details?: NullableStringFieldUpdateOperationsInput | string | null
+    hoursSpent?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SessionCreateWithoutUserInput = {
@@ -15269,8 +16986,8 @@ export namespace Prisma {
     description?: string | null
     status?: $Enums.TaskStatus
     deadline?: Date | string | null
-    estimateMinMinutes?: number | null
-    estimateMaxMinutes?: number | null
+    estimateMinHours?: number | null
+    estimateMaxHours?: number | null
     archivedAt?: Date | string | null
     sortOrder?: number
     labelId?: number | null
@@ -15283,8 +17000,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    estimateMinMinutes?: NullableIntFieldUpdateOperationsInput | number | null
-    estimateMaxMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    estimateMinHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    estimateMaxHours?: NullableFloatFieldUpdateOperationsInput | number | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15300,8 +17017,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    estimateMinMinutes?: NullableIntFieldUpdateOperationsInput | number | null
-    estimateMaxMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    estimateMinHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    estimateMaxHours?: NullableFloatFieldUpdateOperationsInput | number | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     labelId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -15317,8 +17034,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    estimateMinMinutes?: NullableIntFieldUpdateOperationsInput | number | null
-    estimateMaxMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    estimateMinHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    estimateMaxHours?: NullableFloatFieldUpdateOperationsInput | number | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     labelId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -15332,8 +17049,8 @@ export namespace Prisma {
     description?: string | null
     status?: $Enums.TaskStatus
     deadline?: Date | string | null
-    estimateMinMinutes?: number | null
-    estimateMaxMinutes?: number | null
+    estimateMinHours?: number | null
+    estimateMaxHours?: number | null
     archivedAt?: Date | string | null
     sortOrder?: number
     clientId?: number | null
@@ -15346,8 +17063,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    estimateMinMinutes?: NullableIntFieldUpdateOperationsInput | number | null
-    estimateMaxMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    estimateMinHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    estimateMaxHours?: NullableFloatFieldUpdateOperationsInput | number | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15363,8 +17080,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    estimateMinMinutes?: NullableIntFieldUpdateOperationsInput | number | null
-    estimateMaxMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    estimateMinHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    estimateMaxHours?: NullableFloatFieldUpdateOperationsInput | number | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     clientId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -15380,8 +17097,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    estimateMinMinutes?: NullableIntFieldUpdateOperationsInput | number | null
-    estimateMaxMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    estimateMinHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    estimateMaxHours?: NullableFloatFieldUpdateOperationsInput | number | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     clientId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -15393,7 +17110,7 @@ export namespace Prisma {
     id?: number
     title: string
     status?: $Enums.TaskStatus
-    estimatedMinutes?: number | null
+    estimatedHours?: number | null
     sortOrder?: number
     createdAt?: Date | string
   }
@@ -15401,14 +17118,15 @@ export namespace Prisma {
   export type TaskLogCreateManyTaskInput = {
     id?: number
     note: string
-    minutesSpent?: number | null
+    details?: string | null
+    hoursSpent?: number | null
     createdAt?: Date | string
   }
 
   export type SubtaskUpdateWithoutTaskInput = {
     title?: StringFieldUpdateOperationsInput | string
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
-    estimatedMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    estimatedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -15417,7 +17135,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
-    estimatedMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    estimatedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -15426,29 +17144,61 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
-    estimatedMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    estimatedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TaskLogUpdateWithoutTaskInput = {
     note?: StringFieldUpdateOperationsInput | string
-    minutesSpent?: NullableIntFieldUpdateOperationsInput | number | null
+    details?: NullableStringFieldUpdateOperationsInput | string | null
+    hoursSpent?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    images?: WorkLogImageUpdateManyWithoutTaskLogNestedInput
   }
 
   export type TaskLogUncheckedUpdateWithoutTaskInput = {
     id?: IntFieldUpdateOperationsInput | number
     note?: StringFieldUpdateOperationsInput | string
-    minutesSpent?: NullableIntFieldUpdateOperationsInput | number | null
+    details?: NullableStringFieldUpdateOperationsInput | string | null
+    hoursSpent?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    images?: WorkLogImageUncheckedUpdateManyWithoutTaskLogNestedInput
   }
 
   export type TaskLogUncheckedUpdateManyWithoutTaskInput = {
     id?: IntFieldUpdateOperationsInput | number
     note?: StringFieldUpdateOperationsInput | string
-    minutesSpent?: NullableIntFieldUpdateOperationsInput | number | null
+    details?: NullableStringFieldUpdateOperationsInput | string | null
+    hoursSpent?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkLogImageCreateManyTaskLogInput = {
+    id?: number
+    fileName: string
+    mimeType: string
+    data: Bytes
+  }
+
+  export type WorkLogImageUpdateWithoutTaskLogInput = {
+    fileName?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    data?: BytesFieldUpdateOperationsInput | Bytes
+  }
+
+  export type WorkLogImageUncheckedUpdateWithoutTaskLogInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    fileName?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    data?: BytesFieldUpdateOperationsInput | Bytes
+  }
+
+  export type WorkLogImageUncheckedUpdateManyWithoutTaskLogInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    fileName?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    data?: BytesFieldUpdateOperationsInput | Bytes
   }
 
   export type SessionCreateManyUserInput = {

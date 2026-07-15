@@ -55,7 +55,7 @@ export default async function ArchivedPage({
 				client: true,
 				label: true,
 				subtasks: { select: { id: true } },
-				logs: { select: { minutesSpent: true } },
+				logs: { select: { hoursSpent: true } },
 			},
 		}),
 		db.client.findMany({ orderBy: { name: "asc" } }),
@@ -74,7 +74,7 @@ export default async function ArchivedPage({
 		label: task.label,
 		logCount: task.logs.length,
 		totalLogged: task.logs.reduce(
-			(total, log) => total + (log.minutesSpent ?? 0),
+			(total, log) => total + (log.hoursSpent ?? 0),
 			0,
 		),
 		subtaskCount: task.subtasks.length,

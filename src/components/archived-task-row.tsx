@@ -4,7 +4,7 @@ import { ArchiveRestore, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRef, useState } from "react";
 
-import { formatMinutes } from "~/lib/format";
+import { formatHours } from "~/lib/format";
 import type { LabelOption, TaskOption } from "~/lib/tasks";
 import { deleteTask, setArchived } from "~/server/actions/tasks";
 
@@ -65,7 +65,7 @@ export function ArchivedTaskRow({ task }: { task: ArchivedTaskValue }) {
 							</span>
 						) : null}
 						<span>
-							{task.logCount} logs · {formatMinutes(task.totalLogged)}
+							{task.logCount} logs · {formatHours(task.totalLogged)}
 						</span>
 					</div>
 				</div>

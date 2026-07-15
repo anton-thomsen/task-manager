@@ -12,6 +12,7 @@ import {
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { startTransition, useOptimistic, useState } from "react";
 
+import { formatHours } from "~/lib/format";
 import type { TaskStatus } from "~/lib/tasks";
 import { taskStatuses } from "~/lib/tasks";
 import {
@@ -26,7 +27,7 @@ type Subtask = {
 	id: number;
 	title: string;
 	status: TaskStatus;
-	estimatedMinutes: number | null;
+	estimatedHours: number | null;
 };
 
 type Move = { id: number; status: TaskStatus; beforeId: number | null };
@@ -70,11 +71,11 @@ export function SubtaskList({
 	const completed = subtasks.filter(
 		({ status }) => status === "Finished",
 	).length;
-	const remainingMinutes = subtasks.reduce(
+	const remainingHours = subtasks.reduce(
 		(total, subtask) =>
 			subtask.status === "Finished"
 				? total
-				: total + (subtask.estimatedMinutes ?? 0),
+				: total + (subtask.estimatedHours ?? 0),
 		0,
 	);
 	const activeStatuses = taskStatuses.filter(
@@ -173,7 +174,8 @@ export function SubtaskList({
 			<div className="mb-3 flex items-baseline justify-between gap-3">
 				<h2 className="font-bold text-xl">Subtasks</h2>
 				<p className="text-stone-600 text-xs">
-					{completed}/{subtasks.length} done · {remainingMinutes}m left
+					{completed}/{subtasks.length} done · {formatHours(remainingHours)}{" "}
+					left
 				</p>
 			</div>
 			<form
@@ -190,12 +192,13 @@ export function SubtaskList({
 					required
 				/>
 				<input
-					aria-label="Estimated minutes"
+					aria-label="Estimated hours"
 					className="min-w-0 rounded-md border border-stone-900 bg-white px-2 py-1.5 text-sm"
-					max={300}
-					min={1}
-					name="estimatedMinutes"
-					placeholder="min"
+					max={5}
+					min={0.25}
+					name="estimatedHours"
+					placeholder="hours"
+					step={0.25}
 					type="number"
 				/>
 				<button
@@ -263,9 +266,9 @@ export function SubtaskList({
 												>
 													{subtask.title}
 												</span>
-												{subtask.estimatedMinutes ? (
+												{subtask.estimatedHours ? (
 													<span className="text-stone-600 text-xs">
-														{subtask.estimatedMinutes}m
+														{formatHours(subtask.estimatedHours)}
 													</span>
 												) : null}
 												<button

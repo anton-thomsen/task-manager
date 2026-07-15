@@ -4,11 +4,7 @@ import { notFound } from "next/navigation";
 import { SubtaskList } from "~/components/subtask-list";
 import { TaskForm } from "~/components/task-form";
 import { WorkLog } from "~/components/work-log";
-import {
-	formatDeadline,
-	formatEstimateRange,
-	formatMinutes,
-} from "~/lib/format";
+import { formatDeadline, formatEstimateRange, formatHours } from "~/lib/format";
 import { int4IdSchema } from "~/lib/validation";
 import { requireSession } from "~/server/auth";
 import { db } from "~/server/db";
@@ -37,7 +33,12 @@ export default async function TaskDetailPage({
 				subtasks: {
 					orderBy: [{ status: "asc" }, { sortOrder: "asc" }, { id: "asc" }],
 				},
-				logs: { orderBy: { createdAt: "desc" } },
+				logs: {
+					orderBy: { createdAt: "desc" },
+					include: {
+						images: { select: { id: true, fileName: true } },
+					},
+				},
 			},
 		}),
 		db.client.findMany({ orderBy: { name: "asc" } }),
@@ -46,13 +47,13 @@ export default async function TaskDetailPage({
 	if (!task) notFound();
 
 	const totalLogged = task.logs.reduce(
-		(total, log) => total + (log.minutesSpent ?? 0),
+		(total, log) => total + (log.hoursSpent ?? 0),
 		0,
 	);
 	const deadline = task.deadline?.toISOString().slice(0, 10) ?? null;
 	const estimate = formatEstimateRange(
-		task.estimateMinMinutes,
-		task.estimateMaxMinutes,
+		task.estimateMinHours,
+		task.estimateMaxHours,
 	);
 	const formTask = {
 		id: task.id,
@@ -60,15 +61,24 @@ export default async function TaskDetailPage({
 		description: task.description,
 		status: task.status,
 		deadline,
-		estimateMinMinutes: task.estimateMinMinutes,
-		estimateMaxMinutes: task.estimateMaxMinutes,
+		estimateMinHours: task.estimateMinHours,
+		estimateMaxHours: task.estimateMaxHours,
 		clientId: task.clientId,
 		labelId: task.labelId,
 	};
-	const finishedSubtasks = task.subtasks.filter(
-		(subtask) => subtask.status === "Finished",
-	);
-	const feedCount = task.logs.length + finishedSubtasks.length;
+	const estimateComparison = (() => {
+		if (task.estimateMinHours !== null && totalLogged < task.estimateMinHours) {
+			return `${formatHours(task.estimateMinHours - totalLogged)} below the estimate range`;
+		}
+		if (task.estimateMaxHours !== null && totalLogged > task.estimateMaxHours) {
+			return `${formatHours(totalLogged - task.estimateMaxHours)} over the estimate range`;
+		}
+		if (task.estimateMinHours !== null || task.estimateMaxHours !== null) {
+			return "Within the estimate range";
+		}
+		return null;
+	})();
+	const feedCount = task.logs.length;
 
 	return (
 		<main className="mx-auto max-w-6xl p-4 sm:p-8">
@@ -118,8 +128,17 @@ export default async function TaskDetailPage({
 				<div className="mt-5 flex flex-wrap gap-x-5 gap-y-1 border-stone-900 border-t pt-3 font-semibold text-sm">
 					{deadline ? <span>Due {formatDeadline(deadline)}</span> : null}
 					{estimate ? <span>{estimate} estimated</span> : null}
-					<span>{formatMinutes(totalLogged)} logged</span>
+					<span>{formatHours(totalLogged)} logged</span>
 				</div>
+				{estimateComparison ? (
+					<div className="mt-4 rounded-xl border border-stone-900 bg-white/60 p-3">
+						<p className="font-bold text-sm">Estimate vs. logged time</p>
+						<p className="mt-1 text-sm text-stone-700">
+							{estimate ?? "No estimate"} estimated · {formatHours(totalLogged)}{" "}
+							logged · {estimateComparison}
+						</p>
+					</div>
+				) : null}
 			</header>
 
 			<nav
@@ -148,11 +167,6 @@ export default async function TaskDetailPage({
 					<SubtaskList subtasks={task.subtasks} taskId={task.id} />
 				) : (
 					<WorkLog
-						finishedSubtasks={finishedSubtasks.map((subtask) => ({
-							id: subtask.id,
-							title: subtask.title,
-							createdAt: subtask.createdAt.toISOString(),
-						}))}
 						logs={task.logs.map((log) => ({
 							...log,
 							createdAt: log.createdAt.toISOString(),

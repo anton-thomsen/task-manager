@@ -1,8 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("moves a task into an adjacent empty lane and persists the move", async ({
-	page,
-}) => {
+test("tracks a project in hours and keeps rich work logs", async ({ page }) => {
 	await page.goto("/signup");
 	await page.getByLabel("Name").fill("Playwright");
 	await page.getByLabel("Email").fill("playwright@task-manager.local");
@@ -15,6 +13,8 @@ test("moves a task into an adjacent empty lane and persists the move", async ({
 	const taskDialog = page.getByRole("dialog", { name: "Create a task" });
 	await taskDialog.getByLabel("Title").fill(title);
 	await taskDialog.getByLabel("Status").selectOption("Ongoing");
+	await taskDialog.getByLabel("Minimum estimate in hours").fill("32");
+	await taskDialog.getByLabel("Maximum estimate in hours").fill("40");
 	await taskDialog.getByRole("button", { name: "Add task" }).click();
 
 	const sourceLink = page.getByRole("link", { name: title, exact: true });
@@ -68,4 +68,43 @@ test("moves a task into an adjacent empty lane and persists the move", async ({
 			.getByTestId("lane-Finished")
 			.getByRole("link", { name: title, exact: true }),
 	).toBeVisible();
+
+	await page.goto(taskHref);
+	await expect(page.getByText("32-40h estimated")).toBeVisible();
+	await page.getByLabel("Subtask title").fill("Implement responsive layout");
+	await page.getByLabel("Estimated hours").fill("5");
+	await page.getByRole("button", { name: "Add", exact: true }).click();
+	await expect(page.getByText("Implement responsive layout")).toBeVisible();
+	await expect(page.getByText("5h", { exact: true })).toBeVisible();
+
+	await page.getByRole("link", { name: /Work log/ }).click();
+	await page.getByLabel("What did you do?").fill("Built the responsive layout");
+	await page.getByLabel("Time spent (hours)").fill("3.5");
+	await page
+		.getByLabel("Detailed notes")
+		.fill("Implemented the navigation and checked the mobile breakpoint.");
+	await page.getByLabel("Pictures").setInputFiles({
+		buffer: Buffer.from(
+			"iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
+			"base64",
+		),
+		mimeType: "image/png",
+		name: "responsive-layout.png",
+	});
+	await page.getByRole("button", { name: "Add work log" }).click();
+	await expect(
+		page.getByRole("heading", { name: "Built the responsive layout" }),
+	).toBeVisible();
+	await expect(page.getByText(/3\.5h/)).toBeVisible();
+	await expect(page.getByAltText("responsive-layout.png")).toBeVisible();
+
+	page.once("dialog", (dialog) => dialog.accept());
+	await page
+		.getByRole("button", {
+			name: "Delete work log: Built the responsive layout",
+		})
+		.click();
+	await expect(
+		page.getByRole("heading", { name: "Built the responsive layout" }),
+	).toHaveCount(0);
 });
