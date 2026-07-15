@@ -7,6 +7,7 @@ const exactPublicPaths = [
 	"/signup",
 	"/api/health",
 	"/api/tasks",
+	"/api/mcp",
 	"/api/calendar.ics",
 	"/manifest.webmanifest",
 ];
