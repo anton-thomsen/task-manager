@@ -29,6 +29,19 @@ const logSchema = z.object({
 			.positive("Time spent must be greater than zero.")
 			.max(100_000),
 	),
+	estimatedHours: z.preprocess(
+		(value) =>
+			value === "" || value === null || value === undefined ? undefined : value,
+		z.coerce
+			.number({ invalid_type_error: "The estimate must be a number." })
+			.positive("The estimate must be greater than zero.")
+			.max(100_000)
+			.optional(),
+	),
+	subtaskId: z.preprocess(
+		(value) => (value === "" || value === undefined ? undefined : value),
+		int4IdSchema.optional(),
+	),
 });
 
 function imageMimeType(format: string | undefined): string | null {
@@ -92,6 +105,8 @@ export async function addLog(formData: FormData): Promise<ActionResult> {
 			note: formData.get("note")?.toString(),
 			details: formData.get("details")?.toString(),
 			hoursSpent: formData.get("hoursSpent")?.toString(),
+			estimatedHours: formData.get("estimatedHours")?.toString(),
+			subtaskId: formData.get("subtaskId")?.toString(),
 		});
 		const files = formData
 			.getAll("images")
@@ -115,6 +130,14 @@ export async function addLog(formData: FormData): Promise<ActionResult> {
 		});
 		if (!task) return { ok: false, error: "Task not found." };
 
+		if (parsed.subtaskId !== undefined) {
+			const subtask = await db.subtask.findFirst({
+				where: { id: parsed.subtaskId, taskId: parsed.taskId },
+				select: { id: true },
+			});
+			if (!subtask) return { ok: false, error: "Subtask not found." };
+		}
+
 		const images = [];
 		for (const file of files) {
 			try {
@@ -133,6 +156,8 @@ export async function addLog(formData: FormData): Promise<ActionResult> {
 				note: parsed.note,
 				details: parsed.details || null,
 				hoursSpent: parsed.hoursSpent,
+				estimatedHours: parsed.estimatedHours ?? null,
+				subtaskId: parsed.subtaskId ?? null,
 				authorId: member.userId,
 				images: { create: images },
 			},
