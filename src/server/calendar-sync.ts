@@ -65,7 +65,12 @@ async function calendarRequest(
 	method: "POST" | "PATCH" | "DELETE",
 	path: string,
 	body?: unknown,
-): Promise<{ ok: boolean; unauthorized: boolean; eventId?: string }> {
+): Promise<{
+	ok: boolean;
+	unauthorized: boolean;
+	notFound: boolean;
+	eventId?: string;
+}> {
 	const response = await fetch(`${calendarBase}${path}`, {
 		method,
 		headers: {
@@ -74,19 +79,19 @@ async function calendarRequest(
 		},
 		body: body ? JSON.stringify(body) : undefined,
 	});
+	const notFound = response.status === 404 || response.status === 410;
 	// A deleted or already-gone event is success for our purposes.
-	if (
-		method === "DELETE" &&
-		(response.status === 404 || response.status === 410)
-	) {
-		return { ok: true, unauthorized: false };
+	if (method === "DELETE" && notFound) {
+		return { ok: true, unauthorized: false, notFound: true };
 	}
 	if (!response.ok) {
-		return { ok: false, unauthorized: response.status === 401 };
+		return { ok: false, unauthorized: response.status === 401, notFound };
 	}
-	if (method === "DELETE") return { ok: true, unauthorized: false };
+	if (method === "DELETE") {
+		return { ok: true, unauthorized: false, notFound: false };
+	}
 	const payload = (await response.json()) as { id?: string };
-	return { ok: true, unauthorized: false, eventId: payload.id };
+	return { ok: true, unauthorized: false, notFound: false, eventId: payload.id };
 }
 
 async function deleteEvent(
@@ -155,7 +160,10 @@ export async function syncTaskForUser(
 				await markSyncState(userId, { needsReconnect: true });
 				return;
 			}
-			// Event vanished on Google's side - drop the mapping and recreate.
+			// Transient/other failure (403, 429, 5xx): leave the mapping intact so
+			// the next scheduled sync retries the PATCH.
+			if (!updated.notFound) return;
+			// Event vanished on Google's side (404/410) - drop the mapping and recreate.
 			await db.taskCalendarEvent.delete({ where: { id: mapping.id } });
 		}
 
