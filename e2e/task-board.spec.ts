@@ -70,7 +70,9 @@ test("tracks a project in hours and keeps rich work logs", async ({ page }) => {
 	).toBeVisible();
 
 	await page.goto(taskHref);
-	await expect(page.getByText("32-40h estimated")).toBeVisible();
+	await expect(
+		page.getByText("32-40h estimated", { exact: true }),
+	).toBeVisible();
 	await page.getByLabel("Subtask title").fill("Implement responsive layout");
 	await page.getByLabel("Estimated hours").fill("5");
 	await page.getByRole("button", { name: "Add", exact: true }).click();
@@ -95,8 +97,11 @@ test("tracks a project in hours and keeps rich work logs", async ({ page }) => {
 	await expect(
 		page.getByRole("heading", { name: "Built the responsive layout" }),
 	).toBeVisible();
-	await expect(page.getByText(/3\.5h/)).toBeVisible();
-	await expect(page.getByAltText("responsive-layout.png")).toBeVisible();
+	const logEntry = page.getByRole("article").filter({
+		has: page.getByRole("heading", { name: "Built the responsive layout" }),
+	});
+	await expect(logEntry.getByText(/3\.5h/)).toBeVisible();
+	await expect(logEntry.getByAltText("responsive-layout.png")).toBeVisible();
 
 	page.once("dialog", (dialog) => dialog.accept());
 	await page
