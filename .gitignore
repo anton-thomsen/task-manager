@@ -48,3 +48,9 @@ yarn-error.log*
 
 # idea files
 .idea
+
+# local planning and agent artifacts
+/.lavish/
+/AGENT.md
+/*_PLAN.md
+/HANDOFF.md
