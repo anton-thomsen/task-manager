@@ -32,23 +32,25 @@ model Label {
 }
 
 model Task {
-  id               Int        @id @default(autoincrement())
-  title            String
-  description      String?
-  status           TaskStatus @default(Inbox)
-  deadline         DateTime?
-  estimateMinHours Float?
-  estimateMaxHours Float?
-  archivedAt       DateTime?
-  sortOrder        Int        @default(0)
-  clientId         Int?
-  client           Client?    @relation(fields: [clientId], references: [id], onDelete: SetNull)
-  labelId          Int?
-  label            Label?     @relation(fields: [labelId], references: [id], onDelete: SetNull)
-  subtasks         Subtask[]
-  logs             TaskLog[]
-  createdAt        DateTime   @default(now())
-  updatedAt        DateTime   @updatedAt
+  id                 Int        @id @default(autoincrement())
+  title              String
+  description        String?
+  status             TaskStatus @default(Inbox)
+  deadline           DateTime?
+  estimateMinHours   Float?
+  estimateMaxHours   Float?
+  estimateMinMinutes Int?       @ignore
+  estimateMaxMinutes Int?       @ignore
+  archivedAt         DateTime?
+  sortOrder          Int        @default(0)
+  clientId           Int?
+  client             Client?    @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  labelId            Int?
+  label              Label?     @relation(fields: [labelId], references: [id], onDelete: SetNull)
+  subtasks           Subtask[]
+  logs               TaskLog[]
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
 
   @@index([status, sortOrder])
   @@index([clientId])
@@ -56,27 +58,29 @@ model Task {
 }
 
 model Subtask {
-  id             Int        @id @default(autoincrement())
-  taskId         Int
-  task           Task       @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  title          String
-  status         TaskStatus @default(Inbox)
-  estimatedHours Float?
-  sortOrder      Int        @default(0)
-  createdAt      DateTime   @default(now())
+  id               Int        @id @default(autoincrement())
+  taskId           Int
+  task             Task       @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  title            String
+  status           TaskStatus @default(Inbox)
+  estimatedHours   Float?
+  estimatedMinutes Int?       @ignore
+  sortOrder        Int        @default(0)
+  createdAt        DateTime   @default(now())
 
   @@index([taskId, status, sortOrder])
 }
 
 model TaskLog {
-  id         Int            @id @default(autoincrement())
-  taskId     Int
-  task       Task           @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  note       String
-  details    String?
-  hoursSpent Float?
-  images     WorkLogImage[]
-  createdAt  DateTime       @default(now())
+  id           Int            @id @default(autoincrement())
+  taskId       Int
+  task         Task           @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  note         String
+  details      String?
+  hoursSpent   Float?
+  minutesSpent Int?           @ignore
+  images       WorkLogImage[]
+  createdAt    DateTime       @default(now())
 
   @@index([taskId])
 }

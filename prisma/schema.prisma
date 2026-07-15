@@ -39,6 +39,8 @@ model Task {
   deadline           DateTime?
   estimateMinHours   Float?
   estimateMaxHours   Float?
+  estimateMinMinutes Int?       @ignore
+  estimateMaxMinutes Int?       @ignore
   archivedAt         DateTime?
   sortOrder          Int        @default(0)
   clientId           Int?
@@ -62,6 +64,7 @@ model Subtask {
   title            String
   status           TaskStatus @default(Inbox)
   estimatedHours   Float?
+  estimatedMinutes Int?       @ignore
   sortOrder        Int        @default(0)
   createdAt        DateTime   @default(now())
 
@@ -69,14 +72,15 @@ model Subtask {
 }
 
 model TaskLog {
-  id         Int            @id @default(autoincrement())
-  taskId     Int
-  task       Task           @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  note       String
-  details    String?
-  hoursSpent Float?
-  images     WorkLogImage[]
-  createdAt  DateTime       @default(now())
+  id           Int            @id @default(autoincrement())
+  taskId       Int
+  task         Task           @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  note         String
+  details      String?
+  hoursSpent   Float?
+  minutesSpent Int?           @ignore
+  images       WorkLogImage[]
+  createdAt    DateTime       @default(now())
 
   @@index([taskId])
 }

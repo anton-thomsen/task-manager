@@ -21,7 +21,7 @@ export async function GET(
 
 	return new Response(image.data, {
 		headers: {
-			"Cache-Control": "private, max-age=3600",
+			"Cache-Control": "private, no-store",
 			"Content-Length": String(image.data.byteLength),
 			"Content-Security-Policy": "default-src 'none'; sandbox",
 			"Content-Type": image.mimeType,

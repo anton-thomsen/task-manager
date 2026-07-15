@@ -153,7 +153,13 @@ test("tracks a project in hours and keeps rich work logs", async ({ page }) => {
 		has: page.getByRole("heading", { name: "Built the responsive layout" }),
 	});
 	await expect(logEntry.getByText(/3\.5h/)).toBeVisible();
-	await expect(logEntry.getByAltText("responsive-layout.png")).toBeVisible();
+	const logImage = logEntry.getByAltText("responsive-layout.png");
+	await expect(logImage).toBeVisible();
+	const imageUrl = await logImage.getAttribute("src");
+	if (!imageUrl) throw new Error("The work log image is missing its URL.");
+	const imageResponse = await page.request.get(imageUrl);
+	expect(imageResponse.ok()).toBe(true);
+	expect(imageResponse.headers()["cache-control"]).toBe("private, no-store");
 
 	page.once("dialog", (dialog) => dialog.accept());
 	await page
