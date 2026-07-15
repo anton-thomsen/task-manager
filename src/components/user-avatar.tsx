@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export type UserRef = {
 	userId: string;
 	name: string;
@@ -9,6 +11,8 @@ const sizeClasses = {
 	md: "size-7 text-[0.7rem]",
 } as const;
 
+const sizePixels = { sm: 20, md: 28 } as const;
+
 export function UserAvatar({
 	user,
 	size = "md",
@@ -19,11 +23,14 @@ export function UserAvatar({
 	const initial = user.name.trim().charAt(0).toUpperCase() || "?";
 	if (user.image) {
 		return (
-			<img
+			<Image
 				alt={user.name}
 				className={`${sizeClasses[size]} rounded-full border border-stone-900 object-cover`}
+				height={sizePixels[size]}
 				src={user.image}
 				title={user.name}
+				unoptimized
+				width={sizePixels[size]}
 			/>
 		);
 	}
