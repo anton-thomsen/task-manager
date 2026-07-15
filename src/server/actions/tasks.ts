@@ -10,6 +10,7 @@ import {
 	int4IdSchema,
 	optionalDateSchema,
 	optionalPositiveInt,
+	optionalPositiveNumber,
 	taskDescriptionSchema,
 	taskTitleSchema,
 } from "~/lib/validation";
@@ -22,8 +23,8 @@ const taskFields = {
 	description: taskDescriptionSchema,
 	status: z.enum(taskStatuses),
 	deadline: optionalDateSchema,
-	estimateMinMinutes: optionalPositiveInt(300),
-	estimateMaxMinutes: optionalPositiveInt(300),
+	estimateMinHours: optionalPositiveNumber(100_000),
+	estimateMaxHours: optionalPositiveNumber(100_000),
 	clientId: optionalPositiveInt(2_147_483_647),
 	labelId: optionalPositiveInt(2_147_483_647),
 };
@@ -39,8 +40,8 @@ const updateTaskSchema = z.object({
 	description: taskFields.description,
 	status: taskFields.status.optional(),
 	deadline: taskFields.deadline,
-	estimateMinMinutes: taskFields.estimateMinMinutes,
-	estimateMaxMinutes: taskFields.estimateMaxMinutes,
+	estimateMinHours: taskFields.estimateMinHours,
+	estimateMaxHours: taskFields.estimateMaxHours,
 	clientId: taskFields.clientId,
 	labelId: taskFields.labelId,
 });
@@ -56,8 +57,8 @@ function taskInput(formData: FormData) {
 		description: field(formData, "description"),
 		status: field(formData, "status"),
 		deadline: field(formData, "deadline"),
-		estimateMinMinutes: field(formData, "estimateMinMinutes"),
-		estimateMaxMinutes: field(formData, "estimateMaxMinutes"),
+		estimateMinHours: field(formData, "estimateMinHours"),
+		estimateMaxHours: field(formData, "estimateMaxHours"),
 		clientId: field(formData, "clientId"),
 		labelId: field(formData, "labelId"),
 	};
@@ -91,8 +92,8 @@ export async function createTask(formData: FormData): Promise<ActionResult> {
 	await requireSession();
 	try {
 		const parsed = createTaskSchema.parse(taskInput(formData));
-		const min = parsed.estimateMinMinutes ?? null;
-		const max = parsed.estimateMaxMinutes ?? null;
+		const min = parsed.estimateMinHours ?? null;
+		const max = parsed.estimateMaxHours ?? null;
 		if (!estimatesAreValid(min, max)) {
 			return {
 				ok: false,
@@ -173,12 +174,12 @@ export async function updateTask(formData: FormData): Promise<ActionResult> {
 		if (!existing) return { ok: false, error: "Task not found." };
 
 		const has = (name: string) => formData.has(name);
-		const effectiveMin = has("estimateMinMinutes")
-			? (parsed.estimateMinMinutes ?? null)
-			: existing.estimateMinMinutes;
-		const effectiveMax = has("estimateMaxMinutes")
-			? (parsed.estimateMaxMinutes ?? null)
-			: existing.estimateMaxMinutes;
+		const effectiveMin = has("estimateMinHours")
+			? (parsed.estimateMinHours ?? null)
+			: existing.estimateMinHours;
+		const effectiveMax = has("estimateMaxHours")
+			? (parsed.estimateMaxHours ?? null)
+			: existing.estimateMaxHours;
 		if (!estimatesAreValid(effectiveMin, effectiveMax)) {
 			return {
 				ok: false,
@@ -199,11 +200,11 @@ export async function updateTask(formData: FormData): Promise<ActionResult> {
 					: {}),
 				...(has("status") ? { status: parsed.status } : {}),
 				...(has("deadline") ? { deadline: parsed.deadline ?? null } : {}),
-				...(has("estimateMinMinutes")
-					? { estimateMinMinutes: parsed.estimateMinMinutes ?? null }
+				...(has("estimateMinHours")
+					? { estimateMinHours: parsed.estimateMinHours ?? null }
 					: {}),
-				...(has("estimateMaxMinutes")
-					? { estimateMaxMinutes: parsed.estimateMaxMinutes ?? null }
+				...(has("estimateMaxHours")
+					? { estimateMaxHours: parsed.estimateMaxHours ?? null }
 					: {}),
 				...(has("clientId") ? { clientId: parsed.clientId ?? null } : {}),
 				...(has("labelId") ? { labelId: parsed.labelId ?? null } : {}),

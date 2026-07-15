@@ -8,15 +8,23 @@ A small, focused task manager for keeping client work visible and moving.
 
 - Drag tasks between Inbox, Review, Ongoing, and Finished
 - Organize work by client and label
-- Track deadlines, estimates, subtasks, and work logs
+- Track task estimates, subtask estimates, and logged time in decimal hours
+- Keep completed subtasks separate from detailed manual work logs
+- Compare estimates with logged hours and attach supporting images
 - Search, restore, or permanently delete archived tasks
 - Keyboard, touch, mobile, and reduced-motion support
 
 ## Task details
 
-Each task has its own workspace with sortable subtasks and a combined activity log.
+Each task has its own workspace with sortable active subtasks and a separate
+completed-subtask section. Work logs are manual records with a required short
+summary and hours spent, optional detailed notes, and up to five PNG, JPEG, GIF,
+or WebP images. Images are limited to 5 MB each, 15 MB total, 8192 pixels per
+side, and 20 megapixels. Deleting a work log permanently removes its images.
 
-![Task details with subtasks grouped by status](public/screenshots/task-detail.png)
+The task header compares total logged hours with the task's estimate range.
+Top-level task estimates can cover large projects; individual subtask estimates
+use 15-minute increments and are capped at 5 hours.
 
 ## Archive
 
@@ -38,6 +46,9 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+`prisma migrate deploy` preserves existing minute-based estimates and work-log
+durations while backfilling their decimal-hour replacements.
+
 ## End-to-end tests
 
 With the local PostgreSQL container running:
@@ -53,4 +64,5 @@ performs real pointer input, and verifies the result after a page reload.
 
 ## Stack
 
-Next.js, React, TypeScript, Tailwind CSS, Prisma, PostgreSQL, and dnd-kit.
+Next.js, React, TypeScript, Tailwind CSS, Prisma, PostgreSQL, Better Auth,
+dnd-kit, and Sharp.

@@ -11,8 +11,8 @@ by Anton; do not re-ask them.
    stroke icons, subtle hover tint. Delete icon stays red.
 2. Archived: keep the board "Show archived" checkbox (moved to the far right) AND
    add a full `/archived` page with search.
-3. Finished subtasks: **computed view** - the Work log tab merges log entries and
-   finished subtasks into one time-sorted feed. No schema change for this.
+3. Finished subtasks: **separate completed view** - they remain on the Tasks tab
+   and never appear in the manual Work log feed.
 4. Drag & drop: **@dnd-kit**, for cross-column status drags AND manual reordering
    within a column (adds a `sortOrder` column + migration).
 5. Animations: full scope - create-task star animation, archive/delete/drag
@@ -108,17 +108,15 @@ After Phase 5, run the final regression loop at the bottom (includes FIX_PLAN's)
   (`?tab=log`), not useState, so it deep-links and survives revalidation. Render
   both server-side; toggle via links styled as tabs (no client JS needed beyond
   styling).
-- Tasks tab: subtasks grouped into three sections - Inbox, Review, Ongoing -
-  reusing the board column styling at smaller scale. No Finished section. The
-  per-subtask status select stays (it is the keyboard path, and "Finished"
-  remains an option in it).
-- Work log tab: merged feed, time-sorted desc, of (a) TaskLog entries and
-  (b) subtasks with status Finished (computed - no schema change). Finished
-  subtasks render visually distinct (e.g. "✔ subtask · finished <relative time>";
-  use Subtask.createdAt if no better timestamp - do NOT add columns for this).
-  The add-log form lives on this tab. Tab label shows a count badge.
-- Finishing a subtask (select or Phase 4 drag) moves it from the sections to the
-  Work log feed; setting it back to any other status returns it.
+- Tasks tab: active subtasks are grouped into Inbox, Review, and Ongoing sections,
+  reusing the board column styling at smaller scale. Finished subtasks render in
+  a separate completed section. The per-subtask status select stays as the
+  keyboard path.
+- Work log tab: manual TaskLog entries only, ordered newest first. The add-log
+  form requires a short summary and decimal hours spent, supports optional
+  detailed notes and bounded image uploads, and the tab badge counts logs only.
+- Finishing a subtask (select or Phase 4 drag) moves it to the completed section;
+  setting it back to any other status returns it to an active section.
 - Prerequisite check: FIX_PLAN task 4 must already be merged (awaited subtask
   actions with error states).
 
@@ -127,10 +125,11 @@ After Phase 5, run the final regression loop at the bottom (includes FIX_PLAN's)
       back/forward toggles tabs.
 - [ ] Subtasks created in each status render in their section; empty sections
       show an empty state.
-- [ ] Finish a subtask → leaves sections, appears in the Work log feed with the
-      finished styling, badge count increments; un-finish → returns to sections.
-- [ ] Adding a plain work-log entry works from the Work log tab; total logged
-      minutes stays correct (finished subtasks do NOT add to logged minutes).
+- [ ] Finish a subtask → leaves the active sections, appears in the completed
+      section, and never appears in Work log; un-finish → returns to an active
+      section.
+- [ ] Adding a manual work-log entry works from the Work log tab; total logged
+      hours and the estimate comparison stay correct.
 - [ ] Two-tab failure regression: delete a subtask in tab A, change its status in
       tab B → visible error, no unhandled rejection, no phantom UI state.
 
@@ -160,9 +159,8 @@ After Phase 5, run the final regression loop at the bottom (includes FIX_PLAN's)
 - Keyboard: enable dnd-kit's keyboard sensor (pick up / move / drop with arrows).
   The status select (subtasks) and edit dialog (tasks) remain as fallbacks.
 - Touch: pointer sensor with a small activation distance so taps still open links.
-- Archived cards are not draggable. Dragging a subtask onto a "Finished" target is
-  allowed only if a Finished drop target is exposed; otherwise finishing stays in
-  the select (Phase 3 semantics apply either way).
+- Archived cards are not draggable. There is no Finished drop target; finishing a
+  subtask stays in the select and moves it to the completed section.
 - Respect `prefers-reduced-motion`: no spring/lift animation on drag.
 
 **E2E loop:**
@@ -174,8 +172,8 @@ After Phase 5, run the final regression loop at the bottom (includes FIX_PLAN's)
       log).
 - [ ] Failure path (stub the action to throw): card snaps back + visible error;
       after reload the board matches the DB.
-- [ ] Subtask drags across sections persist; finished-subtask semantics per
-      Phase 3.
+- [ ] Subtask drags across active sections persist; completed subtasks stay
+      separate.
 - [ ] Touch drag works in a mobile-emulated viewport; keyboard pick-up/move/drop
       works without a mouse; reduced-motion shows no drag animations.
 - [ ] Regression: client/label/archived filters still correct after drags;
@@ -236,7 +234,8 @@ Repeat until one full pass is green with zero fixes:
    pass, two-timezone pass).
 2. Full new-feature journey: create task (star animation) → drag across columns →
    reorder within a column → open detail → subtasks through all three sections →
-   finish one (appears in Work log tab) → log work → archive (micro-animation) →
-   find it via /archived search → restore → delete with confirm (crumble).
+   finish one (appears in Completed subtasks only) → log work → archive
+   (micro-animation) → find it via /archived search → restore → delete with confirm
+   (crumble).
 3. Keyboard-only and reduced-motion passes over the same journey.
 4. `pnpm typecheck && pnpm check` clean.

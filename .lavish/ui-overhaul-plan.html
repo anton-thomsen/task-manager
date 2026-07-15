@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Task Manager · UI Overhaul Plan</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap" rel="stylesheet">
 <style>
   :root{
     --ink:#1c1917; --cream:#fffdf6; --paper:#f5f0e6; --moss:#d8ddc2; --sage:#dfe5cc;
@@ -150,7 +150,7 @@
       <tr><th>Phase</th><th>What ships</th><th>Risk</th><th>Depends on</th></tr>
       <tr><td><strong>1 · Polish</strong></td><td>Icon action buttons on cards · hover states in the create/edit dialog</td><td><span class="badge green">low</span></td><td>-</td></tr>
       <tr><td><strong>2 · Archive</strong></td><td>"Show archived" moves right · new <code>/archived</code> page with search</td><td><span class="badge green">low</span></td><td>-</td></tr>
-      <tr><td><strong>3 · Task detail</strong></td><td>Tabs (Tasks / Work log) · subtasks in Inbox / Review / Ongoing sections · finished subtasks surface in the work log</td><td><span class="badge amber">medium</span></td><td>FIX_PLAN task 4</td></tr>
+      <tr><td><strong>3 · Task detail</strong></td><td>Tabs (Tasks / Work log) · active subtasks in Inbox / Review / Ongoing · finished subtasks in a separate completed section</td><td><span class="badge amber">medium</span></td><td>FIX_PLAN task 4</td></tr>
       <tr><td><strong>4 · Drag &amp; drop</strong></td><td>Drag tasks across board columns, subtasks across sections</td><td><span class="badge amber">medium</span></td><td>Phase 3</td></tr>
       <tr><td><strong>5 · 8-bit motion</strong></td><td>Create-task crumble → swirl → star → blink animation, plus micro-motion</td><td><span class="badge green">low</span></td><td>Phase 1</td></tr>
     </table></div>
@@ -267,7 +267,7 @@
       </div>
       <div class="mockcard" style="max-width:100%; background:#eceae4; opacity:.9">
         <div class="t">Old newsletter template</div>
-        <div class="meta">Archived Jun 2 · Fagercare · 3 logs, 2h 15m logged</div>
+        <div class="meta">Archived Jun 2 · Fagercare · 3 logs, 2.25h logged</div>
         <div class="btnrow">
           <button class="ibtn" aria-label="Restore" title="Restore"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="5" rx="1"/><path d="M4 9v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9"/><path d="m9.5 14.5 2.5-2.5 2.5 2.5"/><path d="M12 12v5"/></svg></button>
           <button class="ibtn del" aria-label="Delete" title="Delete"><svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6M14 11v6"/></svg></button>
@@ -301,7 +301,7 @@
   <!-- ============ PHASE 3 ============ -->
   <section class="phase" id="phase3">
     <h2>Phase 3 · Task detail: tabs + status sections <span class="badge amber">medium risk</span></h2>
-    <p>Today the detail page shows Subtasks and Work log side by side. Target: one surface with two tabs; the Tasks tab groups subtasks into <strong>Inbox / Review / Ongoing</strong>; finishing a subtask removes it from the sections and surfaces it in the <strong>Work log</strong> tab.</p>
+    <p>The detail page uses two tabs. The Tasks tab groups active subtasks into <strong>Inbox / Review / Ongoing</strong> and keeps finished items in a separate <strong>Completed subtasks</strong> section. The Work log tab contains manual records only.</p>
 
     <div class="panel target">
       <h4>Interactive mock - click the tabs, tick the checkbox</h4>
@@ -312,41 +312,39 @@
       <div id="paneT" role="tabpanel">
         <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(11rem,100%),1fr)); gap:.6rem">
           <div class="subcol"><h5>Inbox</h5>
-            <div class="subitem"><span>Draft hero copy</span><span class="note">30m</span></div>
+            <div class="subitem"><span>Draft hero copy</span><span class="note">0.5h</span></div>
           </div>
           <div class="subcol"><h5>Review</h5>
-            <div class="subitem"><span>Pick imagery</span><span class="note">20m</span></div>
+            <div class="subitem"><span>Pick imagery</span><span class="note">0.33h</span></div>
           </div>
           <div class="subcol"><h5>Ongoing</h5>
-            <div class="subitem" id="demoSub"><label style="display:flex; gap:.4rem; align-items:center; cursor:pointer"><input type="checkbox" onchange="finishDemo(this)"> Wire CTA button</label><span class="note">45m</span></div>
+            <div class="subitem" id="demoSub"><label style="display:flex; gap:.4rem; align-items:center; cursor:pointer"><input type="checkbox" onchange="finishDemo(this)"> Wire CTA button</label><span class="note">0.75h</span></div>
           </div>
         </div>
-        <p class="note" style="margin-top:.4rem">Ticking "Wire CTA button" finishes it → it leaves the sections and appears under Work log.</p>
+        <div class="subcol" id="demoCompleted" hidden style="margin-top:.6rem"><h5>Completed subtasks</h5><div class="subitem"><span>✔ Wire CTA button</span><span class="note">0.75h</span></div></div>
+        <p class="note" style="margin-top:.4rem">Ticking "Wire CTA button" moves it to Completed subtasks. It never appears under Work log.</p>
       </div>
       <div id="paneW" role="tabpanel" hidden>
-        <div class="logitem"><span class="ts">Jul 11, 09:12 · 25m</span><br>Rewrote intro paragraph</div>
-        <div class="logitem"><span class="ts">Jul 10, 16:40 · 50m</span><br>Set up page scaffold</div>
-        <div class="logitem" id="demoLog" hidden style="border-color:var(--em-dark); background:#f0faf4"><span class="ts">just now · subtask finished</span><br>✔ Wire CTA button</div>
+        <div class="logitem"><span class="ts">Jul 11, 09:12 · 0.42h</span><br>Rewrote intro paragraph</div>
+        <div class="logitem"><span class="ts">Jul 10, 16:40 · 0.83h</span><br>Set up page scaffold</div>
       </div>
     </div>
 
-    <h3>Where do finished subtasks go, exactly?</h3>
+    <h3>Where do finished subtasks go?</h3>
     <div class="opts">
-      <div class="opt rec"><h5>A · Computed view <span class="badge green">recommended</span></h5>
-        The Work log tab renders a merged, time-sorted feed of <em>log entries</em> + <em>subtasks with status Finished</em>. No schema change, fully reversible, un-finishing a subtask just moves it back.</div>
-      <div class="opt"><h5>B · Materialize a log entry</h5>
-        Finishing a subtask writes a real <code>TaskLog</code> row (needs a nullable <code>subtaskId</code> link + migration, plus rules for un-finish/delete). Heavier, only worth it if finished subtasks should carry logged minutes into the totals.</div>
+      <div class="opt rec"><h5>Separate completed view <span class="badge green">implemented</span></h5>
+        Finished subtasks stay on the Tasks tab in their own completed section. The Work log is reserved for manual records with a required short summary and decimal hours spent, plus optional detailed notes and bounded image uploads.</div>
     </div>
     <ul>
       <li>Tab state in the URL (<code>?tab=log</code>) so tabs deep-link and survive revalidation - not useState.</li>
       <li>The three sections reuse the board's column styling at smaller scale; status changes still available via the select (keyboard path), drag-and-drop arrives in Phase 4.</li>
-      <li>The "Finished" option stays in the subtask status enum - the sections just don't render a Finished lane.</li>
+      <li>The "Finished" option stays in the subtask status enum and renders in a separate completed section rather than a draggable lane.</li>
       <li>Depends on FIX_PLAN task 4 (awaited subtask actions with error states) - don't build tabs on fire-and-forget calls.</li>
     </ul>
 
     <div class="q">
-      <h4>✔ Decided · Option A, computed view</h4>
-      <p style="font-size:.85rem; margin:0">The Work log tab renders a merged, time-sorted feed of log entries + finished subtasks. No schema change; un-finishing a subtask simply moves it back to its section.</p>
+      <h4>✔ Decided · Separate completed subtasks</h4>
+      <p style="font-size:.85rem; margin:0">The Work log tab renders manual log entries only. Un-finishing a subtask moves it from Completed subtasks back to its active status section.</p>
     </div>
 
     <div class="e2e">
@@ -354,8 +352,8 @@
       <ul>
         <li>Detail page defaults to Tasks tab; <code>?tab=log</code> deep-links to Work log; browser back toggles tabs.</li>
         <li>Create subtasks in each status → each renders in its section; statuses with no subtasks show their empty state.</li>
-        <li>Finish a subtask → it leaves the sections, appears in Work log per chosen semantics, tab badge count updates; un-finish → it returns.</li>
-        <li>Adding a plain work-log entry still works from the Work log tab; time totals stay correct.</li>
+        <li>Finish a subtask → it leaves the active sections, appears under Completed subtasks, and remains absent from Work log; un-finish → it returns.</li>
+        <li>Adding a manual work-log entry with required decimal hours works from the Work log tab; time totals and estimate comparison stay correct.</li>
         <li>Two-tab failure path (regression of FIX_PLAN task 4): delete a subtask in tab A, change its status in tab B → visible error, no unhandled rejection.</li>
       </ul>
     </div>
@@ -404,7 +402,7 @@
         <li>Reorder two cards within a column → order survives a hard reload; creating a new task appends at a consistent position; reordering in one column doesn't shuffle other columns.</li>
         <li>Drop back onto the source column: no-op, no server call fired (assert via network log).</li>
         <li>Failure path: kill the DB (or stub the action to throw) mid-drag → card snaps back to origin + visible error, board still matches DB after reload.</li>
-        <li>Subtask drag across Phase 3 sections persists; dragging to "finished" (if exposed as a drop target) follows Q2 semantics.</li>
+        <li>Subtask drag across the three active Phase 3 sections persists. Finishing remains in the status select and moves the item to Completed subtasks.</li>
         <li>Touch: drag works in a mobile-emulated viewport. Keyboard: pick up/move/drop a card without a mouse. <code>prefers-reduced-motion</code>: no lift/spring animations.</li>
         <li>Regression: filters + archived states still render correctly after drags; archived cards are not draggable.</li>
       </ul>
@@ -486,8 +484,7 @@ function finishDemo(cb){
   if(!cb.checked) return;
   const sub=document.getElementById('demoSub');
   sub.style.transition='opacity .4s steps(4)'; sub.style.opacity='0';
-  setTimeout(()=>{ sub.hidden=true; document.getElementById('demoLog').hidden=false;
-    document.getElementById('wcount').textContent='3'; showTab('W'); },420);
+  setTimeout(()=>{ sub.hidden=true; document.getElementById('demoCompleted').hidden=false; },420);
 }
 /* dnd demo */
 (function(){

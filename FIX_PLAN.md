@@ -76,8 +76,8 @@ fields on update. Deadline, client, label, and both estimates can never be unset
 
 **Pass criteria:**
 - [ ] UI shows no deadline, no client, no label, no estimate after reload.
-- [ ] DB row has `deadline`, `clientId`, `labelId`, `estimateMinMinutes`,
-      `estimateMaxMinutes` all NULL (assert via script/psql).
+- [ ] DB row has `deadline`, `clientId`, `labelId`, `estimateMinHours`,
+      `estimateMaxHours` all NULL (assert via script/psql).
 - [ ] Editing only the title still leaves other fields untouched.
 - [ ] Clearing only the description still works (regression on existing behavior).
 
@@ -98,7 +98,7 @@ persists `min > max` in the DB. No DB constraint backs the invariant.
   stored value.
 - Add a DB-level guard so the invariant cannot be violated by any future code path:
   a `CHECK` constraint via a migration
-  (`CHECK ("estimateMinMinutes" IS NULL OR "estimateMaxMinutes" IS NULL OR "estimateMinMinutes" <= "estimateMaxMinutes")`).
+  (`CHECK ("estimateMinHours" IS NULL OR "estimateMaxHours" IS NULL OR "estimateMinHours" <= "estimateMaxHours")`).
 
 **E2E verification:**
 1. Create a task with min=1h, max=2h.
@@ -106,8 +106,9 @@ persists `min > max` in the DB. No DB constraint backs the invariant.
    after Task 2, clearing max sets it NULL, which is allowed. So also test:
 3. Edit: set min=4h and leave max=2h untouched. Expect a visible validation error
    and no DB change.
-4. Direct-POST check (server actions are public endpoints): replay the update
-   request with `estimateMinMinutes=240` and the max field absent; expect rejection.
+4. Direct-POST check (server actions are authenticated HTTP endpoints): replay the
+   update request with a valid session, `estimateMinHours=4`, and the max field
+   absent; expect rejection.
 
 **Pass criteria:**
 - [ ] No sequence of UI edits can produce a DB row with min > max (assert via script).
@@ -267,7 +268,7 @@ schema in the server actions. There is also no `error.tsx` anywhere.
 **E2E verification:**
 1. GET `/tasks/99999999999` and `/tasks/2147483648`.
 2. GET `/tasks/abc` and `/tasks/0` (regression: still 404).
-3. Direct-POST `deleteTask` with id `99999999999` (server actions are public endpoints).
+3. Direct-POST `deleteTask` with id `99999999999` and a valid session.
 
 **Pass criteria:**
 - [ ] All oversized/invalid ids on the page yield the 404 page, not a 500.
@@ -280,8 +281,8 @@ schema in the server actions. There is also no `error.tsx` anywhere.
 ## Task 10 - Delete dead modules, consolidate formatting/status logic (cleanup)
 
 **Problem:** `src/lib/format.ts` and `src/lib/types.ts` are imported nowhere. Their
-logic was reimplemented divergently: `formatMinutes` in `tasks/[id]/page.tsx`,
-estimate formatting in `task-card.tsx` (renders 100 min as `1.6666666666666667h`),
+logic was reimplemented divergently: duration formatting in `tasks/[id]/page.tsx`,
+estimate formatting in `task-card.tsx` (could render long decimal values),
 overdue logic inline with a different day-boundary rule, and a third hand-copied
 status list.
 
@@ -289,20 +290,20 @@ status list.
 - Delete `src/lib/types.ts`. Keep `src/lib/tasks.ts` as the single source for
   `taskStatuses`/`TaskStatus` (deriving from the generated Prisma enum is even better:
   `Object.values(TaskStatus)` from `generated/prisma`).
-- Make `src/lib/format.ts` the single formatting module: `formatMinutes`,
-  `formatEstimateRange` (with the `toFixed(1)` rounding), and the overdue helper from
+- Make `src/lib/format.ts` the single formatting module: `formatHours`,
+  `formatEstimateRange` (rounded to two decimal places), and the overdue helper from
   Task 5. Update `task-card.tsx`, `tasks/[id]/page.tsx`, and `task-form.tsx`'s
   `hours()` to import from it; delete the inline copies.
-- Also fold in the shared bits created by Tasks 3/9 (id schema, optional-int zod
-  preprocessor used in tasks/subtasks/logs actions) so there is one validation helper
-  module instead of three copies.
+- Also fold in the shared bits created by Tasks 3/9 (id schema and optional positive
+  number preprocessors used in task, subtask, and log actions) so there is one
+  validation helper module instead of three copies.
 
 **E2E verification:**
-1. `grep` proves no duplicate definitions remain (`formatMinutes`, `estimateLabel`,
+1. `grep` proves no duplicate definitions remain (`formatHours`, `estimateLabel`,
    `taskStatuses` defined exactly once each).
 2. Board and detail page render estimates identically for the same task, including a
-   100-minute estimate created via direct action POST (should read `1.7h`, not a
-   17-digit decimal).
+   `1.6666666666666667`-hour estimate created via direct action POST (should read
+   `1.67h`, not a 17-digit decimal).
 
 **Pass criteria:**
 - [ ] `src/lib/types.ts` gone; single definition site for each helper (grep-verified).

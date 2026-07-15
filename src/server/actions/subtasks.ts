@@ -4,14 +4,17 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 import { taskStatuses } from "~/lib/tasks";
-import { int4IdSchema, optionalPositiveInt } from "~/lib/validation";
+import { int4IdSchema, optionalPositiveNumber } from "~/lib/validation";
 import { requireSession } from "~/server/auth";
 import { db } from "~/server/db";
 
 const createSubtaskSchema = z.object({
 	taskId: int4IdSchema,
 	title: z.string().trim().min(1).max(200),
-	estimatedMinutes: optionalPositiveInt(300),
+	estimatedHours: optionalPositiveNumber(5).refine(
+		(value) => value === undefined || Number.isInteger(value * 4),
+		"Estimate must use 15-minute increments.",
+	),
 });
 
 export async function createSubtask(formData: FormData): Promise<void> {
@@ -19,7 +22,7 @@ export async function createSubtask(formData: FormData): Promise<void> {
 	const parsed = createSubtaskSchema.parse({
 		taskId: formData.get("taskId")?.toString(),
 		title: formData.get("title")?.toString(),
-		estimatedMinutes: formData.get("estimatedMinutes")?.toString(),
+		estimatedHours: formData.get("estimatedHours")?.toString(),
 	});
 	const task = await db.task.findUnique({
 		where: { id: parsed.taskId },

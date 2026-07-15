@@ -3,7 +3,7 @@
 import { Pencil } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import { minutesAsHours } from "~/lib/format";
+import { hoursInputValue } from "~/lib/format";
 import type { LabelOption, TaskOption, TaskStatus } from "~/lib/tasks";
 import { taskStatuses } from "~/lib/tasks";
 import { createClient } from "~/server/actions/clients";
@@ -16,8 +16,8 @@ export type TaskFormValue = {
 	description: string | null;
 	status: TaskStatus;
 	deadline: string | null;
-	estimateMinMinutes: number | null;
-	estimateMaxMinutes: number | null;
+	estimateMinHours: number | null;
+	estimateMaxHours: number | null;
 	clientId: number | null;
 	labelId: number | null;
 };
@@ -73,13 +73,11 @@ export function TaskForm({
 	const [newLabel, setNewLabel] = useState("");
 	const [newLabelColor, setNewLabelColor] = useState("#fecaca");
 	const [minHours, setMinHours] = useState(
-		minutesAsHours(task?.estimateMinMinutes),
+		hoursInputValue(task?.estimateMinHours),
 	);
 	const [maxHours, setMaxHours] = useState(
-		minutesAsHours(task?.estimateMaxMinutes),
+		hoursInputValue(task?.estimateMaxHours),
 	);
-	const [minEstimateChanged, setMinEstimateChanged] = useState(false);
-	const [maxEstimateChanged, setMaxEstimateChanged] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [isSaving, setIsSaving] = useState(false);
 	const [isAddingClient, setIsAddingClient] = useState(false);
@@ -118,7 +116,8 @@ export function TaskForm({
 	const maxEstimate = Number(maxHours);
 	const minEstimate = Number(minHours);
 	const estimateIsInvalid =
-		maxEstimate > 5 ||
+		(minHours !== "" && minEstimate <= 0) ||
+		(maxHours !== "" && maxEstimate <= 0) ||
 		(minHours !== "" && maxHours !== "" && minEstimate > maxEstimate);
 
 	async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -129,22 +128,8 @@ export function TaskForm({
 		const form = event.currentTarget;
 		try {
 			const formData = new FormData(form);
-			formData.set(
-				"estimateMinMinutes",
-				isEditing && !minEstimateChanged
-					? String(task.estimateMinMinutes ?? "")
-					: minHours === ""
-						? ""
-						: String(Math.round(Number(minHours) * 60)),
-			);
-			formData.set(
-				"estimateMaxMinutes",
-				isEditing && !maxEstimateChanged
-					? String(task.estimateMaxMinutes ?? "")
-					: maxHours === ""
-						? ""
-						: String(Math.round(Number(maxHours) * 60)),
-			);
+			formData.set("estimateMinHours", minHours);
+			formData.set("estimateMaxHours", maxHours);
 			const result = await (isEditing
 				? updateTask(formData)
 				: createTask(formData));
@@ -157,8 +142,6 @@ export function TaskForm({
 				form.reset();
 				setMinHours("");
 				setMaxHours("");
-				setMinEstimateChanged(false);
-				setMaxEstimateChanged(false);
 				if (
 					rect &&
 					!window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -343,13 +326,11 @@ export function TaskForm({
 							<input
 								aria-label="Minimum estimate in hours"
 								className={`${inputClass} w-24`}
-								max="5"
-								min="0.25"
+								name="estimateMinHours"
 								onChange={(event) => {
 									setMinHours(event.target.value);
-									setMinEstimateChanged(true);
 								}}
-								step="0.25"
+								step="any"
 								type="number"
 								value={minHours}
 							/>
@@ -357,33 +338,31 @@ export function TaskForm({
 							<input
 								aria-label="Maximum estimate in hours"
 								className={`${inputClass} w-24`}
-								max="5"
-								min="0.25"
+								name="estimateMaxHours"
 								onChange={(event) => {
 									setMaxHours(event.target.value);
-									setMaxEstimateChanged(true);
 								}}
-								step="0.25"
+								step="any"
 								type="number"
 								value={maxHours}
 							/>
 							<span>hours</span>
 						</div>
-						{maxEstimate > 5 ? (
-							<p className="mt-2 rounded-md bg-red-100 p-2 font-semibold text-red-900 text-xs">
-								Over 5 hours - split this into smaller tasks.
-							</p>
-						) : null}
 						{minHours !== "" && maxHours !== "" && minEstimate > maxEstimate ? (
 							<p className="mt-2 text-red-800 text-xs">
 								The minimum must not exceed the maximum.
 							</p>
 						) : null}
-						{maxEstimate >= 3 && maxEstimate <= 5 ? (
-							<p className="mt-2 text-amber-800 text-xs">
-								This is a big block. Consider splitting it.
+						{(minHours !== "" && minEstimate <= 0) ||
+						(maxHours !== "" && maxEstimate <= 0) ? (
+							<p className="mt-2 text-red-800 text-xs">
+								Estimates must be greater than zero.
 							</p>
 						) : null}
+						<p className="mt-2 text-stone-600 text-xs">
+							Large project estimates are welcome here. Only subtasks are
+							limited to 5 hours.
+						</p>
 					</div>
 
 					<details className="rounded-xl border border-stone-400 bg-white/60 p-3">

@@ -28,6 +28,14 @@ export function optionalPositiveInt(max: number) {
 	);
 }
 
+export function optionalPositiveNumber(max: number) {
+	return z.preprocess(
+		(value) =>
+			value === "" || value === null || value === undefined ? undefined : value,
+		z.coerce.number().positive().max(max).optional(),
+	);
+}
+
 export type ActionResult = { ok: true } | { ok: false; error: string };
 
 export function actionError(error: unknown, fallback: string): ActionResult {
