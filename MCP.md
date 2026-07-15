@@ -38,6 +38,7 @@ Or in a project `.mcp.json`:
 | --- | --- |
 | `list_tasks` | List visible tasks, filterable by status, client, label, assignee |
 | `get_task` | Full detail: subtasks, work logs, estimates, participants |
+| `get_task_report` | Estimate-vs-actual analysis: per-worklog estimates, actuals, variances, and details text |
 | `create_task` | Create a task (required-fields contract, see below) |
 | `delegate_task` | Assign an existing task to a member, or create-and-delegate in one step |
 | `add_subtask` | Add a subtask (15-minute estimate increments, max 5h) |
