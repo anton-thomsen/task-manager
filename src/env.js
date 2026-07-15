@@ -10,12 +10,15 @@ export const env = createEnv({
 		AUTH_ALLOW_SIGNUP: z.enum(["true", "false"]).default("false"),
 		BETTER_AUTH_SECRET: z.string().min(32),
 		BETTER_AUTH_URL: z.string().url(),
-		CALENDAR_FEED_TOKEN: z.string().min(32),
 		DATABASE_URL: z.string().url(),
+		EMAIL_FROM: z
+			.string()
+			.min(3)
+			.default("Task Manager <onboarding@resend.dev>"),
 		NODE_ENV: z
 			.enum(["development", "test", "production"])
 			.default("development"),
-		TASKS_API_TOKEN: z.string().min(32),
+		RESEND_API_KEY: z.string().min(1).optional(),
 	},
 
 	/**
@@ -36,9 +39,9 @@ export const env = createEnv({
 		AUTH_ALLOW_SIGNUP: process.env.AUTH_ALLOW_SIGNUP,
 		BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
 		BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,
-		CALENDAR_FEED_TOKEN: process.env.CALENDAR_FEED_TOKEN,
+		EMAIL_FROM: process.env.EMAIL_FROM,
 		NODE_ENV: process.env.NODE_ENV,
-		TASKS_API_TOKEN: process.env.TASKS_API_TOKEN,
+		RESEND_API_KEY: process.env.RESEND_API_KEY,
 		// NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 	},
 	/**
