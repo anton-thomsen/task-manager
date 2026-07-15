@@ -2,7 +2,7 @@
 
 import { ImageIcon, Trash2 } from "lucide-react";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { type FormEvent, useRef, useState } from "react";
 
 import { formatHours } from "~/lib/format";
 import { addLog, deleteLog } from "~/server/actions/logs";
@@ -28,7 +28,9 @@ export function WorkLog({ logs, taskId }: { logs: Log[]; taskId: number }) {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [deletingId, setDeletingId] = useState<number | null>(null);
 
-	async function submit(formData: FormData) {
+	async function submit(event: FormEvent<HTMLFormElement>) {
+		event.preventDefault();
+		const formData = new FormData(event.currentTarget);
 		setError(null);
 		setIsSubmitting(true);
 		try {
@@ -69,8 +71,8 @@ export function WorkLog({ logs, taskId }: { logs: Log[]; taskId: number }) {
 				</p>
 			</div>
 			<form
-				action={submit}
 				className="space-y-4 rounded-2xl border-2 border-stone-900 bg-[#f0d7b5] p-4 shadow-[4px_4px_0_#1c1917] sm:p-6"
+				onSubmit={submit}
 				ref={formRef}
 			>
 				<input name="taskId" type="hidden" value={taskId} />
