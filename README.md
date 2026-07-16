@@ -9,7 +9,7 @@ A small, focused task manager for keeping client work visible and moving.
 - Work as an organization: invite teammates and share one board
 - Delegate a task to a teammate and see it accepted on their board
 - Collaborate on shared tasks with per-author attribution
-- Drag tasks between Inbox, Review, Ongoing, and Finished
+- Move tasks between Inbox, Review, Ongoing, and Finished with a status menu
 - Organize work by client and label
 - Track task estimates, subtask estimates, and logged time in decimal hours
 - Keep completed subtasks separate from detailed manual work logs
@@ -48,11 +48,13 @@ all-day events; see [GOOGLE_CALENDAR.md](GOOGLE_CALENDAR.md) for setup.
 
 ## Task details
 
-Each task has its own workspace with sortable active subtasks and a separate
-completed-subtask section. Work logs are manual records with a required short
-summary and hours spent, optional detailed notes, and up to five PNG, JPEG, GIF,
-or WebP images. Images are limited to 5 MB each, 15 MB total, 8192 pixels per
-side, and 20 megapixels. Deleting a work log permanently removes its images.
+Each task has its own workspace with detailed, sortable active subtasks and a
+separate completed-subtask section. Subtasks can keep their own description and
+up to ten reference links alongside their status and estimate. Work logs are
+manual records with a required short summary and hours spent, optional detailed
+notes, and up to five PNG, JPEG, GIF, or WebP images. Images are limited to 5 MB
+each, 15 MB total, 8192 pixels per side, and 20 megapixels. Deleting a work log
+permanently removes its images.
 
 Completing a subtask offers a pre-filled work log: the subtask's estimate is
 carried over, you add the hours it actually took (or skip). Manual work logs

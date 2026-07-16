@@ -14,6 +14,29 @@ export const taskTitleSchema = z
 
 export const taskDescriptionSchema = z.string().trim().max(2000).optional();
 
+export const referenceLinkSchema = z
+	.string()
+	.trim()
+	.max(2048, "Reference links must be 2,048 characters or shorter.")
+	.url("Enter a complete reference link, including https://.")
+	.refine((value) => {
+		try {
+			const protocol = new URL(value).protocol;
+			return protocol === "https:" || protocol === "http:";
+		} catch {
+			return false;
+		}
+	}, "Reference links must use http:// or https://.")
+	.transform((value) => new URL(value).href);
+
+export const referenceLinksSchema = z
+	.array(referenceLinkSchema)
+	.max(10, "Add at most 10 reference links.")
+	.refine(
+		(links) => new Set(links).size === links.length,
+		"Each reference link can only be added once.",
+	);
+
 export const optionalDateSchema = z.preprocess(
 	(value) =>
 		value === "" || value === null || value === undefined ? undefined : value,

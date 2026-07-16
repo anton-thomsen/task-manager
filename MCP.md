@@ -41,7 +41,7 @@ Or in a project `.mcp.json`:
 | `get_task_report` | Estimate-vs-actual analysis: per-worklog estimates, actuals, variances, and details text |
 | `create_task` | Create a task (required-fields contract, see below) |
 | `delegate_task` | Assign an existing task to a member, or create-and-delegate in one step |
-| `add_subtask` | Add a subtask (15-minute estimate increments, max 5h) |
+| `add_subtask` | Add a subtask with an optional description and reference links (15-minute estimate increments, max 5h) |
 | `complete_subtask` | Mark a subtask Finished, attributed to you |
 | `log_work` | Record note, hours spent, details, and expected hours |
 | `list_members` / `list_clients` / `list_labels` | Org directory lookups |
