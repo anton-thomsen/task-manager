@@ -165,6 +165,8 @@ exports.Prisma.SubtaskScalarFieldEnum = {
   id: 'id',
   taskId: 'taskId',
   title: 'title',
+  description: 'description',
+  referenceLinks: 'referenceLinks',
   status: 'status',
   estimatedHours: 'estimatedHours',
   sortOrder: 'sortOrder',

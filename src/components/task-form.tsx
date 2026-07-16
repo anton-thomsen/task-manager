@@ -9,6 +9,10 @@ import { taskStatuses } from "~/lib/tasks";
 import { createClient } from "~/server/actions/clients";
 import { createLabel } from "~/server/actions/labels";
 import { createTask, updateTask } from "~/server/actions/tasks";
+import {
+	type AnimationCenter,
+	CreateSuccessAnimation,
+} from "./create-success-animation";
 import { UserAvatar, type UserRef } from "./user-avatar";
 
 export type TaskFormValue = {
@@ -35,23 +39,6 @@ type TaskFormProps = {
 
 const inputClass =
 	"w-full rounded-md border border-stone-900 bg-white px-3 py-2 text-sm";
-const createPixels = [
-	"north",
-	"ember",
-	"moss",
-	"ivory",
-	"west",
-	"spark",
-	"fern",
-	"paper",
-	"east",
-	"flash",
-	"leaf",
-	"chalk",
-	"south",
-	"glint",
-] as const;
-
 function mergeById<T extends { id: number }>(server: T[], local: T[]): T[] {
 	const merged = new Map(server.map((option) => [option.id, option]));
 	for (const option of local) merged.set(option.id, option);
@@ -86,10 +73,8 @@ export function TaskForm({
 	const [isSaving, setIsSaving] = useState(false);
 	const [isAddingClient, setIsAddingClient] = useState(false);
 	const [isAddingLabel, setIsAddingLabel] = useState(false);
-	const [animationCenter, setAnimationCenter] = useState<{
-		x: number;
-		y: number;
-	} | null>(null);
+	const [animationCenter, setAnimationCenter] =
+		useState<AnimationCenter | null>(null);
 	const clientOptions = mergeById(clients, locallyAddedClients);
 	const labelOptions = mergeById(labels, locallyAddedLabels);
 
@@ -480,33 +465,10 @@ export function TaskForm({
 				</form>
 			</dialog>
 			{animationCenter ? (
-				<button
-					aria-label="Skip create animation"
-					className="pixel-create-overlay"
-					onClick={() => setAnimationCenter(null)}
-					style={
-						{
-							"--star-x": `${animationCenter.x}px`,
-							"--star-y": `${animationCenter.y}px`,
-						} as React.CSSProperties
-					}
-					type="button"
-				>
-					{createPixels.map((pixel, index) => (
-						<span
-							className="create-pixel"
-							key={pixel}
-							style={
-								{
-									"--pixel-index": index,
-									"--pixel-x": `${((index * 37) % 110) - 55}px`,
-									"--pixel-y": `${((index * 53) % 90) - 45}px`,
-								} as React.CSSProperties
-							}
-						/>
-					))}
-					<span className="pixel-star" />
-				</button>
+				<CreateSuccessAnimation
+					center={animationCenter}
+					onSkip={() => setAnimationCenter(null)}
+				/>
 			) : null}
 		</>
 	);

@@ -13,7 +13,7 @@ test("tracks a project in hours and keeps rich work logs", async ({
 	await page.getByRole("button", { name: "Create account" }).click();
 	await expect(page).toHaveURL((url) => url.pathname === "/");
 
-	const title = "E2E adjacent-lane drag";
+	const title = "E2E status dropdown";
 	await page.getByRole("button", { name: "Create task" }).click();
 	const taskDialog = page.getByRole("dialog", { name: "Create a task" });
 	await taskDialog.getByLabel("Title").fill(title);
@@ -29,40 +29,11 @@ test("tracks a project in hours and keeps rich work logs", async ({
 	const taskHref = await sourceLink.getAttribute("href");
 	if (!taskHref) throw new Error("Created task is missing its detail link.");
 	const taskId = taskHref.slice(taskHref.lastIndexOf("/") + 1);
-	const sourceTask = page.getByTestId(`task-${taskId}`);
 	const ongoingLane = page.getByTestId("lane-Ongoing");
 	const finishedLane = page.getByTestId("lane-Finished");
 	await expect(ongoingLane.getByTestId(`task-${taskId}`)).toBeVisible();
 	await expect(finishedLane.locator('[data-testid^="task-"]')).toHaveCount(0);
-	const [sourceBox, finishedBox] = await Promise.all([
-		sourceTask.boundingBox(),
-		finishedLane.boundingBox(),
-	]);
-	if (!sourceBox || !finishedBox) {
-		throw new Error("The task or Finished lane is not visible.");
-	}
-
-	const startX = sourceBox.x + sourceBox.width - 12;
-	const startY = sourceBox.y + sourceBox.height / 2;
-	const destinationX = finishedBox.x + 12;
-	const destinationY = Math.min(
-		Math.max(startY, finishedBox.y + 80),
-		finishedBox.y + finishedBox.height - 24,
-	);
-
-	await page.mouse.move(startX, startY);
-	await page.mouse.down();
-	await page.mouse.move(startX + 8, startY, { steps: 2 });
-	await page.mouse.move(destinationX, destinationY, { steps: 20 });
-	await expect(finishedLane).toHaveClass(/ring-emerald-600/);
-
-	const moveResponse = page.waitForResponse(
-		(response) =>
-			response.request().method() === "POST" &&
-			response.request().headers()["next-action"] !== undefined,
-	);
-	await page.mouse.up();
-	expect((await moveResponse).ok()).toBe(true);
+	await page.getByLabel(`Move ${title}`).selectOption("Finished");
 
 	await expect(
 		finishedLane.getByRole("link", { name: title, exact: true }),
@@ -96,8 +67,18 @@ test("tracks a project in hours and keeps rich work logs", async ({
 	await editDialog.getByRole("button", { name: "Cancel" }).click();
 
 	const subtaskTitle = "Implement responsive layout";
-	await page.getByLabel("Subtask title").fill(subtaskTitle);
-	const estimatedHours = page.getByLabel("Estimated hours");
+	const subtaskDescription =
+		"Build the mobile navigation and verify the tablet breakpoint.";
+	await page.getByRole("button", { name: "Create subtask" }).click();
+	const subtaskDialog = page.getByRole("dialog", {
+		name: "Create a subtask",
+	});
+	await subtaskDialog.getByLabel("Title").fill(subtaskTitle);
+	await subtaskDialog.getByLabel("Description").fill(subtaskDescription);
+	await subtaskDialog
+		.getByLabel("Reference link 1")
+		.fill("https://drive.google.com/file/d/responsive-layout");
+	const estimatedHours = subtaskDialog.getByLabel("Estimated hours");
 	await estimatedHours.fill("5.1");
 	expect(
 		await estimatedHours.evaluate(
@@ -111,8 +92,15 @@ test("tracks a project in hours and keeps rich work logs", async ({
 		),
 	).toBe(true);
 	await estimatedHours.fill("0.25");
-	await page.getByRole("button", { name: "Add", exact: true }).click();
+	await subtaskDialog.getByRole("button", { name: "Add subtask" }).click();
 	await expect(page.getByText(subtaskTitle)).toBeVisible();
+	await expect(page.getByText(subtaskDescription)).toBeVisible();
+	await expect(
+		page.getByRole("link", { name: "drive.google.com" }),
+	).toHaveAttribute(
+		"href",
+		"https://drive.google.com/file/d/responsive-layout",
+	);
 	await expect(page.getByText("0.25h", { exact: true })).toBeVisible();
 	await page.getByLabel(`Status for ${subtaskTitle}`).selectOption("Finished");
 	const completionOffer = page.getByRole("dialog");

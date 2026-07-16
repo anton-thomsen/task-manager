@@ -4,50 +4,132 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 import { taskStatuses } from "~/lib/tasks";
-import { int4IdSchema, optionalPositiveNumber } from "~/lib/validation";
+import {
+	type ActionResult,
+	actionError,
+	int4IdSchema,
+	optionalPositiveNumber,
+	referenceLinksSchema,
+	taskDescriptionSchema,
+	taskTitleSchema,
+} from "~/lib/validation";
 import { requireMember, type SessionMember } from "~/server/auth";
 import { db } from "~/server/db";
 import { requireTaskAccess, taskWhereFor } from "~/server/task-access";
 
 const createSubtaskSchema = z.object({
 	taskId: int4IdSchema,
-	title: z.string().trim().min(1).max(200),
+	title: taskTitleSchema,
+	description: taskDescriptionSchema,
+	referenceLinks: referenceLinksSchema,
+	status: z.enum(taskStatuses).default("Inbox"),
 	estimatedHours: optionalPositiveNumber(5).refine(
 		(value) => value === undefined || Number.isInteger(value * 4),
 		"Estimate must use 15-minute increments.",
 	),
 });
 
+const updateSubtaskSchema = createSubtaskSchema.omit({ taskId: true }).extend({
+	id: int4IdSchema,
+});
+
 async function requireSubtaskAccess(
 	member: SessionMember,
 	subtaskId: number,
-): Promise<{ id: number; taskId: number }> {
+): Promise<{
+	id: number;
+	taskId: number;
+	status: (typeof taskStatuses)[number];
+}> {
 	const subtask = await db.subtask.findFirst({
 		where: { id: subtaskId, task: taskWhereFor(member) },
-		select: { id: true, taskId: true },
+		select: { id: true, taskId: true, status: true },
 	});
 	if (!subtask) throw new Error("Subtask not found.");
 	return subtask;
 }
 
-export async function createSubtask(formData: FormData): Promise<void> {
-	const member = await requireMember();
-	const parsed = createSubtaskSchema.parse({
-		taskId: formData.get("taskId")?.toString(),
-		title: formData.get("title")?.toString(),
-		estimatedHours: formData.get("estimatedHours")?.toString(),
-	});
-	await requireTaskAccess(member, parsed.taskId);
-	const lastSubtask = await db.subtask.findFirst({
-		where: { taskId: parsed.taskId, status: "Inbox" },
-		orderBy: { sortOrder: "desc" },
-		select: { sortOrder: true },
-	});
+function referenceLinksInput(formData: FormData): string[] {
+	return formData
+		.getAll("referenceLinks")
+		.map((value) => value.toString().trim())
+		.filter(Boolean);
+}
 
-	await db.subtask.create({
-		data: { ...parsed, sortOrder: (lastSubtask?.sortOrder ?? 0) + 1024 },
-	});
-	revalidatePath(`/tasks/${parsed.taskId}`);
+function subtaskInput(formData: FormData) {
+	return {
+		title: formData.get("title")?.toString(),
+		description: formData.get("description")?.toString(),
+		referenceLinks: referenceLinksInput(formData),
+		status: formData.get("status")?.toString(),
+		estimatedHours: formData.get("estimatedHours")?.toString(),
+	};
+}
+
+function nullableText(value: string | undefined): string | null {
+	return value && value.length > 0 ? value : null;
+}
+
+export async function createSubtask(formData: FormData): Promise<ActionResult> {
+	const member = await requireMember();
+	try {
+		const parsed = createSubtaskSchema.parse({
+			...subtaskInput(formData),
+			taskId: formData.get("taskId")?.toString(),
+		});
+		await requireTaskAccess(member, parsed.taskId);
+		const lastSubtask = await db.subtask.findFirst({
+			where: { taskId: parsed.taskId, status: parsed.status },
+			orderBy: { sortOrder: "desc" },
+			select: { sortOrder: true },
+		});
+
+		await db.subtask.create({
+			data: {
+				...parsed,
+				description: nullableText(parsed.description),
+				completedById: parsed.status === "Finished" ? member.userId : null,
+				sortOrder: (lastSubtask?.sortOrder ?? 0) + 1024,
+			},
+		});
+		revalidatePath(`/tasks/${parsed.taskId}`);
+		revalidatePath("/");
+		return { ok: true };
+	} catch (error) {
+		return actionError(error, "The subtask could not be created.");
+	}
+}
+
+export async function updateSubtask(formData: FormData): Promise<ActionResult> {
+	const member = await requireMember();
+	try {
+		const parsed = updateSubtaskSchema.parse({
+			...subtaskInput(formData),
+			id: formData.get("id")?.toString(),
+		});
+		const subtask = await requireSubtaskAccess(member, parsed.id);
+		await db.subtask.update({
+			where: { id: subtask.id },
+			data: {
+				title: parsed.title,
+				description: nullableText(parsed.description),
+				referenceLinks: parsed.referenceLinks,
+				status: parsed.status,
+				estimatedHours: parsed.estimatedHours ?? null,
+				...(parsed.status !== subtask.status
+					? {
+							completedById:
+								parsed.status === "Finished" ? member.userId : null,
+						}
+					: {}),
+			},
+		});
+		revalidatePath(`/tasks/${subtask.taskId}`);
+		revalidatePath("/");
+		return { ok: true };
+	} catch (error) {
+		return actionError(error, "The subtask could not be updated.");
+	}
 }
 
 const moveSubtaskSchema = z.object({

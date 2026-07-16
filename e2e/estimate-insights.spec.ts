@@ -30,7 +30,8 @@ test("offers a pre-filled work log on completion and reports estimate-vs-actual"
 	const taskLink = page.getByRole("link", { name: title, exact: true });
 	await expect(taskLink).toBeVisible();
 	const taskHref = await taskLink.getAttribute("href");
-	if (!taskHref) throw new Error("The created task is missing its detail link.");
+	if (!taskHref)
+		throw new Error("The created task is missing its detail link.");
 	const taskId = Number(taskHref.slice(taskHref.lastIndexOf("/") + 1));
 	await page.goto(taskHref);
 

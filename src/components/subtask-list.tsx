@@ -10,6 +10,7 @@ import {
 	useSensors,
 } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+import { ExternalLink } from "lucide-react";
 import {
 	startTransition,
 	useEffect,
@@ -22,12 +23,12 @@ import { formatHours } from "~/lib/format";
 import type { TaskStatus } from "~/lib/tasks";
 import { taskStatuses } from "~/lib/tasks";
 import {
-	createSubtask,
 	deleteSubtask,
 	moveSubtask,
 	updateSubtaskStatus,
 } from "~/server/actions/subtasks";
 import { DropLane, SortableItem } from "./sortable-lane";
+import { SubtaskForm, type SubtaskFormValue } from "./subtask-form";
 import { UserAvatar } from "./user-avatar";
 import { WorkLogForm } from "./work-log-form";
 
@@ -37,15 +38,64 @@ type SubtaskCompleter = {
 	image: string | null;
 };
 
-type Subtask = {
-	id: number;
-	title: string;
-	status: TaskStatus;
-	estimatedHours: number | null;
+type Subtask = SubtaskFormValue & {
 	completedBy?: SubtaskCompleter | null;
 };
 
 type Move = { id: number; status: TaskStatus; beforeId: number | null };
+
+function safeReferenceLink(value: string): URL | null {
+	try {
+		const url = new URL(value);
+		return url.protocol === "https:" || url.protocol === "http:" ? url : null;
+	} catch {
+		return null;
+	}
+}
+
+function SubtaskContent({
+	subtask,
+	completed = false,
+}: {
+	subtask: Subtask;
+	completed?: boolean;
+}) {
+	const referenceLinks = subtask.referenceLinks.flatMap((value) => {
+		const url = safeReferenceLink(value);
+		return url ? [{ href: url.href, label: url.hostname }] : [];
+	});
+
+	return (
+		<div className="min-w-0 flex-1 space-y-1.5">
+			<p
+				className={`font-semibold text-sm ${completed ? "line-through opacity-50" : ""}`}
+			>
+				{subtask.title}
+			</p>
+			{subtask.description ? (
+				<p className="whitespace-pre-wrap text-stone-600 text-xs">
+					{subtask.description}
+				</p>
+			) : null}
+			{referenceLinks.length > 0 ? (
+				<div className="flex flex-wrap gap-1.5">
+					{referenceLinks.map((link) => (
+						<a
+							className="interactive-field inline-flex max-w-full items-center gap-1 rounded-full border border-stone-400 bg-white px-2 py-0.5 text-emerald-800 text-xs hover:bg-emerald-50"
+							href={link.href}
+							key={link.href}
+							rel="noopener noreferrer"
+							target="_blank"
+						>
+							<ExternalLink aria-hidden="true" className="shrink-0" size={12} />
+							<span className="truncate">{link.label}</span>
+						</a>
+					))}
+				</div>
+			) : null}
+		</div>
+	);
+}
 
 function CompletionLogDialog({
 	subtask,
@@ -147,15 +197,6 @@ export function SubtaskList({
 		({ status }) => status === "Finished",
 	);
 
-	async function submit(formData: FormData) {
-		setError(null);
-		try {
-			await createSubtask(formData);
-		} catch {
-			setError("The subtask could not be added.");
-		}
-	}
-
 	async function changeStatus(subtask: Subtask, status: TaskStatus) {
 		setError(null);
 		setStatusOverrides((current) => ({ ...current, [subtask.id]: status }));
@@ -245,43 +286,16 @@ export function SubtaskList({
 					taskId={taskId}
 				/>
 			) : null}
-			<div className="mb-3 flex items-baseline justify-between gap-3">
-				<h2 className="font-bold text-xl">Subtasks</h2>
-				<p className="text-stone-600 text-xs">
-					{completed}/{subtasks.length} done · {formatHours(remainingHours)}{" "}
-					left
-				</p>
+			<div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+				<div>
+					<h2 className="font-bold text-xl">Subtasks</h2>
+					<p className="mt-1 text-stone-600 text-xs">
+						{completed}/{subtasks.length} done · {formatHours(remainingHours)}{" "}
+						left
+					</p>
+				</div>
+				<SubtaskForm taskId={taskId} />
 			</div>
-			<form
-				action={submit}
-				className="mb-4 grid grid-cols-[1fr_5rem_auto] gap-2"
-			>
-				<input name="taskId" type="hidden" value={taskId} />
-				<input
-					aria-label="Subtask title"
-					className="min-w-0 rounded-md border border-stone-900 bg-white px-2 py-1.5 text-sm"
-					maxLength={200}
-					name="title"
-					placeholder="Next small step"
-					required
-				/>
-				<input
-					aria-label="Estimated hours"
-					className="min-w-0 rounded-md border border-stone-900 bg-white px-2 py-1.5 text-sm"
-					max={5}
-					min={0.25}
-					name="estimatedHours"
-					placeholder="hours"
-					step={0.25}
-					type="number"
-				/>
-				<button
-					className="rounded-md bg-emerald-700 px-3 font-semibold text-sm text-white"
-					type="submit"
-				>
-					Add
-				</button>
-			</form>
 			{error ? (
 				<p className="mb-3 text-red-800 text-sm" role="alert">
 					{error}
@@ -318,7 +332,7 @@ export function SubtaskList({
 											id={`subtask-${subtask.id}`}
 											key={subtask.id}
 										>
-											<div className="flex items-center gap-2 rounded-lg border border-stone-900 bg-[#fffdf6] p-2">
+											<div className="flex items-start gap-2 rounded-lg border border-stone-900 bg-[#fffdf6] p-2">
 												<select
 													aria-label={`Status for ${subtask.title}`}
 													className="rounded border border-stone-900 bg-white p-1 text-xs"
@@ -335,16 +349,13 @@ export function SubtaskList({
 														<option key={status}>{status}</option>
 													))}
 												</select>
-												<span
-													className={`min-w-0 flex-1 text-sm ${subtask.status === "Finished" ? "line-through opacity-50" : ""}`}
-												>
-													{subtask.title}
-												</span>
+												<SubtaskContent subtask={subtask} />
 												{subtask.estimatedHours ? (
-													<span className="text-stone-600 text-xs">
+													<span className="shrink-0 pt-1 text-stone-600 text-xs">
 														{formatHours(subtask.estimatedHours)}
 													</span>
 												) : null}
+												<SubtaskForm subtask={subtask} taskId={taskId} />
 												<button
 													aria-label={`Delete ${subtask.title}`}
 													className="px-1 font-bold text-red-700"
@@ -386,7 +397,7 @@ export function SubtaskList({
 				<div className="space-y-2">
 					{completedSubtasks.map((subtask) => (
 						<div
-							className="flex items-center gap-2 rounded-lg border border-stone-900 bg-[#fffdf6] p-2"
+							className="flex items-start gap-2 rounded-lg border border-stone-900 bg-[#fffdf6] p-2"
 							key={subtask.id}
 						>
 							<select
@@ -402,9 +413,7 @@ export function SubtaskList({
 									<option key={status}>{status}</option>
 								))}
 							</select>
-							<span className="min-w-0 flex-1 text-sm line-through opacity-50">
-								{subtask.title}
-							</span>
+							<SubtaskContent completed subtask={subtask} />
 							{subtask.completedBy ? (
 								<span title={`Completed by ${subtask.completedBy.name}`}>
 									<UserAvatar
@@ -418,10 +427,11 @@ export function SubtaskList({
 								</span>
 							) : null}
 							{subtask.estimatedHours ? (
-								<span className="text-stone-600 text-xs">
+								<span className="shrink-0 pt-1 text-stone-600 text-xs">
 									{formatHours(subtask.estimatedHours)}
 								</span>
 							) : null}
+							<SubtaskForm subtask={subtask} taskId={taskId} />
 							<button
 								aria-label={`Delete ${subtask.title}`}
 								className="px-1 font-bold text-red-700"

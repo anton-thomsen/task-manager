@@ -7512,6 +7512,7 @@ export namespace Prisma {
     id: number | null
     taskId: number | null
     title: string | null
+    description: string | null
     status: $Enums.TaskStatus | null
     estimatedHours: number | null
     sortOrder: number | null
@@ -7523,6 +7524,7 @@ export namespace Prisma {
     id: number | null
     taskId: number | null
     title: string | null
+    description: string | null
     status: $Enums.TaskStatus | null
     estimatedHours: number | null
     sortOrder: number | null
@@ -7534,6 +7536,8 @@ export namespace Prisma {
     id: number
     taskId: number
     title: number
+    description: number
+    referenceLinks: number
     status: number
     estimatedHours: number
     sortOrder: number
@@ -7561,6 +7565,7 @@ export namespace Prisma {
     id?: true
     taskId?: true
     title?: true
+    description?: true
     status?: true
     estimatedHours?: true
     sortOrder?: true
@@ -7572,6 +7577,7 @@ export namespace Prisma {
     id?: true
     taskId?: true
     title?: true
+    description?: true
     status?: true
     estimatedHours?: true
     sortOrder?: true
@@ -7583,6 +7589,8 @@ export namespace Prisma {
     id?: true
     taskId?: true
     title?: true
+    description?: true
+    referenceLinks?: true
     status?: true
     estimatedHours?: true
     sortOrder?: true
@@ -7681,6 +7689,8 @@ export namespace Prisma {
     id: number
     taskId: number
     title: string
+    description: string | null
+    referenceLinks: string[]
     status: $Enums.TaskStatus
     estimatedHours: number | null
     sortOrder: number
@@ -7711,6 +7721,8 @@ export namespace Prisma {
     id?: boolean
     taskId?: boolean
     title?: boolean
+    description?: boolean
+    referenceLinks?: boolean
     status?: boolean
     estimatedHours?: boolean
     sortOrder?: boolean
@@ -7726,6 +7738,8 @@ export namespace Prisma {
     id?: boolean
     taskId?: boolean
     title?: boolean
+    description?: boolean
+    referenceLinks?: boolean
     status?: boolean
     estimatedHours?: boolean
     sortOrder?: boolean
@@ -7739,6 +7753,8 @@ export namespace Prisma {
     id?: boolean
     taskId?: boolean
     title?: boolean
+    description?: boolean
+    referenceLinks?: boolean
     status?: boolean
     estimatedHours?: boolean
     sortOrder?: boolean
@@ -7752,6 +7768,8 @@ export namespace Prisma {
     id?: boolean
     taskId?: boolean
     title?: boolean
+    description?: boolean
+    referenceLinks?: boolean
     status?: boolean
     estimatedHours?: boolean
     sortOrder?: boolean
@@ -7759,7 +7777,7 @@ export namespace Prisma {
     createdAt?: boolean
   }
 
-  export type SubtaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "taskId" | "title" | "status" | "estimatedHours" | "sortOrder" | "completedById" | "createdAt", ExtArgs["result"]["subtask"]>
+  export type SubtaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "taskId" | "title" | "description" | "referenceLinks" | "status" | "estimatedHours" | "sortOrder" | "completedById" | "createdAt", ExtArgs["result"]["subtask"]>
   export type SubtaskInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     task?: boolean | TaskDefaultArgs<ExtArgs>
     completedBy?: boolean | Subtask$completedByArgs<ExtArgs>
@@ -7786,6 +7804,8 @@ export namespace Prisma {
       id: number
       taskId: number
       title: string
+      description: string | null
+      referenceLinks: string[]
       status: $Enums.TaskStatus
       estimatedHours: number | null
       sortOrder: number
@@ -8220,6 +8240,8 @@ export namespace Prisma {
     readonly id: FieldRef<"Subtask", 'Int'>
     readonly taskId: FieldRef<"Subtask", 'Int'>
     readonly title: FieldRef<"Subtask", 'String'>
+    readonly description: FieldRef<"Subtask", 'String'>
+    readonly referenceLinks: FieldRef<"Subtask", 'String[]'>
     readonly status: FieldRef<"Subtask", 'TaskStatus'>
     readonly estimatedHours: FieldRef<"Subtask", 'Float'>
     readonly sortOrder: FieldRef<"Subtask", 'Int'>
@@ -22373,6 +22395,8 @@ export namespace Prisma {
     id: 'id',
     taskId: 'taskId',
     title: 'title',
+    description: 'description',
+    referenceLinks: 'referenceLinks',
     status: 'status',
     estimatedHours: 'estimatedHours',
     sortOrder: 'sortOrder',
@@ -22971,6 +22995,8 @@ export namespace Prisma {
     id?: IntFilter<"Subtask"> | number
     taskId?: IntFilter<"Subtask"> | number
     title?: StringFilter<"Subtask"> | string
+    description?: StringNullableFilter<"Subtask"> | string | null
+    referenceLinks?: StringNullableListFilter<"Subtask">
     status?: EnumTaskStatusFilter<"Subtask"> | $Enums.TaskStatus
     estimatedHours?: FloatNullableFilter<"Subtask"> | number | null
     sortOrder?: IntFilter<"Subtask"> | number
@@ -22985,6 +23011,8 @@ export namespace Prisma {
     id?: SortOrder
     taskId?: SortOrder
     title?: SortOrder
+    description?: SortOrderInput | SortOrder
+    referenceLinks?: SortOrder
     status?: SortOrder
     estimatedHours?: SortOrderInput | SortOrder
     sortOrder?: SortOrder
@@ -23002,6 +23030,8 @@ export namespace Prisma {
     NOT?: SubtaskWhereInput | SubtaskWhereInput[]
     taskId?: IntFilter<"Subtask"> | number
     title?: StringFilter<"Subtask"> | string
+    description?: StringNullableFilter<"Subtask"> | string | null
+    referenceLinks?: StringNullableListFilter<"Subtask">
     status?: EnumTaskStatusFilter<"Subtask"> | $Enums.TaskStatus
     estimatedHours?: FloatNullableFilter<"Subtask"> | number | null
     sortOrder?: IntFilter<"Subtask"> | number
@@ -23016,6 +23046,8 @@ export namespace Prisma {
     id?: SortOrder
     taskId?: SortOrder
     title?: SortOrder
+    description?: SortOrderInput | SortOrder
+    referenceLinks?: SortOrder
     status?: SortOrder
     estimatedHours?: SortOrderInput | SortOrder
     sortOrder?: SortOrder
@@ -23035,6 +23067,8 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"Subtask"> | number
     taskId?: IntWithAggregatesFilter<"Subtask"> | number
     title?: StringWithAggregatesFilter<"Subtask"> | string
+    description?: StringNullableWithAggregatesFilter<"Subtask"> | string | null
+    referenceLinks?: StringNullableListFilter<"Subtask">
     status?: EnumTaskStatusWithAggregatesFilter<"Subtask"> | $Enums.TaskStatus
     estimatedHours?: FloatNullableWithAggregatesFilter<"Subtask"> | number | null
     sortOrder?: IntWithAggregatesFilter<"Subtask"> | number
@@ -24167,6 +24201,8 @@ export namespace Prisma {
 
   export type SubtaskCreateInput = {
     title: string
+    description?: string | null
+    referenceLinks?: SubtaskCreatereferenceLinksInput | string[]
     status?: $Enums.TaskStatus
     estimatedHours?: number | null
     sortOrder?: number
@@ -24180,6 +24216,8 @@ export namespace Prisma {
     id?: number
     taskId: number
     title: string
+    description?: string | null
+    referenceLinks?: SubtaskCreatereferenceLinksInput | string[]
     status?: $Enums.TaskStatus
     estimatedHours?: number | null
     sortOrder?: number
@@ -24190,6 +24228,8 @@ export namespace Prisma {
 
   export type SubtaskUpdateInput = {
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceLinks?: SubtaskUpdatereferenceLinksInput | string[]
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     estimatedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -24203,6 +24243,8 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     taskId?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceLinks?: SubtaskUpdatereferenceLinksInput | string[]
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     estimatedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -24215,6 +24257,8 @@ export namespace Prisma {
     id?: number
     taskId: number
     title: string
+    description?: string | null
+    referenceLinks?: SubtaskCreatereferenceLinksInput | string[]
     status?: $Enums.TaskStatus
     estimatedHours?: number | null
     sortOrder?: number
@@ -24224,6 +24268,8 @@ export namespace Prisma {
 
   export type SubtaskUpdateManyMutationInput = {
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceLinks?: SubtaskUpdatereferenceLinksInput | string[]
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     estimatedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -24234,6 +24280,8 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     taskId?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceLinks?: SubtaskUpdatereferenceLinksInput | string[]
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     estimatedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -25591,10 +25639,20 @@ export namespace Prisma {
     taskId?: SortOrder
   }
 
+  export type StringNullableListFilter<$PrismaModel = never> = {
+    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    has?: string | StringFieldRefInput<$PrismaModel> | null
+    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
+    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
+  }
+
   export type SubtaskCountOrderByAggregateInput = {
     id?: SortOrder
     taskId?: SortOrder
     title?: SortOrder
+    description?: SortOrder
+    referenceLinks?: SortOrder
     status?: SortOrder
     estimatedHours?: SortOrder
     sortOrder?: SortOrder
@@ -25613,6 +25671,7 @@ export namespace Prisma {
     id?: SortOrder
     taskId?: SortOrder
     title?: SortOrder
+    description?: SortOrder
     status?: SortOrder
     estimatedHours?: SortOrder
     sortOrder?: SortOrder
@@ -25624,6 +25683,7 @@ export namespace Prisma {
     id?: SortOrder
     taskId?: SortOrder
     title?: SortOrder
+    description?: SortOrder
     status?: SortOrder
     estimatedHours?: SortOrder
     sortOrder?: SortOrder
@@ -26596,6 +26656,10 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTaskAssignmentsGivenInput, UserUpdateWithoutTaskAssignmentsGivenInput>, UserUncheckedUpdateWithoutTaskAssignmentsGivenInput>
   }
 
+  export type SubtaskCreatereferenceLinksInput = {
+    set: string[]
+  }
+
   export type TaskCreateNestedOneWithoutSubtasksInput = {
     create?: XOR<TaskCreateWithoutSubtasksInput, TaskUncheckedCreateWithoutSubtasksInput>
     connectOrCreate?: TaskCreateOrConnectWithoutSubtasksInput
@@ -26620,6 +26684,11 @@ export namespace Prisma {
     connectOrCreate?: TaskLogCreateOrConnectWithoutSubtaskInput | TaskLogCreateOrConnectWithoutSubtaskInput[]
     createMany?: TaskLogCreateManySubtaskInputEnvelope
     connect?: TaskLogWhereUniqueInput | TaskLogWhereUniqueInput[]
+  }
+
+  export type SubtaskUpdatereferenceLinksInput = {
+    set?: string[]
+    push?: string | string[]
   }
 
   export type TaskUpdateOneRequiredWithoutSubtasksNestedInput = {
@@ -28297,6 +28366,8 @@ export namespace Prisma {
 
   export type SubtaskCreateWithoutTaskInput = {
     title: string
+    description?: string | null
+    referenceLinks?: SubtaskCreatereferenceLinksInput | string[]
     status?: $Enums.TaskStatus
     estimatedHours?: number | null
     sortOrder?: number
@@ -28308,6 +28379,8 @@ export namespace Prisma {
   export type SubtaskUncheckedCreateWithoutTaskInput = {
     id?: number
     title: string
+    description?: string | null
+    referenceLinks?: SubtaskCreatereferenceLinksInput | string[]
     status?: $Enums.TaskStatus
     estimatedHours?: number | null
     sortOrder?: number
@@ -28571,6 +28644,8 @@ export namespace Prisma {
     id?: IntFilter<"Subtask"> | number
     taskId?: IntFilter<"Subtask"> | number
     title?: StringFilter<"Subtask"> | string
+    description?: StringNullableFilter<"Subtask"> | string | null
+    referenceLinks?: StringNullableListFilter<"Subtask">
     status?: EnumTaskStatusFilter<"Subtask"> | $Enums.TaskStatus
     estimatedHours?: FloatNullableFilter<"Subtask"> | number | null
     sortOrder?: IntFilter<"Subtask"> | number
@@ -29252,6 +29327,8 @@ export namespace Prisma {
 
   export type SubtaskCreateWithoutLogsInput = {
     title: string
+    description?: string | null
+    referenceLinks?: SubtaskCreatereferenceLinksInput | string[]
     status?: $Enums.TaskStatus
     estimatedHours?: number | null
     sortOrder?: number
@@ -29264,6 +29341,8 @@ export namespace Prisma {
     id?: number
     taskId: number
     title: string
+    description?: string | null
+    referenceLinks?: SubtaskCreatereferenceLinksInput | string[]
     status?: $Enums.TaskStatus
     estimatedHours?: number | null
     sortOrder?: number
@@ -29415,6 +29494,8 @@ export namespace Prisma {
 
   export type SubtaskUpdateWithoutLogsInput = {
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceLinks?: SubtaskUpdatereferenceLinksInput | string[]
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     estimatedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -29427,6 +29508,8 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     taskId?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceLinks?: SubtaskUpdatereferenceLinksInput | string[]
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     estimatedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -29933,6 +30016,8 @@ export namespace Prisma {
 
   export type SubtaskCreateWithoutCompletedByInput = {
     title: string
+    description?: string | null
+    referenceLinks?: SubtaskCreatereferenceLinksInput | string[]
     status?: $Enums.TaskStatus
     estimatedHours?: number | null
     sortOrder?: number
@@ -29945,6 +30030,8 @@ export namespace Prisma {
     id?: number
     taskId: number
     title: string
+    description?: string | null
+    referenceLinks?: SubtaskCreatereferenceLinksInput | string[]
     status?: $Enums.TaskStatus
     estimatedHours?: number | null
     sortOrder?: number
@@ -31588,6 +31675,8 @@ export namespace Prisma {
   export type SubtaskCreateManyTaskInput = {
     id?: number
     title: string
+    description?: string | null
+    referenceLinks?: SubtaskCreatereferenceLinksInput | string[]
     status?: $Enums.TaskStatus
     estimatedHours?: number | null
     sortOrder?: number
@@ -31637,6 +31726,8 @@ export namespace Prisma {
 
   export type SubtaskUpdateWithoutTaskInput = {
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceLinks?: SubtaskUpdatereferenceLinksInput | string[]
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     estimatedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -31648,6 +31739,8 @@ export namespace Prisma {
   export type SubtaskUncheckedUpdateWithoutTaskInput = {
     id?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceLinks?: SubtaskUpdatereferenceLinksInput | string[]
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     estimatedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -31659,6 +31752,8 @@ export namespace Prisma {
   export type SubtaskUncheckedUpdateManyWithoutTaskInput = {
     id?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceLinks?: SubtaskUpdatereferenceLinksInput | string[]
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     estimatedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -31869,6 +31964,8 @@ export namespace Prisma {
     id?: number
     taskId: number
     title: string
+    description?: string | null
+    referenceLinks?: SubtaskCreatereferenceLinksInput | string[]
     status?: $Enums.TaskStatus
     estimatedHours?: number | null
     sortOrder?: number
@@ -32127,6 +32224,8 @@ export namespace Prisma {
 
   export type SubtaskUpdateWithoutCompletedByInput = {
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceLinks?: SubtaskUpdatereferenceLinksInput | string[]
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     estimatedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -32139,6 +32238,8 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     taskId?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceLinks?: SubtaskUpdatereferenceLinksInput | string[]
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     estimatedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -32150,6 +32251,8 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     taskId?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceLinks?: SubtaskUpdatereferenceLinksInput | string[]
     status?: EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
     estimatedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     sortOrder?: IntFieldUpdateOperationsInput | number

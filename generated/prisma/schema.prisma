@@ -92,6 +92,8 @@ model Subtask {
   taskId           Int
   task             Task       @relation(fields: [taskId], references: [id], onDelete: Cascade)
   title            String
+  description      String?
+  referenceLinks   String[]   @default([])
   status           TaskStatus @default(Inbox)
   estimatedHours   Float?
   estimatedMinutes Int?       @ignore

@@ -5,9 +5,10 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 
 import { formatDeadline, formatEstimateRange } from "~/lib/format";
-import type { LabelOption, TaskOption } from "~/lib/tasks";
+import type { LabelOption, TaskOption, TaskStatus } from "~/lib/tasks";
+import { taskStatuses } from "~/lib/tasks";
 import { acceptTask } from "~/server/actions/assignments";
-import { deleteTask, setArchived } from "~/server/actions/tasks";
+import { deleteTask, moveTask, setArchived } from "~/server/actions/tasks";
 import { TaskForm, type TaskFormValue } from "./task-form";
 import { UserAvatar, type UserRef } from "./user-avatar";
 
@@ -36,6 +37,7 @@ export function TaskCard({ clients, labels, members, task }: TaskCardProps) {
 	const deleteDialogRef = useRef<HTMLDialogElement>(null);
 	const [isWorking, setIsWorking] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const [statusOverride, setStatusOverride] = useState<TaskStatus | null>(null);
 	const [exitAnimation, setExitAnimation] = useState<
 		"archive" | "delete" | null
 	>(null);
@@ -68,6 +70,22 @@ export function TaskCard({ clients, labels, members, task }: TaskCardProps) {
 			const result = await acceptTask(task.id);
 			if (!result.ok) setError(result.error);
 		} finally {
+			setIsWorking(false);
+		}
+	}
+
+	async function changeStatus(status: TaskStatus) {
+		if (status === task.status || isWorking) return;
+		setStatusOverride(status);
+		setIsWorking(true);
+		setError(null);
+		try {
+			const result = await moveTask(task.id, status, null);
+			if (!result.ok) setError(result.error);
+		} catch {
+			setError("The task status could not be updated.");
+		} finally {
+			setStatusOverride(null);
 			setIsWorking(false);
 		}
 	}
@@ -157,6 +175,22 @@ export function TaskCard({ clients, labels, members, task }: TaskCardProps) {
 				</div>
 			) : null}
 			<div className="flex flex-wrap gap-1.5 pt-1">
+				<label className="interactive-field flex items-center gap-1.5 rounded border border-stone-900 bg-white pl-2 font-semibold text-xs">
+					<span>Move</span>
+					<select
+						aria-label={`Move ${task.title}`}
+						className="min-w-0 border-stone-300 border-l bg-transparent px-2 py-1 font-normal"
+						disabled={isWorking || Boolean(task.archivedAt)}
+						onChange={(event) => changeStatus(event.target.value as TaskStatus)}
+						value={statusOverride ?? task.status}
+					>
+						{taskStatuses.map((status) => (
+							<option key={status} value={status}>
+								{status}
+							</option>
+						))}
+					</select>
+				</label>
 				<TaskForm
 					clients={clients}
 					labels={labels}

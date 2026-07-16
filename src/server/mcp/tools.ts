@@ -3,7 +3,11 @@ import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
 
 import { taskStatuses } from "~/lib/tasks";
-import { int4IdSchema } from "~/lib/validation";
+import {
+	int4IdSchema,
+	referenceLinksSchema,
+	taskDescriptionSchema,
+} from "~/lib/validation";
 import type { SessionMember } from "~/server/auth";
 import { scheduleAssigneeSync, scheduleTaskSync } from "~/server/calendar-sync";
 import { db } from "~/server/db";
@@ -316,10 +320,14 @@ export function registerTools(server: McpServer): void {
 		{
 			title: "Add subtask",
 			description:
-				"Add a subtask to a task you can see. Estimates use 15-minute increments (max 5 hours).",
+				"Add a detailed subtask to a task you can see. Estimates use 15-minute increments (max 5 hours).",
 			inputSchema: {
 				task_id: int4IdSchema,
 				title: z.string().trim().min(1).max(200),
+				description: taskDescriptionSchema.describe(
+					"Optional context and requirements for the subtask.",
+				),
+				reference_links: referenceLinksSchema.default([]),
 				estimated_hours: subtaskEstimateContract,
 			},
 		},
@@ -336,6 +344,8 @@ export function registerTools(server: McpServer): void {
 					data: {
 						taskId: args.task_id,
 						title: args.title,
+						description: args.description || null,
+						referenceLinks: args.reference_links,
 						estimatedHours:
 							args.estimated_hours === "n/a" ? null : args.estimated_hours,
 						sortOrder: (last?.sortOrder ?? 0) + 1024,

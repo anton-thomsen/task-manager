@@ -23,6 +23,8 @@ export const taskDetailSelect = {
 		select: {
 			id: true,
 			title: true,
+			description: true,
+			referenceLinks: true,
 			status: true,
 			estimatedHours: true,
 			completedBy: { select: { name: true } },
@@ -55,6 +57,8 @@ export const taskReportSelect = {
 		orderBy: [{ status: "asc" }, { sortOrder: "asc" }] as const,
 		select: {
 			title: true,
+			description: true,
+			referenceLinks: true,
 			status: true,
 			estimatedHours: true,
 			completedBy: { select: { name: true } },
@@ -141,6 +145,8 @@ export function serializeTaskReport(task: TaskReportRow) {
 		},
 		subtasks: task.subtasks.map((subtask) => ({
 			title: subtask.title,
+			description: subtask.description,
+			reference_links: subtask.referenceLinks,
 			status: subtask.status,
 			estimated_hours: subtask.estimatedHours ?? "n/a",
 			completed_by: subtask.completedBy?.name ?? null,
@@ -170,6 +176,8 @@ export function serializeTaskDetail(task: TaskDetailRow) {
 		subtasks: task.subtasks.map((subtask) => ({
 			id: subtask.id,
 			title: subtask.title,
+			description: subtask.description,
+			reference_links: subtask.referenceLinks,
 			status: subtask.status,
 			estimated_hours: subtask.estimatedHours ?? "n/a",
 			completed_by: subtask.completedBy?.name ?? null,
