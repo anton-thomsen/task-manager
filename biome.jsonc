@@ -21,7 +21,14 @@
 		"enabled": true
 	},
 	"files": {
-		"includes": ["**", "!generated", "!.next", "!.lavish"]
+		"includes": [
+			"**",
+			"!generated",
+			"!.next",
+			"!.lavish",
+			"!.claude",
+			"!.firecrawl"
+		]
 	},
 	"linter": {
 		"enabled": true,
