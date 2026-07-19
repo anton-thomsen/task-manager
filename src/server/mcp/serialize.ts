@@ -10,7 +10,12 @@ export const taskSummarySelect = {
 	estimateMaxHours: true,
 	client: { select: { name: true } },
 	label: { select: { name: true } },
-	assignees: { select: { user: { select: { name: true, email: true } } } },
+	assignees: {
+		select: {
+			acceptedAt: true,
+			user: { select: { name: true, email: true } },
+		},
+	},
 } satisfies Prisma.TaskSelect;
 
 export const taskDetailSelect = {
@@ -104,9 +109,10 @@ export function serializeTaskSummary(task: TaskSummaryRow) {
 					},
 		client: task.client?.name ?? "none",
 		label: task.label?.name ?? "no label",
-		participants: task.assignees.map(({ user }) => ({
+		participants: task.assignees.map(({ acceptedAt, user }) => ({
 			name: user.name,
 			email: user.email,
+			accepted: acceptedAt !== null,
 		})),
 	};
 }

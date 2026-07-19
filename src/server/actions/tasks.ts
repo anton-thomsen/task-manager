@@ -21,8 +21,14 @@ import {
 	scheduleTaskSync,
 } from "~/server/calendar-sync";
 import { db } from "~/server/db";
-import { requireTaskAccess, taskWhereFor } from "~/server/task-access";
+import { requireTaskAccess } from "~/server/task-access";
 import { createTaskAtLaneEnd } from "~/server/task-creation";
+import { moveTaskToLane } from "~/server/task-move";
+import {
+	type TaskFieldChanges,
+	TaskUpdateError,
+	updateTaskFields,
+} from "~/server/task-update";
 
 const assigneeIdsSchema = z.array(z.string().trim().min(1).max(100)).max(50);
 
@@ -162,39 +168,7 @@ export async function moveTask(
 			status: statusInput,
 			beforeId: beforeIdInput,
 		});
-		await db.$transaction(async (tx) => {
-			const task = await tx.task.findFirst({
-				where: { id, AND: taskWhereFor(member) },
-				select: { archivedAt: true },
-			});
-			if (!task || task.archivedAt) throw new Error("Task not found.");
-			// Reorder within the full organization lane so tasks hidden from this
-			// member keep consistent sort positions; visibility only gates which
-			// task may be moved.
-			const lane = await tx.task.findMany({
-				where: {
-					organizationId: member.orgId,
-					status,
-					archivedAt: null,
-					id: { not: id },
-				},
-				orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
-				select: { id: true },
-			});
-			const beforeIndex = beforeId
-				? lane.findIndex((item) => item.id === beforeId)
-				: -1;
-			lane.splice(beforeIndex >= 0 ? beforeIndex : lane.length, 0, { id });
-			for (const [index, item] of lane.entries()) {
-				await tx.task.update({
-					where: { id: item.id },
-					data: {
-						status: item.id === id ? status : undefined,
-						sortOrder: (index + 1) * 1024,
-					},
-				});
-			}
-		});
+		await moveTaskToLane(member, id, status, beforeId);
 		revalidatePath("/");
 		return { ok: true };
 	} catch (error) {
@@ -209,69 +183,51 @@ export async function updateTask(formData: FormData): Promise<ActionResult> {
 			...taskInput(formData),
 			id: field(formData, "id"),
 		});
-		const existing = await db.task.findFirst({
-			where: { id: parsed.id, AND: taskWhereFor(member) },
-		});
-		if (!existing) return { ok: false, error: "Task not found." };
-
 		const has = (name: string) => formData.has(name);
-		const effectiveMin = has("estimateMinHours")
-			? (parsed.estimateMinHours ?? null)
-			: existing.estimateMinHours;
-		const effectiveMax = has("estimateMaxHours")
-			? (parsed.estimateMaxHours ?? null)
-			: existing.estimateMaxHours;
-		if (!estimatesAreValid(effectiveMin, effectiveMax)) {
-			return {
-				ok: false,
-				error: "The minimum estimate cannot exceed the maximum estimate.",
-			};
-		}
-
 		await verifyRelations(
 			member,
 			has("clientId") ? parsed.clientId : undefined,
 			has("labelId") ? parsed.labelId : undefined,
 		);
-		await db.task.update({
-			where: { id: parsed.id },
-			data: {
-				...(has("title") ? { title: parsed.title } : {}),
-				...(has("description")
-					? { description: nullableText(parsed.description) }
-					: {}),
-				...(has("status") ? { status: parsed.status } : {}),
-				...(has("deadline") ? { deadline: parsed.deadline ?? null } : {}),
-				...(has("estimateMinHours")
-					? { estimateMinHours: parsed.estimateMinHours ?? null }
-					: {}),
-				...(has("estimateMaxHours")
-					? { estimateMaxHours: parsed.estimateMaxHours ?? null }
-					: {}),
-				...(has("clientId") ? { clientId: parsed.clientId ?? null } : {}),
-				...(has("labelId") ? { labelId: parsed.labelId ?? null } : {}),
-			},
-		});
+		const changes: TaskFieldChanges = {
+			...(has("title") ? { title: parsed.title } : {}),
+			...(has("description")
+				? { description: nullableText(parsed.description) }
+				: {}),
+			...(has("status") ? { status: parsed.status } : {}),
+			...(has("deadline") ? { deadline: parsed.deadline ?? null } : {}),
+			...(has("estimateMinHours")
+				? { estimateMinHours: parsed.estimateMinHours ?? null }
+				: {}),
+			...(has("estimateMaxHours")
+				? { estimateMaxHours: parsed.estimateMaxHours ?? null }
+				: {}),
+			...(has("clientId") ? { clientId: parsed.clientId ?? null } : {}),
+			...(has("labelId") ? { labelId: parsed.labelId ?? null } : {}),
+		};
+		const updated = await updateTaskFields(member, parsed.id, changes);
 		const assigneeIds = assigneeInput(formData);
 		if (assigneeIds) {
 			// An emptied picker mirrors create semantics: the task falls back to
 			// its creator (or the editor) as sole participant.
-			const fallback = existing.createdById ?? member.userId;
+			const fallback = updated.createdById ?? member.userId;
 			await reconcileAssignees(
 				member,
 				parsed.id,
 				assigneeIds.length > 0 ? assigneeIds : [fallback],
 			);
 		}
-		const deadlineChanged =
-			has("deadline") &&
-			(parsed.deadline ?? null)?.getTime() !== existing.deadline?.getTime();
-		const titleChanged = has("title") && parsed.title !== existing.title;
-		if (deadlineChanged || titleChanged) scheduleTaskSync(parsed.id);
 		revalidatePath("/");
 		revalidatePath(`/tasks/${parsed.id}`);
 		return { ok: true };
 	} catch (error) {
+		if (error instanceof TaskUpdateError) {
+			// The dialog's existing copy: a hidden task stays a plain not-found.
+			return {
+				ok: false,
+				error: error.reason === "not-found" ? "Task not found." : error.message,
+			};
+		}
 		return actionError(error, "The task could not be updated.");
 	}
 }

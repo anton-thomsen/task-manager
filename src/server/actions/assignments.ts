@@ -8,6 +8,7 @@ import { verifyOrgMembers } from "~/server/assignment";
 import { requireMember } from "~/server/auth";
 import { scheduleAssigneeSync } from "~/server/calendar-sync";
 import { db } from "~/server/db";
+import { acceptDelegation, TaskAcceptError } from "~/server/task-accept";
 import { requireTaskAccess } from "~/server/task-access";
 
 const userIdSchema = z.string().trim().min(1).max(100);
@@ -73,17 +74,14 @@ export async function acceptTask(taskIdInput: number): Promise<ActionResult> {
 	const member = await requireMember();
 	try {
 		const taskId = int4IdSchema.parse(taskIdInput);
-		const updated = await db.taskAssignee.updateMany({
-			where: { taskId, userId: member.userId, acceptedAt: null },
-			data: { acceptedAt: new Date() },
-		});
-		if (updated.count === 0) {
-			return { ok: false, error: "There is no pending delegation to accept." };
-		}
+		await acceptDelegation(member, taskId);
 		revalidatePath("/");
 		revalidatePath(`/tasks/${taskId}`);
 		return { ok: true };
 	} catch (error) {
+		if (error instanceof TaskAcceptError) {
+			return { ok: false, error: "There is no pending delegation to accept." };
+		}
 		return actionError(error, "The delegation could not be accepted.");
 	}
 }

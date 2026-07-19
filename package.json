@@ -17,7 +17,7 @@
 		"preview": "next build && next start",
 		"start": "next start",
 		"test:e2e": "playwright test",
-		"typecheck": "tsc --noEmit"
+		"typecheck": "tsc --noEmit && tsc -p cli/tsconfig.json"
 	},
 	"dependencies": {
 		"@dnd-kit/core": "^6.3.1",
