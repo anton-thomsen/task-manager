@@ -51,9 +51,15 @@ export async function acceptDelegation(
 			`Task ${taskId} is already accepted.`,
 		);
 	}
-	await db.taskAssignee.update({
-		where: { id: assignment.id },
+	const updated = await db.taskAssignee.updateMany({
+		where: { id: assignment.id, acceptedAt: null },
 		data: { acceptedAt: new Date() },
 	});
+	if (updated.count !== 1) {
+		throw new TaskAcceptError(
+			"already-accepted",
+			`Task ${taskId} is already accepted.`,
+		);
+	}
 	return { id: taskId, title: task.title };
 }

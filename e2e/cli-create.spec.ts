@@ -283,7 +283,7 @@ test("task delegate hands work to a real in-org member", async ({
 
 		// Delegating the existing task puts it on the member's board.
 		const delegateRun = runCli(
-			["delegate", String(taskId), "--to", inviteeEmail],
+			["delegate", String(taskId), inviteeEmail],
 			ownerEnv,
 		);
 		expect(delegateRun.status).toBe(0);
@@ -356,7 +356,7 @@ test("task delegate hands work to a real in-org member", async ({
 
 		const noToRun = runCli(["delegate", String(taskId)], ownerEnv);
 		expect(noToRun.status).toBe(2);
-		expect(noToRun.stderr).toContain("--to");
+		expect(noToRun.stderr).toContain("Missing <member>");
 
 		const noIdRun = runCli(["delegate", "--to", inviteeEmail], ownerEnv);
 		expect(noIdRun.status).toBe(2);

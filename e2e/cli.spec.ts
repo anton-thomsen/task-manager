@@ -1,4 +1,4 @@
-import { mkdtempSync, statSync } from "node:fs";
+import { mkdtempSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { expect, test } from "@playwright/test";
@@ -64,6 +64,23 @@ test("the task CLI authenticates, lists, filters, and scopes to the caller's org
 	expect(storedRun.status).toBe(0);
 	expect(JSON.parse(storedRun.stdout)).toHaveLength(tasks.length);
 
+	const partialEnvRun = runCli(["list"], {
+		...authEnv,
+		TASK_URL: baseURL,
+	});
+	expect(partialEnvRun.status).toBe(1);
+	expect(partialEnvRun.stderr).toContain(
+		"TASK_URL and TASK_TOKEN must both be set",
+	);
+
+	writeFileSync(configFile, "{not-json\n", "utf8");
+	const envOverrideRun = runCli(["list", "--json"], {
+		...env,
+		XDG_CONFIG_HOME: configHome,
+	});
+	expect(envOverrideRun.status).toBe(0);
+	expect(JSON.parse(envOverrideRun.stdout)).toHaveLength(tasks.length);
+
 	// A bad token is rejected up front - by auth and by list alike.
 	const badAuthRun = runCli(["auth", baseURL, "not-a-real-token"], {
 		XDG_CONFIG_HOME: mkdtempSync(join(tmpdir(), "task-cli-bad-")),
@@ -76,6 +93,13 @@ test("the task CLI authenticates, lists, filters, and scopes to the caller's org
 	});
 	expect(badListRun.status).toBe(1);
 	expect(badListRun.stderr).toContain("rejected the API token");
+
+	const insecureRun = runCli(["list"], {
+		TASK_URL: "http://tasks.example.com",
+		TASK_TOKEN: token,
+	});
+	expect(insecureRun.status).toBe(1);
+	expect(insecureRun.stderr).toContain("Refusing to send an API token");
 
 	// Missing credentials point the user at `task auth`.
 	const noCredsRun = runCli(["list"], {

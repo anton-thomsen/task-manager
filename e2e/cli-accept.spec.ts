@@ -121,12 +121,20 @@ test("accept_delegation accepts only the caller's own pending assignment over MC
 				{ name: "Accept Member", email: memberEmail, accepted: false },
 			]);
 
-			// The member accepts their own pending assignment.
-			const accepted = await memberMcp.call("accept_delegation", {
-				task_id: taskId,
+			const attempts = await Promise.all([
+				memberMcp.call("accept_delegation", { task_id: taskId }),
+				memberMcp.call("accept_delegation", { task_id: taskId }),
+			]);
+			expect(attempts.filter((attempt) => !attempt.isError)).toHaveLength(1);
+			expect(attempts.filter((attempt) => attempt.isError)).toHaveLength(1);
+			const accepted = attempts.find((attempt) => !attempt.isError);
+			expect(JSON.parse(accepted?.text ?? "null")).toMatchObject({
+				id: taskId,
+				title,
 			});
-			expect(accepted.isError).toBe(false);
-			expect(JSON.parse(accepted.text)).toMatchObject({ id: taskId, title });
+			expect(attempts.find((attempt) => attempt.isError)?.text).toContain(
+				`Task ${taskId} is already accepted.`,
+			);
 
 			const after = await memberMcp.call("get_task", { task_id: taskId });
 			expect(after.isError).toBe(false);

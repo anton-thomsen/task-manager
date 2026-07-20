@@ -43,9 +43,22 @@ function readStoredCredentials(): Partial<Credentials> {
 }
 
 export function loadCredentials(): Credentials {
+	const envUrl = process.env.TASK_URL;
+	const envToken = process.env.TASK_TOKEN;
+	const hasEnvUrl = typeof envUrl === "string" && envUrl.length > 0;
+	const hasEnvToken = typeof envToken === "string" && envToken.length > 0;
+	if (
+		hasEnvUrl !== hasEnvToken ||
+		(!hasEnvUrl && (envUrl !== undefined || envToken !== undefined))
+	) {
+		throw new CliError(
+			"TASK_URL and TASK_TOKEN must both be set to non-empty values; partial environment credentials are not allowed.",
+		);
+	}
+	if (hasEnvUrl && hasEnvToken) return { url: envUrl, token: envToken };
+
 	const stored = readStoredCredentials();
-	const url = process.env.TASK_URL || stored.url;
-	const token = process.env.TASK_TOKEN || stored.token;
+	const { url, token } = stored;
 	if (!url || !token) {
 		throw new CliError(
 			"No credentials found. Run `task auth <server-url> <api-token>` (mint a token in the web app under Settings > Tokens), or set TASK_URL and TASK_TOKEN.",

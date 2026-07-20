@@ -17,12 +17,23 @@ test("task show renders full detail and the directory commands list the org", as
 	await signUp(page, "Show Owner", "show-owner@task-manager.local");
 	const title = "Render the detail view";
 	const taskId = await createTask(page, title, { min: "2", max: "3" });
+	const maxOnlyTaskId = await createTask(page, "Bounded above", {
+		min: "",
+		max: "3",
+	});
+	const minOnlyTaskId = await createTask(page, "Bounded below", {
+		min: "2",
+		max: "",
+	});
 	const token = await mintApiToken(page);
 	const env = { TASK_URL: baseURL, TASK_TOKEN: token };
 
 	const activeSubtask = "Draft the layout";
 	const doneSubtask = "Ship the renderer";
 	const logNote = "Aligned the columns";
+	const unsafeTitle = "Visible title\u001b]0;owned title\u0007 after";
+	const unsafeDetails = "Visible details\u001b[2J after";
+	let unsafeTaskId = 0;
 	const seed = await mcpCaller(baseURL, token);
 	try {
 		await seed.call("create_client", { name: "Acme Industries" });
@@ -44,6 +55,21 @@ test("task show renders full detail and the directory commands list the org", as
 			hours_spent: 0.75,
 			estimated_hours: 0.25,
 			details: "The padding math needed a second pass.",
+		});
+		const unsafeTask = (await seed.call("create_task", {
+			title: unsafeTitle,
+			deadline: "none",
+			client: "none",
+			estimate: "n/a",
+			label: "no label",
+		})) as { id: number };
+		unsafeTaskId = unsafeTask.id;
+		await seed.call("log_work", {
+			task_id: unsafeTaskId,
+			note: "Visible note",
+			hours_spent: 0.25,
+			estimated_hours: "n/a",
+			details: unsafeDetails,
 		});
 	} finally {
 		await seed.close();
@@ -98,6 +124,33 @@ test("task show renders full detail and the directory commands list the org", as
 	expect(humanRun.stdout).toContain(logNote);
 	expect(humanRun.stdout).toContain("0.75h spent (est 0.25h)");
 	expect(humanRun.stdout).toContain("The padding math needed a second pass.");
+
+	const maxOnlyRun = runCli(["show", String(maxOnlyTaskId)], env);
+	expect(maxOnlyRun.status).toBe(0);
+	expect(maxOnlyRun.stdout).toContain("up to 3h");
+	const minOnlyRun = runCli(["show", String(minOnlyTaskId)], env);
+	expect(minOnlyRun.status).toBe(0);
+	expect(minOnlyRun.stdout).toContain("2h+");
+
+	const unsafeJsonRun = runCli(["show", String(unsafeTaskId), "--json"], env);
+	expect(unsafeJsonRun.status).toBe(0);
+	const unsafeDetail = JSON.parse(unsafeJsonRun.stdout) as {
+		title: string;
+		work_logs: Array<{ details: string }>;
+	};
+	expect(unsafeDetail.title).toBe(unsafeTitle);
+	expect(unsafeDetail.work_logs[0]?.details).toBe(unsafeDetails);
+	const unsafeHumanRun = runCli(["show", String(unsafeTaskId)], env);
+	expect(unsafeHumanRun.status).toBe(0);
+	expect(unsafeHumanRun.stdout).toContain("Visible title after");
+	expect(unsafeHumanRun.stdout).toContain("Visible details");
+	expect(unsafeHumanRun.stdout).not.toContain("\u001b");
+	expect(unsafeHumanRun.stdout).not.toContain("owned title");
+	const unsafeListRun = runCli(["list"], env);
+	expect(unsafeListRun.status).toBe(0);
+	expect(unsafeListRun.stdout).toContain("Visible title after");
+	expect(unsafeListRun.stdout).not.toContain("\u001b");
+	expect(unsafeListRun.stdout).not.toContain("owned title");
 
 	// The directory commands list the org, as JSON and as text.
 	const membersJson = runCli(["members", "--json"], env);

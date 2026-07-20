@@ -1,11 +1,12 @@
 import { parseArgs } from "node:util";
-import { CliError, loadCredentials } from "../config.ts";
-import { connect } from "../mcp.ts";
+import { parseId, withMcpSession } from "../command.ts";
+import { CliError } from "../config.ts";
 import {
 	type Estimate,
 	formatEstimate,
 	formatParticipants,
 	type Participant,
+	printHuman,
 } from "../render.ts";
 
 const usage = "Usage: task show <id> [--json]";
@@ -122,18 +123,14 @@ export async function showCommand(argv: string[]): Promise<void> {
 	}
 	const [id, ...extra] = parsed.positionals;
 	if (!id || extra.length > 0) throw new CliError(usage, 2);
-	if (!/^\d+$/.test(id)) {
-		throw new CliError(`"${id}" is not a task ID (expected an integer).`, 2);
-	}
+	const taskId = parseId(id);
 	const json = parsed.values.json === true;
 
-	const session = await connect(loadCredentials());
-	try {
-		const task = (await session.callTool("get_task", {
-			task_id: Number(id),
-		})) as TaskDetail;
-		console.log(json ? JSON.stringify(task, null, 2) : renderDetail(task));
-	} finally {
-		await session.close();
-	}
+	await withMcpSession(async (session) => {
+		const task = await session.callTool<TaskDetail>("get_task", {
+			task_id: taskId,
+		});
+		if (json) console.log(JSON.stringify(task, null, 2));
+		else printHuman(renderDetail(task));
+	});
 }

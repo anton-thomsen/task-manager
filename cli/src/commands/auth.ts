@@ -1,5 +1,6 @@
+import { withMcpSession } from "../command.ts";
 import { CliError, configPath, saveCredentials } from "../config.ts";
-import { connect } from "../mcp.ts";
+import { printHuman } from "../render.ts";
 
 export async function authCommand(argv: string[]): Promise<void> {
 	const [url, token, ...rest] = argv;
@@ -12,8 +13,7 @@ export async function authCommand(argv: string[]): Promise<void> {
 		throw new CliError(`"${url}" is not a valid URL.`, 2);
 	}
 	// Verify before persisting so a typo never poisons the config file.
-	const session = await connect({ url, token });
-	await session.close();
+	await withMcpSession(async () => undefined, { url, token });
 	saveCredentials({ url, token });
-	console.log(`Credentials verified and saved to ${configPath()}.`);
+	printHuman(`Credentials verified and saved to ${configPath()}.`);
 }

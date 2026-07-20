@@ -1,6 +1,8 @@
 import { parseArgs } from "node:util";
-import { CliError, loadCredentials } from "../config.ts";
-import { connect } from "../mcp.ts";
+import type { EstimateContract } from "../../../src/lib/task-contracts.ts";
+import { withMcpSession } from "../command.ts";
+import { CliError } from "../config.ts";
+import { printHuman } from "../render.ts";
 import { canonicalStatus } from "./list.ts";
 
 const usage =
@@ -19,9 +21,7 @@ const requiredFlags = [
 	["label", 'an existing label name, or "no label" to opt out'],
 ] as const;
 
-export type EstimateInput = "n/a" | { min_hours: number; max_hours: number };
-
-export function parseEstimate(value: string): EstimateInput {
+export function parseEstimate(value: string): EstimateContract {
 	const trimmed = value.trim();
 	if (trimmed.toLowerCase() === "n/a") return "n/a";
 	const match = /^(\d+(?:\.\d+)?)(?:\s*-\s*(\d+(?:\.\d+)?))?$/.exec(trimmed);
@@ -112,24 +112,24 @@ export async function createCommand(argv: string[]): Promise<void> {
 		estimate,
 		label,
 	};
-	const session = await connect(loadCredentials());
-	try {
+	await withMcpSession(async (session) => {
 		if (values.to) {
-			const result = (await session.callTool("delegate_task", {
-				...fields,
-				assignee: values.to,
-			})) as { id: number; delegated_to: string };
-			console.log(
+			const result = await session.callTool<{
+				id: number;
+				delegated_to: string;
+			}>("delegate_task", { ...fields, assignee: values.to });
+			printHuman(
 				`Task ${result.id} created and delegated to ${result.delegated_to}.`,
 			);
 		} else {
-			const result = (await session.callTool("create_task", {
-				...fields,
-				...(status ? { status } : {}),
-			})) as { id: number; status: string };
-			console.log(`Task ${result.id} created in ${result.status}.`);
+			const result = await session.callTool<{ id: number; status: string }>(
+				"create_task",
+				{
+					...fields,
+					...(status ? { status } : {}),
+				},
+			);
+			printHuman(`Task ${result.id} created in ${result.status}.`);
 		}
-	} finally {
-		await session.close();
-	}
+	});
 }

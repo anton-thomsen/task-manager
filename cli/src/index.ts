@@ -15,6 +15,7 @@ import { moveCommand } from "./commands/move.ts";
 import { showCommand } from "./commands/show.ts";
 import { subtaskCommand } from "./commands/subtask.ts";
 import { CliError } from "./config.ts";
+import { printHuman, sanitizeTerminalText } from "./render.ts";
 
 const usage = `task - terminal client for the task manager
 
@@ -25,7 +26,7 @@ Usage:
   task create [options]                Create a task (delegate it too with --to)
   task move <id> <status>              Move a task to another status lane
   task edit <id> [options]             Edit a task's fields
-  task delegate <id> --to <member>     Assign an existing task to a teammate
+  task delegate <id> <member>          Assign an existing task to a teammate
   task accept <id>                     Accept a delegation pending on you
   task subtask add <id> [options]      Break a task down with a subtask
   task subtask complete <id>           Mark a subtask Finished, attributed to you
@@ -78,7 +79,7 @@ Image attachments on work logs are web-only; the CLI has no flags for them.
 Every read command accepts --json to emit JSON instead of text.
 
 Credentials are stored in ~/.config/task/config.json; the TASK_URL and
-TASK_TOKEN environment variables override the stored values.`;
+TASK_TOKEN environment variables override the stored values when both are set.`;
 
 async function main(): Promise<void> {
 	const [command, ...rest] = process.argv.slice(2);
@@ -126,7 +127,7 @@ async function main(): Promise<void> {
 		case "help":
 		case "--help":
 		case "-h":
-			console.log(usage);
+			printHuman(usage);
 			return;
 		default:
 			throw new CliError(`Unknown command "${command}".\n\n${usage}`, 2);
@@ -135,9 +136,13 @@ async function main(): Promise<void> {
 
 main().catch((error: unknown) => {
 	if (error instanceof CliError) {
-		console.error(error.message);
+		console.error(sanitizeTerminalText(error.message));
 		process.exit(error.exitCode);
 	}
-	console.error(error instanceof Error ? error.message : String(error));
+	console.error(
+		sanitizeTerminalText(
+			error instanceof Error ? error.message : String(error),
+		),
+	);
 	process.exit(1);
 });

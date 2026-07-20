@@ -1,4 +1,5 @@
 import type { Prisma } from "../../../generated/prisma";
+import type { SerializedEstimate } from "~/lib/task-contracts";
 
 export const taskSummarySelect = {
 	id: true,
@@ -93,6 +94,15 @@ function isoDate(value: Date | null): string | null {
 	return value ? value.toISOString().slice(0, 10) : null;
 }
 
+function serializeEstimate(
+	minHours: number | null,
+	maxHours: number | null,
+): SerializedEstimate {
+	return minHours === null && maxHours === null
+		? "n/a"
+		: { min_hours: minHours, max_hours: maxHours };
+}
+
 export function serializeTaskSummary(task: TaskSummaryRow) {
 	return {
 		id: task.id,
@@ -100,13 +110,7 @@ export function serializeTaskSummary(task: TaskSummaryRow) {
 		status: task.status,
 		archived: task.archivedAt !== null,
 		deadline: isoDate(task.deadline),
-		estimate:
-			task.estimateMinHours === null && task.estimateMaxHours === null
-				? "n/a"
-				: {
-						min_hours: task.estimateMinHours,
-						max_hours: task.estimateMaxHours,
-					},
+		estimate: serializeEstimate(task.estimateMinHours, task.estimateMaxHours),
 		client: task.client?.name ?? "none",
 		label: task.label?.name ?? "no label",
 		participants: task.assignees.map(({ acceptedAt, user }) => ({
@@ -133,13 +137,10 @@ export function serializeTaskReport(task: TaskReportRow) {
 		archived: task.archivedAt !== null,
 		deadline: isoDate(task.deadline),
 		client: task.client?.name ?? "none",
-		task_estimate:
-			task.estimateMinHours === null && task.estimateMaxHours === null
-				? "n/a"
-				: {
-						min_hours: task.estimateMinHours,
-						max_hours: task.estimateMaxHours,
-					},
+		task_estimate: serializeEstimate(
+			task.estimateMinHours,
+			task.estimateMaxHours,
+		),
 		totals: {
 			total_hours_logged: totalLogged,
 			total_worklog_estimates:

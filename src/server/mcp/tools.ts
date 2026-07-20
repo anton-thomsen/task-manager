@@ -2,7 +2,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
 
-import { taskStatuses } from "~/lib/tasks";
+import { taskStatusContract } from "~/lib/task-contracts";
 import {
 	int4IdSchema,
 	referenceLinksSchema,
@@ -137,7 +137,7 @@ export function registerTools(server: McpServer): void {
 			description:
 				"List tasks visible to you, optionally filtered. Archived tasks are excluded unless include_archived is true.",
 			inputSchema: {
-				status: z.enum(taskStatuses).optional(),
+				status: taskStatusContract.optional(),
 				client: z.string().optional().describe("Filter by client name."),
 				label: z.string().optional().describe("Filter by label name."),
 				assignee: z
@@ -357,7 +357,7 @@ export function registerTools(server: McpServer): void {
 				"Move a task you can see to another status lane (Inbox, Review, Ongoing, or Finished). The task lands at the end of the destination lane. Archived tasks cannot be moved - direct the user to the web app to restore them first.",
 			inputSchema: {
 				task_id: int4IdSchema,
-				status: z.enum(taskStatuses).describe("Destination status lane."),
+				status: taskStatusContract.describe("Destination status lane."),
 			},
 		},
 		(args, extra) =>

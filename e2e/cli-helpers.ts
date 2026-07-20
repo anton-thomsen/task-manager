@@ -15,9 +15,12 @@ export type CliResult = {
 };
 
 export function runCli(args: string[], env: Record<string, string>): CliResult {
+	const childEnv = { ...process.env, ...env };
+	if (!("TASK_URL" in env)) delete childEnv.TASK_URL;
+	if (!("TASK_TOKEN" in env)) delete childEnv.TASK_TOKEN;
 	const result = spawnSync(process.execPath, [cliEntry, ...args], {
 		encoding: "utf8",
-		env: { ...process.env, TASK_URL: "", TASK_TOKEN: "", ...env },
+		env: childEnv,
 	});
 	if (result.error) throw result.error;
 	return {

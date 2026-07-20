@@ -1,6 +1,7 @@
 import { parseArgs } from "node:util";
-import { CliError, loadCredentials } from "../config.ts";
-import { connect } from "../mcp.ts";
+import { parseId, withMcpSession } from "../command.ts";
+import { CliError } from "../config.ts";
+import { printHuman } from "../render.ts";
 
 const usage =
 	"Usage: task log <task-id> --note <summary> --hours <n> --details <text> [--expected <hours|n/a>]\n" +
@@ -48,9 +49,7 @@ export async function logCommand(argv: string[]): Promise<void> {
 	}
 	const [id, ...extra] = parsed.positionals;
 	if (!id || extra.length > 0) throw new CliError(usage, 2);
-	if (!/^\d+$/.test(id)) {
-		throw new CliError(`"${id}" is not a task ID (expected an integer).`, 2);
-	}
+	const taskId = parseId(id);
 	const values = parsed.values as Partial<
 		Record<"note" | "hours" | "details" | "expected", string>
 	>;
@@ -72,17 +71,14 @@ export async function logCommand(argv: string[]): Promise<void> {
 			? "n/a"
 			: parseHours(values.expected, "expected");
 
-	const session = await connect(loadCredentials());
-	try {
-		const result = (await session.callTool("log_work", {
-			task_id: Number(id),
+	await withMcpSession(async (session) => {
+		const result = await session.callTool<{ id: number }>("log_work", {
+			task_id: taskId,
 			note,
 			hours_spent: hours,
 			details,
 			estimated_hours: expected,
-		})) as { id: number };
-		console.log(`Logged ${hours}h on task ${id} (work log ${result.id}).`);
-	} finally {
-		await session.close();
-	}
+		});
+		printHuman(`Logged ${hours}h on task ${taskId} (work log ${result.id}).`);
+	});
 }

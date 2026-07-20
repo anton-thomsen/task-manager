@@ -1,6 +1,7 @@
 import { parseArgs } from "node:util";
-import { CliError, loadCredentials } from "../config.ts";
-import { connect } from "../mcp.ts";
+import { parseId, withMcpSession } from "../command.ts";
+import { CliError } from "../config.ts";
+import { printHuman } from "../render.ts";
 
 const addUsage =
 	"Usage: task subtask add <task-id> --title <title> [--estimate <hours|n/a>] [--description <text>] [--link <url> ...]\n" +
@@ -28,14 +29,6 @@ function parseSubtaskEstimate(value: string): SubtaskEstimate {
 	return hours;
 }
 
-function parseId(value: string | undefined, what: string): number {
-	if (!value) throw new CliError(usage, 2);
-	if (!/^\d+$/.test(value)) {
-		throw new CliError(`"${value}" is not a ${what} (expected an integer).`, 2);
-	}
-	return Number(value);
-}
-
 async function addSubtask(argv: string[]): Promise<void> {
 	let parsed: ReturnType<typeof parseArgs>;
 	try {
@@ -57,7 +50,7 @@ async function addSubtask(argv: string[]): Promise<void> {
 	}
 	const [id, ...extra] = parsed.positionals;
 	if (!id || extra.length > 0) throw new CliError(addUsage, 2);
-	const taskId = parseId(id, "task ID");
+	const taskId = parseId(id);
 	const values = parsed.values as Partial<{
 		title: string;
 		estimate: string;
@@ -74,19 +67,16 @@ async function addSubtask(argv: string[]): Promise<void> {
 		? parseSubtaskEstimate(values.estimate)
 		: "n/a";
 
-	const session = await connect(loadCredentials());
-	try {
-		const result = (await session.callTool("add_subtask", {
+	await withMcpSession(async (session) => {
+		const result = await session.callTool<{ id: number }>("add_subtask", {
 			task_id: taskId,
 			title: values.title,
 			...(values.description ? { description: values.description } : {}),
 			...(values.link ? { reference_links: values.link } : {}),
 			estimated_hours: estimate,
-		})) as { id: number };
-		console.log(`Subtask ${result.id} added to task ${taskId}.`);
-	} finally {
-		await session.close();
-	}
+		});
+		printHuman(`Subtask ${result.id} added to task ${taskId}.`);
+	});
 }
 
 async function completeSubtask(argv: string[]): Promise<void> {
@@ -103,17 +93,15 @@ async function completeSubtask(argv: string[]): Promise<void> {
 	if (!id || extra.length > 0) throw new CliError(completeUsage, 2);
 	const subtaskId = parseId(id, "subtask ID");
 
-	const session = await connect(loadCredentials());
-	try {
-		const result = (await session.callTool("complete_subtask", {
-			subtask_id: subtaskId,
-		})) as { id: number; task_id: number };
-		console.log(
+	await withMcpSession(async (session) => {
+		const result = await session.callTool<{ id: number; task_id: number }>(
+			"complete_subtask",
+			{ subtask_id: subtaskId },
+		);
+		printHuman(
 			`Subtask ${result.id} on task ${result.task_id} completed, attributed to you.`,
 		);
-	} finally {
-		await session.close();
-	}
+	});
 }
 
 export async function subtaskCommand(argv: string[]): Promise<void> {

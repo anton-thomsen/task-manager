@@ -1,6 +1,7 @@
 import { parseArgs } from "node:util";
-import { CliError, loadCredentials } from "../config.ts";
-import { connect } from "../mcp.ts";
+import { parseId, withMcpSession } from "../command.ts";
+import { CliError } from "../config.ts";
+import { printHuman } from "../render.ts";
 import { canonicalStatus } from "./list.ts";
 
 const usage = "Usage: task move <id> <status>";
@@ -17,19 +18,18 @@ export async function moveCommand(argv: string[]): Promise<void> {
 	}
 	const [id, status, ...extra] = parsed.positionals;
 	if (!id || !status || extra.length > 0) throw new CliError(usage, 2);
-	if (!/^\d+$/.test(id)) {
-		throw new CliError(`"${id}" is not a task ID (expected an integer).`, 2);
-	}
+	const taskId = parseId(id);
 	const canonical = canonicalStatus(status);
 
-	const session = await connect(loadCredentials());
-	try {
-		const result = (await session.callTool("move_task_status", {
-			task_id: Number(id),
+	await withMcpSession(async (session) => {
+		const result = await session.callTool<{
+			id: number;
+			title: string;
+			status: string;
+		}>("move_task_status", {
+			task_id: taskId,
 			status: canonical,
-		})) as { id: number; title: string; status: string };
-		console.log(`Task ${result.id} moved to ${result.status}.`);
-	} finally {
-		await session.close();
-	}
+		});
+		printHuman(`Task ${result.id} moved to ${result.status}.`);
+	});
 }

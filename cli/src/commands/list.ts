@@ -1,15 +1,15 @@
 import { parseArgs } from "node:util";
-import { CliError, loadCredentials } from "../config.ts";
-import { connect } from "../mcp.ts";
+import { taskStatuses } from "../../../src/lib/tasks.ts";
+import { withMcpSession } from "../command.ts";
+import { CliError } from "../config.ts";
 import {
 	type Estimate,
 	formatEstimate,
 	formatParticipants,
 	type Participant,
+	printHuman,
 	renderTable,
 } from "../render.ts";
-
-const statuses = ["Inbox", "Review", "Ongoing", "Finished"] as const;
 
 type TaskSummary = {
 	id: number;
@@ -23,13 +23,13 @@ type TaskSummary = {
 	participants: Participant[];
 };
 
-export function canonicalStatus(value: string): string {
-	const match = statuses.find(
+export function canonicalStatus(value: string): (typeof taskStatuses)[number] {
+	const match = taskStatuses.find(
 		(status) => status.toLowerCase() === value.toLowerCase(),
 	);
 	if (!match) {
 		throw new CliError(
-			`Unknown status "${value}". Expected one of: ${statuses.join(", ")}.`,
+			`Unknown status "${value}". Expected one of: ${taskStatuses.join(", ")}.`,
 			2,
 		);
 	}
@@ -66,22 +66,21 @@ export async function listCommand(argv: string[]): Promise<void> {
 		json: boolean;
 	};
 
-	const session = await connect(loadCredentials());
-	try {
-		const tasks = (await session.callTool("list_tasks", {
+	await withMcpSession(async (session) => {
+		const tasks = await session.callTool<TaskSummary[]>("list_tasks", {
 			...(values.status ? { status: canonicalStatus(values.status) } : {}),
 			...(values.client ? { client: values.client } : {}),
 			...(values.label ? { label: values.label } : {}),
 			...(values.assignee ? { assignee: values.assignee } : {}),
 			include_archived: values.archived,
-		})) as TaskSummary[];
+		});
 
 		if (values.json) {
 			console.log(JSON.stringify(tasks, null, 2));
 			return;
 		}
 		if (tasks.length === 0) {
-			console.log("No tasks.");
+			printHuman("No tasks.");
 			return;
 		}
 		const rows = tasks.map((task) => [
@@ -94,7 +93,7 @@ export async function listCommand(argv: string[]): Promise<void> {
 			formatEstimate(task.estimate),
 			formatParticipants(task.participants),
 		]);
-		console.log(
+		printHuman(
 			renderTable(rows, [
 				"ID",
 				"STATUS",
@@ -106,7 +105,5 @@ export async function listCommand(argv: string[]): Promise<void> {
 				"WHO",
 			]),
 		);
-	} finally {
-		await session.close();
-	}
+	});
 }

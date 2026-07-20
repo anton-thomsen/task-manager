@@ -3,7 +3,7 @@ import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/
 import { CliError, type Credentials } from "./config.ts";
 
 export type McpSession = {
-	callTool: (name: string, args: Record<string, unknown>) => Promise<unknown>;
+	callTool: <T>(name: string, args: Record<string, unknown>) => Promise<T>;
 	close: () => Promise<void>;
 };
 
@@ -20,6 +20,15 @@ export async function connect(credentials: Credentials): Promise<McpSession> {
 		endpoint = new URL("/api/mcp", credentials.url);
 	} catch {
 		throw new CliError(`"${credentials.url}" is not a valid server URL.`);
+	}
+	const loopbackHosts = new Set(["127.0.0.1", "[::1]", "localhost"]);
+	if (
+		endpoint.protocol !== "https:" &&
+		!(endpoint.protocol === "http:" && loopbackHosts.has(endpoint.hostname))
+	) {
+		throw new CliError(
+			`Refusing to send an API token to insecure server ${endpoint.origin}. Use HTTPS; HTTP is allowed only for 127.0.0.1, ::1, or localhost.`,
+		);
 	}
 	const transport = new StreamableHTTPClientTransport(endpoint, {
 		requestInit: {
@@ -40,15 +49,15 @@ export async function connect(credentials: Credentials): Promise<McpSession> {
 		);
 	}
 	return {
-		async callTool(name, args) {
+		async callTool<T>(name: string, args: Record<string, unknown>): Promise<T> {
 			const result = await client.callTool({ name, arguments: args });
 			const content = result.content as Array<{ type: string; text?: string }>;
 			const text = content.find((item) => item.type === "text")?.text ?? "";
 			if (result.isError) throw new CliError(text || `${name} failed.`);
 			try {
-				return JSON.parse(text);
+				return JSON.parse(text) as T;
 			} catch {
-				return text;
+				return text as T;
 			}
 		},
 		close: () => transport.close(),

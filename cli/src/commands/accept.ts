@@ -1,6 +1,7 @@
 import { parseArgs } from "node:util";
-import { CliError, loadCredentials } from "../config.ts";
-import { connect } from "../mcp.ts";
+import { parseId, withMcpSession } from "../command.ts";
+import { CliError } from "../config.ts";
+import { printHuman } from "../render.ts";
 
 const usage = "Usage: task accept <id>";
 
@@ -16,17 +17,13 @@ export async function acceptCommand(argv: string[]): Promise<void> {
 	}
 	const [id, ...extra] = parsed.positionals;
 	if (!id || extra.length > 0) throw new CliError(usage, 2);
-	if (!/^\d+$/.test(id)) {
-		throw new CliError(`"${id}" is not a task ID (expected an integer).`, 2);
-	}
+	const taskId = parseId(id);
 
-	const session = await connect(loadCredentials());
-	try {
-		const result = (await session.callTool("accept_delegation", {
-			task_id: Number(id),
-		})) as { id: number; title: string };
-		console.log(`Task ${result.id} accepted.`);
-	} finally {
-		await session.close();
-	}
+	await withMcpSession(async (session) => {
+		const result = await session.callTool<{ id: number; title: string }>(
+			"accept_delegation",
+			{ task_id: taskId },
+		);
+		printHuman(`Task ${result.id} accepted.`);
+	});
 }
