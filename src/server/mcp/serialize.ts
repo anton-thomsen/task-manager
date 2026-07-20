@@ -1,5 +1,5 @@
-import type { Prisma } from "../../../generated/prisma";
 import type { SerializedEstimate } from "~/lib/task-contracts";
+import type { Prisma } from "../../../generated/prisma";
 
 export const taskSummarySelect = {
 	id: true,

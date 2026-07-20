@@ -1,16 +1,16 @@
-# 06 — Receive work: `task accept` (new MCP tool + CLI)
+# 06 - Receive work: `task accept` (new MCP tool + CLI)
 
 **What to build:** A delegatee can run `task accept <id>` to accept a pending delegation, so a "From ..." task never forces them into the web app. This requires a new accept-delegation MCP tool, which also becomes available to AI assistants - an accepted consequence per the spec.
 
-**Blocked by:** 01 — CLI foundation
+**Blocked by:** 01 - CLI foundation
 
 **Status:** resolved
 
-- [ ] A new accept-delegation MCP tool exists: accepts only the caller's own pending assignment; accepting a task not delegated to you, or already accepted, is a clear error
-- [ ] The new tool is tested at the existing MCP-over-HTTP e2e seam
-- [ ] `task accept <id>` confirms acceptance; the pending marker clears
-- [ ] e2e coverage at the subprocess seam: delegate via one user's token, accept via the other's, observe accepted state
-- [ ] MCP.md documents the new tool
+- [x] A new accept-delegation MCP tool exists: accepts only the caller's own pending assignment; accepting a task not delegated to you, or already accepted, is a clear error
+- [x] The new tool is tested at the existing MCP-over-HTTP e2e seam
+- [x] `task accept <id>` confirms acceptance; the pending marker clears
+- [x] e2e coverage at the subprocess seam: delegate via one user's token, accept via the other's, observe accepted state
+- [x] MCP.md documents the new tool
 
 ## Comments
 

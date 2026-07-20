@@ -1,7 +1,7 @@
 import { parseArgs } from "node:util";
 import {
-	estimateContract,
 	type EstimateContract,
+	estimateContract,
 } from "../../../src/lib/task-contracts.ts";
 import { withMcpSession } from "../command.ts";
 import { CliError } from "../config.ts";

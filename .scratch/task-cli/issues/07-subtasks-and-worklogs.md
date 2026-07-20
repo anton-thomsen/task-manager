@@ -1,8 +1,8 @@
-# 07 — Track effort: `task subtask add/complete`, `task log`
+# 07 - Track effort: `task subtask add/complete`, `task log`
 
-**What to build:** A user can break a task down (`task subtask add <id>` with optional description, estimate, and reference links), complete subtasks attributed to themselves (`task subtask complete`), and log work (`task log <id>` with a required summary and hours, optional details and expected hours) - all via the existing MCP tools.
+**What to build:** A user can break a task down (`task subtask add <id>` with optional description, estimate, and reference links), complete subtasks attributed to themselves (`task subtask complete`), and log work (`task log <id>`) following the spec's required-details contract - all via the existing MCP tools.
 
-**Blocked by:** 01 — CLI foundation
+**Blocked by:** 01 - CLI foundation
 
 **Status:** resolved
 

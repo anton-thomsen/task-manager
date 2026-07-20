@@ -1,15 +1,15 @@
-# 02 — Read the world: `task show`, `task members/clients/labels`
+# 02 - Read the world: `task show`, `task members/clients/labels`
 
 **What to build:** A user can run `task show <id>` to read a task's full detail - subtasks (active and completed), work logs with attribution, estimates, participants, client, label, deadline - and `task members`, `task clients`, `task labels` to list the organization directory. All support `--json`.
 
-**Blocked by:** 01 — CLI foundation
+**Blocked by:** 01 - CLI foundation
 
 **Status:** resolved
 
-- [ ] `task show <id>` renders full task detail using the existing get-task MCP tool; invisible or unknown IDs produce a clear error and non-zero exit
-- [ ] `task members`, `task clients`, `task labels` list the org directory via the existing lookup tools
-- [ ] All four commands support `--json`
-- [ ] e2e coverage at the subprocess seam, including a member being denied detail on a task they cannot see
+- [x] `task show <id>` renders full task detail using the existing get-task MCP tool; invisible or unknown IDs produce a clear error and non-zero exit
+- [x] `task members`, `task clients`, `task labels` list the org directory via the existing lookup tools
+- [x] All four commands support `--json`
+- [x] e2e coverage at the subprocess seam, including a member being denied detail on a task they cannot see
 
 ## Comments
 

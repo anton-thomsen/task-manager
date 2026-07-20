@@ -1,16 +1,16 @@
-# 03 — Capture work: `task create`, `task delegate`
+# 03 - Capture work: `task create`, `task delegate`
 
 **What to build:** A user can create a task in one line with flags for title, deadline, client, estimate, and label - and delegate a task (existing or create-and-delegate) to a teammate. The required-fields contract is honored: each required field takes either a real value or its documented explicit opt-out (`none`, `n/a`, `no label`); omitting a required flag is a usage error, not a silent default. Unknown client or label names fail with the list of existing options.
 
-**Blocked by:** 01 — CLI foundation
+**Blocked by:** 01 - CLI foundation
 
 **Status:** resolved
 
-- [ ] `task create` maps flags onto the existing create-task MCP tool, enforcing the required-fields contract at the CLI boundary (clear usage error when a required flag is missing)
-- [ ] Explicit opt-outs work: `--deadline none`, `--client none`, `--estimate n/a`, `--label "no label"`
-- [ ] Unknown client/label values surface the server's existing-options response as a readable error
-- [ ] `task delegate <id> <member>` assigns an existing task via the existing delegate tool; create-and-delegate works in one step
-- [ ] e2e coverage at the subprocess seam: created task appears in `task list`; delegated task appears on the delegatee's board as pending
+- [x] `task create` maps flags onto the existing create-task MCP tool, enforcing the required-fields contract at the CLI boundary (clear usage error when a required flag is missing)
+- [x] Explicit opt-outs work: `--deadline none`, `--client none`, `--estimate n/a`, `--label "no label"`
+- [x] Unknown client/label values surface the server's existing-options response as a readable error
+- [x] `task delegate <id> <member>` assigns an existing task via the existing delegate tool; create-and-delegate works in one step
+- [x] e2e coverage at the subprocess seam: created task appears in `task list`; delegated task appears on the delegatee's board as pending
 
 ## Comments
 

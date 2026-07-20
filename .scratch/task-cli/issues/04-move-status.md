@@ -1,16 +1,16 @@
-# 04 — Keep the board moving: `task move` (new MCP tool + CLI)
+# 04 - Keep the board moving: `task move` (new MCP tool + CLI)
 
 **What to build:** A user can run `task move <id> <status>` to move a task between Inbox, Review, Ongoing, and Finished. This requires a new MCP tool for status moves (the toolbox currently has none), which also becomes available to AI assistants - an accepted consequence per the spec. Archive remains excluded.
 
-**Blocked by:** 01 — CLI foundation
+**Blocked by:** 01 - CLI foundation
 
 **Status:** resolved
 
-- [ ] A new status-move MCP tool exists, scoped by the caller's visibility (a member cannot move a task they cannot see), rejecting archived tasks and invalid statuses
-- [ ] The new tool is tested at the existing MCP-over-HTTP e2e seam (real MCP client, Bearer token, e2e server), following the estimate-insights prior art
-- [ ] `task move <id> <status>` accepts the four status names case-insensitively and confirms the move in output
-- [ ] e2e coverage at the subprocess seam: a moved task shows its new status in `task list`
-- [ ] MCP.md documents the new tool
+- [x] A new status-move MCP tool exists, scoped by the caller's visibility (a member cannot move a task they cannot see), rejecting archived tasks and invalid statuses
+- [x] The new tool is tested at the existing MCP-over-HTTP e2e seam (real MCP client, Bearer token, e2e server), following the estimate-insights prior art
+- [x] `task move <id> <status>` accepts the four status names case-insensitively and confirms the move in output
+- [x] e2e coverage at the subprocess seam: a moved task shows its new status in `task list`
+- [x] MCP.md documents the new tool
 
 ## Comments
 

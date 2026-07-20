@@ -1,16 +1,16 @@
-# 05 — Fix mistakes: `task edit` (new MCP tool + CLI)
+# 05 - Fix mistakes: `task edit` (new MCP tool + CLI)
 
 **What to build:** A user can run `task edit <id>` with flags to update a task's title, description, deadline, estimate, client, and label. This requires a new update-task MCP tool, which also becomes available to AI assistants - an accepted consequence per the spec.
 
-**Blocked by:** 01 — CLI foundation
+**Blocked by:** 01 - CLI foundation
 
 **Status:** resolved
 
-- [ ] A new update-task MCP tool exists: partial updates (only provided fields change), scoped by the caller's visibility, honoring the same value rules as create (estimate increments, opt-out values, unknown client/label returns existing options)
-- [ ] The new tool is tested at the existing MCP-over-HTTP e2e seam
-- [ ] `task edit <id>` maps flags to the tool; providing no flags is a usage error
-- [ ] e2e coverage at the subprocess seam: an edited field is visible in `task show`
-- [ ] MCP.md documents the new tool
+- [x] A new update-task MCP tool exists: partial updates (only provided fields change), scoped by the caller's visibility, honoring the same value rules as create (estimate increments, opt-out values, unknown client/label returns existing options)
+- [x] The new tool is tested at the existing MCP-over-HTTP e2e seam
+- [x] `task edit <id>` maps flags to the tool; providing no flags is a usage error
+- [x] e2e coverage at the subprocess seam: an edited field is visible in `task show`
+- [x] MCP.md documents the new tool
 
 ## Comments
 

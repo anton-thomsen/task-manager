@@ -1,4 +1,4 @@
-# Spec: `task` — a terminal client for the task manager
+# Spec: `task` - a terminal client for the task manager
 
 **Status:** ready-for-agent
 
@@ -26,7 +26,7 @@ A command-line client named `task` that talks to the existing hosted task manage
 12. As a user, I want `task edit <id>` to update a task's title, description, deadline, estimate, client, and label, so that corrections don't require the web app.
 13. As a user, I want `task subtask add <id>` with an optional description, estimate, and reference links, so that I can break work down from the terminal.
 14. As a user, I want `task subtask complete` to mark a subtask Finished attributed to me, so that progress is recorded as it happens.
-15. As a user, I want `task log <id>` with a summary and hours (plus optional details and expected hours), so that logging work takes seconds.
+15. As a user, I want `task log <id>` with a summary, hours, and details (or the explicit `nothing notable` opt-out), plus optional expected hours, so that logging work takes seconds without losing the required work context.
 16. As a user, I want `task delegate <id> <member>` to assign a task to a teammate, so that handing work off doesn't interrupt my flow.
 17. As a delegatee, I want `task accept <id>` to accept a pending delegation, so that a "From ..." task doesn't force me into the web app every day.
 18. As a user, I want `task members`, `task clients`, and `task labels` to list my organization's directory, so that I can discover valid values for other commands.
@@ -38,16 +38,18 @@ A command-line client named `task` that talks to the existing hosted task manage
 
 ## Implementation Decisions
 
-- The CLI is a **client of the existing hosted server** - not a standalone local task manager. Always-online; every command is one round-trip. No local cache, no offline queue, no sync.
+- The CLI is a **client of the existing hosted server** - not a standalone local task manager. It is always online, and every data command goes to the server. There is no local cache, offline queue, or sync.
 - The CLI **speaks MCP**: it is an MCP client of the existing streamable-HTTP MCP endpoint, authenticating with the same per-user Bearer token minted under Settings → Tokens. No new API surface is added.
 - The MCP toolbox gains three tools it currently lacks: **move task status**, **update task**, and **accept delegation**. Accepted consequence: these become available to AI assistants as well. Archiving and deleting remain excluded from the toolbox for all programmatic clients - they stay web-only.
 - Scope is the focused daily-driver subset: list/view, create, move status, edit fields, subtasks, work logs, delegate, accept delegation, and directory lookups. Org administration, invitations, token management, image attachments, Google Calendar, and archive search stay in the web app.
-- The CLI lives in **this repo as a pnpm workspace package**, written in TypeScript, sharing the MCP tool Zod schemas with the server so client and server contract cannot drift. It exposes a `bin` named `task`, installed locally via `pnpm link --global`.
+- The CLI lives in **this repo as a pnpm workspace package**, written in TypeScript and reusing the shared task status and estimate contracts. It exposes a `bin` named `task`, installed locally via `pnpm link --global`; Node.js 26 runs `src/index.ts` directly with no build step.
 - Interaction shape is **plain subcommands** - scriptable and pipe-friendly. No TUI in this spec (a future `task board` could reuse the same client layer).
-- Credentials live in `~/.config/task/config.json` (mode 0600) holding the server URL and token, written by `task auth`. Environment variables override the file.
+- Credentials live in `~/.config/task/config.json` by default, or under `$XDG_CONFIG_HOME/task/` when that variable is set. `task auth` writes the server URL and token with mode 0600; environment variables override the file.
 - Tasks are referenced by their **real integer IDs** (the schema uses autoincrement integers) - no short-ID or aliasing scheme.
 - Output is human-readable by default with a `--json` flag on read commands; the MCP tools already return structured data, so the JSON path is thin.
 - The create/delegate commands honor the existing **required-fields contract**: deadline, client, estimate, and label are required, each with its documented explicit opt-out value.
+- Logging work requires details, with `nothing notable` as the only explicit opt-out.
+- Editing requires at least one field flag, and status moves place the task at the end of the destination lane, matching the web board.
 
 ## Testing Decisions
 
