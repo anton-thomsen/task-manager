@@ -109,23 +109,14 @@ export async function mcpCaller(
 	baseURL: string,
 	token: string,
 ): Promise<McpCaller> {
-	const transport = new StreamableHTTPClientTransport(
-		new URL("/api/mcp", baseURL),
-		{ requestInit: { headers: { Authorization: `Bearer ${token}` } } },
-	);
-	const client = new Client({ name: "e2e-cli-seed", version: "1.0.0" });
-	await client.connect(transport);
+	const raw = await rawMcpClient(baseURL, token);
 	return {
 		async call(name, args) {
-			const response = await client.callTool({ name, arguments: args });
-			const content = response.content as Array<{
-				type: string;
-				text: string;
-			}>;
-			expect(response.isError ?? false).toBe(false);
-			return JSON.parse(content[0]?.text ?? "null");
+			const result = await raw.call(name, args);
+			expect(result.isError).toBe(false);
+			return JSON.parse(result.text || "null");
 		},
-		close: () => transport.close(),
+		close: raw.close,
 	};
 }
 

@@ -1,7 +1,7 @@
 import {
 	chmodSync,
-	mkdtempSync,
 	mkdirSync,
+	mkdtempSync,
 	statSync,
 	writeFileSync,
 } from "node:fs";
@@ -81,6 +81,13 @@ test("the task CLI authenticates, lists, filters, and scopes to the caller's org
 	expect(partialEnvRun.status).toBe(1);
 	expect(partialEnvRun.stderr).toContain(
 		"TASK_URL and TASK_TOKEN must both be set",
+	);
+	const relativeConfigRun = runCli(["list"], {
+		XDG_CONFIG_HOME: "relative-config",
+	});
+	expect(relativeConfigRun.status).toBe(1);
+	expect(relativeConfigRun.stderr).toContain(
+		"XDG_CONFIG_HOME must be an absolute path",
 	);
 
 	writeFileSync(configFile, "{not-json\n", "utf8");

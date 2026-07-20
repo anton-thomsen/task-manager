@@ -8,7 +8,7 @@ import {
 	writeFileSync,
 } from "node:fs";
 import { homedir } from "node:os";
-import { join } from "node:path";
+import { isAbsolute, join } from "node:path";
 
 export type Credentials = { url: string; token: string };
 
@@ -22,8 +22,14 @@ export class CliError extends Error {
 }
 
 function configDir(): string {
-	const base = process.env.XDG_CONFIG_HOME || join(homedir(), ".config");
-	return join(base, "task");
+	const xdgConfigHome = process.env.XDG_CONFIG_HOME;
+	if (xdgConfigHome) {
+		if (!isAbsolute(xdgConfigHome)) {
+			throw new CliError("XDG_CONFIG_HOME must be an absolute path when set.");
+		}
+		return join(xdgConfigHome, "task");
+	}
+	return join(homedir(), ".config", "task");
 }
 
 export function configPath(): string {
