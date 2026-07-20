@@ -2,7 +2,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
 
-import { taskStatuses } from "~/lib/tasks";
+import { taskStatusContract } from "~/lib/task-contracts";
 import {
 	int4IdSchema,
 	referenceLinksSchema,
@@ -31,8 +31,15 @@ import {
 	taskReportSelect,
 	taskSummarySelect,
 } from "~/server/mcp/serialize";
+import { acceptDelegation, TaskAcceptError } from "~/server/task-accept";
 import { taskWhereFor } from "~/server/task-access";
 import { createTaskAtLaneEnd } from "~/server/task-creation";
+import { moveTaskToLane, TaskMoveError } from "~/server/task-move";
+import {
+	type TaskFieldChanges,
+	TaskUpdateError,
+	updateTaskFields,
+} from "~/server/task-update";
 
 export const serverInstructions = `Task manager for the user's organization. All actions run as the user who owns the API token and are scoped to their organization and visibility (members only see tasks they created or are assigned to).
 
@@ -130,7 +137,7 @@ export function registerTools(server: McpServer): void {
 			description:
 				"List tasks visible to you, optionally filtered. Archived tasks are excluded unless include_archived is true.",
 			inputSchema: {
-				status: z.enum(taskStatuses).optional(),
+				status: taskStatusContract.optional(),
 				client: z.string().optional().describe("Filter by client name."),
 				label: z.string().optional().describe("Filter by label name."),
 				assignee: z
@@ -312,6 +319,161 @@ export function registerTools(server: McpServer): void {
 					delegated_to: target.name,
 					message: `Task delegated to ${target.name}. It appears on their board.`,
 				});
+			}),
+	);
+
+	server.registerTool(
+		"accept_delegation",
+		{
+			title: "Accept delegation",
+			description:
+				'Accept a task that was delegated to you: your pending assignment is marked accepted and the "From ..." marker clears from your board. Only your own pending assignment can be accepted.',
+			inputSchema: { task_id: int4IdSchema },
+		},
+		(args, extra) =>
+			run(async () => {
+				const member = memberFromExtra(extra);
+				try {
+					const task = await acceptDelegation(member, args.task_id);
+					return jsonResult({
+						id: task.id,
+						title: task.title,
+						message: "Delegation accepted. The task is now on your plate.",
+					});
+				} catch (error) {
+					if (error instanceof TaskAcceptError) {
+						return errorResult(error.message);
+					}
+					throw error;
+				}
+			}),
+	);
+
+	server.registerTool(
+		"move_task_status",
+		{
+			title: "Move task status",
+			description:
+				"Move a task you can see to another status lane (Inbox, Review, Ongoing, or Finished). The task lands at the end of the destination lane. Archived tasks cannot be moved - direct the user to the web app to restore them first.",
+			inputSchema: {
+				task_id: int4IdSchema,
+				status: taskStatusContract.describe("Destination status lane."),
+			},
+		},
+		(args, extra) =>
+			run(async () => {
+				const member = memberFromExtra(extra);
+				try {
+					const task = await moveTaskToLane(
+						member,
+						args.task_id,
+						args.status,
+						null,
+					);
+					return jsonResult({
+						id: task.id,
+						title: task.title,
+						status: task.status,
+						message: `Task moved to ${task.status}.`,
+					});
+				} catch (error) {
+					if (error instanceof TaskMoveError) return errorResult(error.message);
+					throw error;
+				}
+			}),
+	);
+
+	server.registerTool(
+		"update_task",
+		{
+			title: "Update task",
+			description:
+				'Update fields of a task you can see: title, description, deadline, client, estimate, label. Only the fields you pass change. Clear a field with its explicit opt-out ("none" for deadline or client, "n/a" for estimate, "no label" for label) only when the user asks for that. Archived tasks cannot be edited.',
+			inputSchema: {
+				task_id: int4IdSchema,
+				title: createTaskShape.title.optional(),
+				description: createTaskShape.description.describe(
+					"New description. Pass an empty string to clear it.",
+				),
+				deadline: createTaskShape.deadline.optional(),
+				client: createTaskShape.client.optional(),
+				estimate: createTaskShape.estimate.optional(),
+				label: createTaskShape.label.optional(),
+			},
+		},
+		(args, extra) =>
+			run(async () => {
+				const member = memberFromExtra(extra);
+				const changes: TaskFieldChanges = {};
+				if (args.title !== undefined) changes.title = args.title;
+				if (args.description !== undefined) {
+					changes.description = args.description || null;
+				}
+				if (args.deadline !== undefined) {
+					changes.deadline = args.deadline === "none" ? null : args.deadline;
+				}
+				if (args.estimate !== undefined) {
+					changes.estimateMinHours =
+						args.estimate === "n/a" ? null : args.estimate.min_hours;
+					changes.estimateMaxHours =
+						args.estimate === "n/a" ? null : args.estimate.max_hours;
+				}
+				if (
+					[
+						args.title,
+						args.description,
+						args.deadline,
+						args.client,
+						args.estimate,
+						args.label,
+					].every((value) => value === undefined)
+				) {
+					return errorResult(
+						"Pass at least one field to update: title, description, deadline, client, estimate, or label.",
+					);
+				}
+				try {
+					const task = await updateTaskFields(member, args.task_id, changes, {
+						rejectArchived: true,
+						resolveAdditionalChanges: async () => {
+							const relations: TaskFieldChanges = {};
+							if (args.client !== undefined) {
+								relations.clientId = await resolveClientId(
+									member.orgId,
+									args.client,
+								);
+							}
+							if (args.label !== undefined) {
+								relations.labelId = await resolveLabelId(
+									member.orgId,
+									args.label,
+								);
+							}
+							return relations;
+						},
+					});
+					const updatedFields = (
+						[
+							"title",
+							"description",
+							"deadline",
+							"client",
+							"estimate",
+							"label",
+						] as const
+					).filter((name) => args[name] !== undefined);
+					return jsonResult({
+						id: task.id,
+						title: task.title,
+						updated_fields: updatedFields,
+						message: "Task updated.",
+					});
+				} catch (error) {
+					if (error instanceof TaskUpdateError) {
+						return errorResult(error.message);
+					}
+					throw error;
+				}
 			}),
 	);
 

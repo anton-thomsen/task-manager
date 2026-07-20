@@ -1,0 +1,17 @@
+# 06 - Receive work: `task accept` (new MCP tool + CLI)
+
+**What to build:** A delegatee can run `task accept <id>` to accept a pending delegation, so a "From ..." task never forces them into the web app. This requires a new accept-delegation MCP tool, which also becomes available to AI assistants - an accepted consequence per the spec.
+
+**Blocked by:** 01 - CLI foundation
+
+**Status:** resolved
+
+- [x] A new accept-delegation MCP tool exists: accepts only the caller's own pending assignment; accepting a task not delegated to you, or already accepted, is a clear error
+- [x] The new tool is tested at the existing MCP-over-HTTP e2e seam
+- [x] `task accept <id>` confirms acceptance; the pending marker clears
+- [x] e2e coverage at the subprocess seam: delegate via one user's token, accept via the other's, observe accepted state
+- [x] MCP.md documents the new tool
+
+## Comments
+
+Resolved: new `accept_delegation` MCP tool (src/server/mcp/tools.ts) with input { task_id: int4IdSchema }. Following the ticket-04/05 pattern, the web Accept button's logic was extracted from the acceptTask server action into a shared module src/server/task-accept.ts (acceptDelegation + TaskAcceptError with reasons not-found / not-delegated / already-accepted): visibility-scoped task lookup, then only the CALLER's own assignment row is considered - pending sets acceptedAt, otherwise a clear error. Errors: "Task N not found." (invisible/unknown), "Task N is not delegated to you - there is nothing to accept." (no assignment for the caller, e.g. the delegator), "Task N is already accepted.". Both the server action and the MCP tool call the shared module; web error copy is unchanged (any TaskAcceptError still maps to "There is no pending delegation to accept."). Pending state is now exposed in serialization: participant entries from list_tasks/get_task gained `accepted: boolean` (acceptedAt !== null) via src/server/mcp/serialize.ts - AI and CLI callers can now see what needs accepting; cli-create.spec.ts participant expectations updated accordingly. CLI: `task accept <id>` (cli/src/commands/accept.ts, move.ts-style), confirms "Task N accepted."; missing/non-integer ID exits 2, server rejections exit 1; wired into dispatch and usage in cli/src/index.ts. `task list`/`task show` human output now renders pending participants as "Name (pending)" via a shared formatParticipants in cli/src/render.ts. MCP.md: one style-matched accept_delegation row plus a note about the participants `accepted` flag. e2e: new self-contained e2e/cli-accept.spec.ts (accept-owner@/accept-member@ and accept-cli-owner@/accept-cli-member@), each test creating a REAL in-org member via the Settings > Members invite + findPendingInvitationId + second-context signup flow - test 1 at the MCP-over-HTTP seam (listTools contains the tool; create-and-delegate so the owner holds no assignment; get_task shows accepted:false, accept succeeds, accepted:true; re-accept errors "already accepted"; the owner accepting the member's delegation errors "not delegated to you"; unknown ID not-found), test 2 at the subprocess seam (`task show` shows "(pending)", `task accept` confirms and clears it, `task show --json` shows accepted:true, double-accept and owner-accept exit 1, missing/bad ID exit 2). Full suite 12/12 passed (1.6m), pnpm typecheck and pnpm check green.

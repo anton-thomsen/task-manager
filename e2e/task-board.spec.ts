@@ -76,7 +76,7 @@ test("tracks a project in hours and keeps rich work logs", async ({
 	await subtaskDialog.getByLabel("Title").fill(subtaskTitle);
 	await subtaskDialog.getByLabel("Description").fill(subtaskDescription);
 	await subtaskDialog
-		.getByLabel("Reference link 1")
+		.getByLabel("Reference link 1", { exact: true })
 		.fill("https://drive.google.com/file/d/responsive-layout");
 	const estimatedHours = subtaskDialog.getByLabel("Estimated hours");
 	await estimatedHours.fill("5.1");
@@ -94,7 +94,9 @@ test("tracks a project in hours and keeps rich work logs", async ({
 	await estimatedHours.fill("0.25");
 	await subtaskDialog.getByRole("button", { name: "Add subtask" }).click();
 	await expect(page.getByText(subtaskTitle)).toBeVisible();
-	await expect(page.getByText(subtaskDescription)).toBeVisible();
+	await expect(
+		page.locator("p", { hasText: subtaskDescription }),
+	).toBeVisible();
 	await expect(
 		page.getByRole("link", { name: "drive.google.com" }),
 	).toHaveAttribute(

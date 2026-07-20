@@ -38,13 +38,16 @@ test("offers a pre-filled work log on completion and reports estimate-vs-actual"
 	// Two subtasks with estimates: one to skip the offer, one to log against.
 	const skipSubtask = "Ship the API";
 	const logSubtask = "Write the docs";
-	await page.getByLabel("Subtask title").fill(skipSubtask);
-	await page.getByLabel("Estimated hours").fill("0.5");
-	await page.getByRole("button", { name: "Add", exact: true }).click();
+	const subtaskDialog = page.getByRole("dialog", { name: "Create a subtask" });
+	await page.getByRole("button", { name: "Create subtask" }).click();
+	await subtaskDialog.getByLabel("Title").fill(skipSubtask);
+	await subtaskDialog.getByLabel("Estimated hours").fill("0.5");
+	await subtaskDialog.getByRole("button", { name: "Add subtask" }).click();
 	await expect(page.getByText(skipSubtask, { exact: true })).toBeVisible();
-	await page.getByLabel("Subtask title").fill(logSubtask);
-	await page.getByLabel("Estimated hours").fill("0.25");
-	await page.getByRole("button", { name: "Add", exact: true }).click();
+	await page.getByRole("button", { name: "Create subtask" }).click();
+	await subtaskDialog.getByLabel("Title").fill(logSubtask);
+	await subtaskDialog.getByLabel("Estimated hours").fill("0.25");
+	await subtaskDialog.getByRole("button", { name: "Add subtask" }).click();
 	await expect(page.getByText(logSubtask, { exact: true })).toBeVisible();
 
 	// Completing a subtask OFFERS a pre-filled work log (locked decision D3).

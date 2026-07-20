@@ -16,6 +16,7 @@ A small, focused task manager for keeping client work visible and moving.
 - Compare estimates with logged hours and attach supporting images
 - Search, restore, or permanently delete archived tasks
 - Sync task deadlines to your own Google Calendar as all-day events
+- Manage daily task work from the terminal with the `task` CLI
 - Keyboard, touch, mobile, and reduced-motion support
 
 ## Teams and delegation
@@ -41,10 +42,40 @@ board shows.
 
 From **Settings > Tokens** each person can copy a personal calendar feed to
 subscribe to their tasks and mint an API token for programmatic access,
-including the [MCP toolbox](MCP.md) that lets an AI assistant manage tasks on
-their behalf. From **Settings > Integrations** each person can connect their
-own Google Calendar, which syncs the deadlines of tasks they participate in as
-all-day events; see [GOOGLE_CALENDAR.md](GOOGLE_CALENDAR.md) for setup.
+including the terminal client below and the [MCP toolbox](MCP.md) that lets an
+AI assistant manage tasks on their behalf. From **Settings > Integrations**
+each person can connect their own Google Calendar, which syncs the deadlines of
+tasks they participate in as all-day events; see
+[GOOGLE_CALENDAR.md](GOOGLE_CALENDAR.md) for setup.
+
+## Terminal client
+
+The always-online `task` CLI uses the hosted app's MCP endpoint, so it has no
+local task database, cache, or offline mode. It requires Node.js 26 and runs its
+TypeScript source directly without a build step. Install it from this checkout:
+
+```bash
+pnpm install
+cd cli
+pnpm link --global
+```
+
+Mint a personal API token under **Settings > Tokens**, then authenticate with
+the hosted app's base URL:
+
+```bash
+task auth https://tasks.example.com YOUR_API_TOKEN
+task list
+task show 42
+task move 42 Ongoing
+```
+
+`task auth` verifies the credentials before saving them to an owner-only config
+file. For scripts and CI, set both `TASK_URL` and `TASK_TOKEN` to override the
+saved credentials. Read commands use human-readable output by default and
+accept `--json`; run `task --help` for the supported daily-driver commands and
+flags. Administration, destructive actions, work-log images, and calendar
+integration remain in the web app.
 
 ## Task details
 

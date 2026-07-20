@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { taskStatuses } from "~/lib/tasks";
+import { estimateContract, taskStatusContract } from "~/lib/task-contracts";
 import { taskDescriptionSchema, taskTitleSchema } from "~/lib/validation";
 
 /**
@@ -44,21 +44,7 @@ export const labelContract = z
 		'Name of an existing label, or the literal "no label" when the user explicitly wants none. Use list_labels to see options; if the user did not mention a label, ask them.',
 	);
 
-const estimateRange = z
-	.object({
-		min_hours: z.number().positive().max(100_000),
-		max_hours: z.number().positive().max(100_000),
-	})
-	.refine(
-		(value) => value.min_hours <= value.max_hours,
-		"min_hours cannot exceed max_hours.",
-	);
-
-export const estimateContract = z
-	.union([z.literal("n/a"), estimateRange])
-	.describe(
-		'Estimated effort as {"min_hours", "max_hours"} in decimal hours, or the literal "n/a" when the user explicitly has no estimate. If the user did not mention an estimate, ask them.',
-	);
+export { estimateContract };
 
 export const subtaskEstimateContract = z
 	.union([
@@ -94,8 +80,7 @@ export const createTaskShape = {
 	client: clientContract,
 	estimate: estimateContract,
 	label: labelContract,
-	status: z
-		.enum(taskStatuses)
+	status: taskStatusContract
 		.default("Inbox")
 		.describe("Board lane, defaults to Inbox."),
 };

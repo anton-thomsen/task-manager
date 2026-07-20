@@ -41,6 +41,9 @@ Or in a project `.mcp.json`:
 | `get_task_report` | Estimate-vs-actual analysis: per-worklog estimates, actuals, variances, and details text |
 | `create_task` | Create a task (required-fields contract, see below) |
 | `delegate_task` | Assign an existing task to a member, or create-and-delegate in one step |
+| `accept_delegation` | Accept a task delegated to you: only your own pending assignment; nothing pending (or already accepted) is an error |
+| `move_task_status` | Move a task to another status lane (Inbox, Review, Ongoing, Finished); it lands at the end of the destination lane, archived tasks are rejected |
+| `update_task` | Partial edit of title, description, deadline, client, estimate, label; only passed fields change, opt-out literals clear a field, archived tasks are rejected |
 | `add_subtask` | Add a subtask with an optional description and reference links (15-minute estimate increments, max 5h) |
 | `complete_subtask` | Mark a subtask Finished, attributed to you |
 | `log_work` | Record note, hours spent, details, and expected hours |
@@ -48,6 +51,10 @@ Or in a project `.mcp.json`:
 | `create_client` / `create_label` | Create pickable options (on user confirmation) |
 
 Deleting and archiving are deliberately not exposed - use the web app.
+
+Participant entries returned by `list_tasks` and `get_task` carry an
+`accepted` boolean - `false` marks a delegation still waiting on
+`accept_delegation`.
 
 ## The required-fields contract
 

@@ -1,0 +1,17 @@
+# 05 - Fix mistakes: `task edit` (new MCP tool + CLI)
+
+**What to build:** A user can run `task edit <id>` with flags to update a task's title, description, deadline, estimate, client, and label. This requires a new update-task MCP tool, which also becomes available to AI assistants - an accepted consequence per the spec.
+
+**Blocked by:** 01 - CLI foundation
+
+**Status:** resolved
+
+- [x] A new update-task MCP tool exists: partial updates (only provided fields change), scoped by the caller's visibility, honoring the same value rules as create (estimate increments, opt-out values, unknown client/label returns existing options)
+- [x] The new tool is tested at the existing MCP-over-HTTP e2e seam
+- [x] `task edit <id>` maps flags to the tool; providing no flags is a usage error
+- [x] e2e coverage at the subprocess seam: an edited field is visible in `task show`
+- [x] MCP.md documents the new tool
+
+## Comments
+
+Resolved: new `update_task` MCP tool (src/server/mcp/tools.ts) with input { task_id: int4IdSchema } plus all-optional title, description, deadline, client, estimate, and label - each field reuses the create_task contract made .optional(), so the same value rules apply (estimate as {min_hours, max_hours} or "n/a", opt-out literals "none"/"n/a"/"no label" clear a field, unknown client/label surface the existing options via resolveClientId/resolveLabelId). Only provided fields change; providing none is an input error. Visibility-scoped, archived tasks rejected with "Task N is archived and cannot be edited. Restore it in the web app first.", unknown/invisible IDs with "Task N not found."; returns { id, title, updated_fields, message }. Following the ticket-04 pattern, the web Edit dialog's partial-update logic was extracted from the updateTask server action into a shared module src/server/task-update.ts (updateTaskFields + TaskFieldChanges + TaskUpdateError): visibility check, estimate range validated against the values left in place, partial db update, and scheduleTaskSync when the deadline or title changes - both the server action and the MCP tool call it, so web edits and MCP edits share one implementation (web error copy unchanged: not-found still maps to "Task not found.", archived tasks stay editable from the web as before via the rejectArchived option defaulting off). CLI: `task edit <id>` (cli/src/commands/edit.ts) with --title/--description/--deadline/--client/--estimate/--label; estimate parsing is create.ts's parseEstimate (now exported): "min-max", a single number, or "n/a". No field flags is a usage error (exit 2); server rejections exit 1; confirmation reads "Task N updated (title, deadline).". Wired into dispatch and usage in cli/src/index.ts. MCP.md Tools table gained one style-matched update_task row. e2e: new self-contained e2e/cli-edit.spec.ts (edit-owner@, edit-cli-owner@, edit-outsider@) - test 1 at the MCP-over-HTTP seam (listTools contains update_task; partial update changes title+estimate while deadline and client survive; "none" clears the deadline; unknown client lists existing options; empty update rejected; archived task rejected after archiving via the board button; unknown ID not-found), test 2 at the subprocess seam (`task edit <id> --deadline 2026-08-01 --title ...` then `task show <id> --json` reflects both; no flags exits 2; a second-org user exits 1 with "Task N not found."). Full suite 10/10 passed (1.3m), pnpm typecheck and pnpm check green.

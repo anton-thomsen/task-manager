@@ -1,0 +1,17 @@
+# 07 - Track effort: `task subtask add/complete`, `task log`
+
+**What to build:** A user can break a task down (`task subtask add <id>` with optional description, estimate, and reference links), complete subtasks attributed to themselves (`task subtask complete`), and log work (`task log <id>`) following the spec's required-details contract - all via the existing MCP tools.
+
+**Blocked by:** 01 - CLI foundation
+
+**Status:** resolved
+
+- [x] `task subtask add` maps to the existing add-subtask tool (15-minute estimate increments, max 5h, up to ten reference links)
+- [x] `task subtask complete` marks a subtask Finished attributed to the caller
+- [x] `task log` maps to the existing log-work tool, honoring the details contract (`"nothing notable"` as the only opt-out)
+- [x] e2e coverage at the subprocess seam: added subtask and logged work visible in `task show`
+- [x] Images are out of scope (web-only), and the commands say so if asked (no flags for them)
+
+## Comments
+
+Resolved: two new CLI commands over the EXISTING MCP tools - no server changes. `task subtask add <task-id> --title <t> [--estimate <hours|n/a>] [--description <text>] [--link <url> ...]` and `task subtask complete <subtask-id>` (cli/src/commands/subtask.ts), and `task log <task-id> --note <summary> --hours <n> --details <text> [--expected <hours|n/a>]` (cli/src/commands/log.ts). Mapping mirrors the tool schemas exactly: add_subtask takes { task_id, title, description?, reference_links?, estimated_hours } - estimated_hours is required by the schema with no default, so an omitted --estimate sends the explicit "n/a"; --link repeats (parseArgs multiple), with the ten-link cap and 15-minute increment / 5h max left to the server, whose message surfaces verbatim (exit 1). complete_subtask takes only { subtask_id }; confirmation reads "Subtask N on task M completed, attributed to you." log_work's details field is REQUIRED by detailsContract (no default), so --details is a required flag (exit 2 when missing) and the usage text names the literal "nothing notable" as the only explicit opt-out; --expected maps to estimated_hours (schema default "n/a" when omitted). Format-only checks (integer IDs, numeric hours) exit 2 locally; all contract rules stay server-side. Both commands wired into dispatch and usage in cli/src/index.ts, including a "Image attachments on work logs are web-only; the CLI has no flags for them." line - an attempted --image fails as an unknown option with that usage attached (images stay web-only per the spec, no flags). MCP.md needed no changes (no new tools, existing rows still accurate). e2e: new self-contained e2e/cli-subtask.spec.ts (subtask-owner@task-manager.local), one focused subprocess-seam test: add with estimate 1.25 + description + two links then `task show --json` carries all fields; --estimate 0.3 exits 1 with the server's "Subtask estimates use 15-minute increments" message; missing --title exits 2; complete then show --json shows status Finished with completed_by "Subtask Owner"; `task log` with note/hours/details/expected lands in work_logs with author attribution; log missing --details exits 2 naming "nothing notable"; bare log exits 2 naming --note and --hours. Drive-by hygiene: replaced a biome-flagged flatMap in e2e/cli-create.spec.ts with an explicit loop (biome's suggested .flat() autofix would have been wrong - the tuples are triples and the callback deliberately drops the literal). Full suite 13/13 passed (1.7m), pnpm typecheck and pnpm check green.
