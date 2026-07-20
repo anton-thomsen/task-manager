@@ -114,7 +114,10 @@ export async function mcpCaller(
 		async call(name, args) {
 			const result = await raw.call(name, args);
 			expect(result.isError).toBe(false);
-			return JSON.parse(result.text || "null");
+			if (result.text.trim().length === 0) {
+				throw new Error(`MCP tool "${name}" returned an empty response.`);
+			}
+			return JSON.parse(result.text);
 		},
 		close: raw.close,
 	};

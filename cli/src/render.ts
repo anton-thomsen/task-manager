@@ -103,15 +103,71 @@ export function printHuman(text: string): void {
 	console.log(sanitizeMultiline(text));
 }
 
+const graphemeSegmenter = new Intl.Segmenter(undefined, {
+	granularity: "grapheme",
+});
+const combiningMark = /\p{Mark}/u;
+const emoji = /\p{Extended_Pictographic}|\p{Regional_Indicator}/u;
+
+function isZeroWidth(character: string, codePoint: number): boolean {
+	return (
+		combiningMark.test(character) ||
+		(codePoint >= 0x200b && codePoint <= 0x200f) ||
+		(codePoint >= 0x202a && codePoint <= 0x202e) ||
+		(codePoint >= 0x2060 && codePoint <= 0x206f) ||
+		codePoint === 0xfeff
+	);
+}
+
+function isWide(codePoint: number): boolean {
+	return (
+		(codePoint >= 0x1100 && codePoint <= 0x115f) ||
+		codePoint === 0x2329 ||
+		codePoint === 0x232a ||
+		(codePoint >= 0x2e80 && codePoint <= 0xa4cf && codePoint !== 0x303f) ||
+		(codePoint >= 0xac00 && codePoint <= 0xd7a3) ||
+		(codePoint >= 0xf900 && codePoint <= 0xfaff) ||
+		(codePoint >= 0xfe10 && codePoint <= 0xfe19) ||
+		(codePoint >= 0xfe30 && codePoint <= 0xfe6f) ||
+		(codePoint >= 0xff00 && codePoint <= 0xff60) ||
+		(codePoint >= 0xffe0 && codePoint <= 0xffe6) ||
+		(codePoint >= 0x1b000 && codePoint <= 0x1b2ff) ||
+		(codePoint >= 0x20000 && codePoint <= 0x3fffd)
+	);
+}
+
+function displayWidth(text: string): number {
+	let width = 0;
+	for (const { segment } of graphemeSegmenter.segment(text)) {
+		if (emoji.test(segment) || segment.includes("\u20e3")) {
+			width += 2;
+			continue;
+		}
+		let segmentWidth = 0;
+		for (const character of segment) {
+			const codePoint = character.codePointAt(0);
+			if (codePoint === undefined || isZeroWidth(character, codePoint))
+				continue;
+			segmentWidth = Math.max(segmentWidth, isWide(codePoint) ? 2 : 1);
+		}
+		width += segmentWidth;
+	}
+	return width;
+}
+
+function padDisplayEnd(text: string, width: number): string {
+	return `${text}${" ".repeat(Math.max(0, width - displayWidth(text)))}`;
+}
+
 export function renderTable(rows: string[][], header: string[]): string {
 	const all = [header, ...rows].map((row) => row.map(sanitizeSingleLine));
 	const widths = header.map((_, column) =>
-		Math.max(...all.map((row) => (row[column] ?? "").length)),
+		Math.max(...all.map((row) => displayWidth(row[column] ?? ""))),
 	);
 	return all
 		.map((row) =>
 			row
-				.map((cell, column) => cell.padEnd(widths[column] ?? 0))
+				.map((cell, column) => padDisplayEnd(cell, widths[column] ?? 0))
 				.join("  ")
 				.trimEnd(),
 		)
