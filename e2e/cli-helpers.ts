@@ -67,6 +67,41 @@ export type McpCaller = {
 	close: () => Promise<void>;
 };
 
+export type RawToolResult = { isError: boolean; text: string };
+
+export type RawMcpCaller = {
+	client: Client;
+	call: (name: string, args: Record<string, unknown>) => Promise<RawToolResult>;
+	close: () => Promise<void>;
+};
+
+export async function rawMcpClient(
+	baseURL: string,
+	token: string,
+): Promise<RawMcpCaller> {
+	const transport = new StreamableHTTPClientTransport(
+		new URL("/api/mcp", baseURL),
+		{ requestInit: { headers: { Authorization: `Bearer ${token}` } } },
+	);
+	const client = new Client({ name: "e2e-raw", version: "1.0.0" });
+	await client.connect(transport);
+	return {
+		client,
+		async call(name, args) {
+			const response = await client.callTool({ name, arguments: args });
+			const content = response.content as Array<{
+				type: string;
+				text: string;
+			}>;
+			return {
+				isError: response.isError === true,
+				text: content.find((item) => item.type === "text")?.text ?? "",
+			};
+		},
+		close: () => transport.close(),
+	};
+}
+
 // Seeding directory rows, subtasks, and work logs goes through the real MCP
 // endpoint with the user's token - the same prior art as the estimate
 // insights spec. The assertions stay at the CLI subprocess seam.

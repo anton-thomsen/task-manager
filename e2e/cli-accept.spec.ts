@@ -1,9 +1,8 @@
-import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { type Browser, expect, type Page, test } from "@playwright/test";
 import {
 	findPendingInvitationId,
 	mintApiToken,
+	rawMcpClient,
 	runCli,
 	signUp,
 } from "./cli-helpers";
@@ -11,34 +10,6 @@ import {
 type Participant = { name: string; email: string; accepted: boolean };
 
 type TaskDetail = { id: number; participants: Participant[] };
-
-type RawToolResult = { isError: boolean; text: string };
-
-// Unlike the shared mcpCaller (which asserts success), this raw caller
-// surfaces isError so rejection paths can be asserted at the MCP seam.
-async function rawMcpClient(baseURL: string, token: string) {
-	const transport = new StreamableHTTPClientTransport(
-		new URL("/api/mcp", baseURL),
-		{ requestInit: { headers: { Authorization: `Bearer ${token}` } } },
-	);
-	const client = new Client({ name: "e2e-accept", version: "1.0.0" });
-	await client.connect(transport);
-	return {
-		client,
-		async call(
-			name: string,
-			args: Record<string, unknown>,
-		): Promise<RawToolResult> {
-			const response = await client.callTool({ name, arguments: args });
-			const content = response.content as Array<{ type: string; text: string }>;
-			return {
-				isError: response.isError === true,
-				text: content.find((item) => item.type === "text")?.text ?? "",
-			};
-		},
-		close: () => transport.close(),
-	};
-}
 
 // The owner invites the email from Settings > Members (the invitation ID
 // comes from the e2e database - no Resend key, so no real email), then the

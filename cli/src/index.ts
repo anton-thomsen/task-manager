@@ -78,8 +78,9 @@ Image attachments on work logs are web-only; the CLI has no flags for them.
 
 Every read command accepts --json to emit JSON instead of text.
 
-Credentials are stored in ~/.config/task/config.json; the TASK_URL and
-TASK_TOKEN environment variables override the stored values when both are set.`;
+Credentials are stored in ~/.config/task/config.json by default, or in
+$XDG_CONFIG_HOME/task/config.json when XDG_CONFIG_HOME is set. TASK_URL and
+TASK_TOKEN override the stored values when both are set.`;
 
 async function main(): Promise<void> {
 	const [command, ...rest] = process.argv.slice(2);
