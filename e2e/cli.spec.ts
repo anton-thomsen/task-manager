@@ -1,4 +1,10 @@
-import { mkdtempSync, statSync, writeFileSync } from "node:fs";
+import {
+	chmodSync,
+	mkdtempSync,
+	mkdirSync,
+	statSync,
+	writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { expect, test } from "@playwright/test";
@@ -60,6 +66,10 @@ test("the task CLI authenticates, lists, filters, and scopes to the caller's org
 	expect(authRun.stdout).toContain("Credentials verified and saved");
 	const configFile = join(configHome, "task", "config.json");
 	expect(statSync(configFile).mode & 0o777).toBe(0o600);
+	chmodSync(configFile, 0o644);
+	const rewrittenAuthRun = runCli(["auth", baseURL, token], authEnv);
+	expect(rewrittenAuthRun.status).toBe(0);
+	expect(statSync(configFile).mode & 0o777).toBe(0o600);
 	const storedRun = runCli(["list", "--json"], authEnv);
 	expect(storedRun.status).toBe(0);
 	expect(JSON.parse(storedRun.stdout)).toHaveLength(tasks.length);
@@ -107,6 +117,17 @@ test("the task CLI authenticates, lists, filters, and scopes to the caller's org
 	});
 	expect(noCredsRun.status).toBe(1);
 	expect(noCredsRun.stderr).toContain("task auth");
+
+	const invalidConfigHome = mkdtempSync(join(tmpdir(), "task-cli-invalid-"));
+	mkdirSync(join(invalidConfigHome, "task", "config.json"), {
+		recursive: true,
+	});
+	const invalidConfigRun = runCli(["list"], {
+		XDG_CONFIG_HOME: invalidConfigHome,
+	});
+	expect(invalidConfigRun.status).toBe(1);
+	expect(invalidConfigRun.stderr).toContain("Could not read the config file");
+	expect(invalidConfigRun.stderr).toContain("config.json");
 
 	// Visibility is scoped by the token: a second user in a different org
 	// sees none of the first org's tasks.

@@ -56,6 +56,16 @@ export async function acceptDelegation(
 		data: { acceptedAt: new Date() },
 	});
 	if (updated.count !== 1) {
+		const current = await db.taskAssignee.findUnique({
+			where: { id: assignment.id },
+			select: { acceptedAt: true },
+		});
+		if (!current || current.acceptedAt === null) {
+			throw new TaskAcceptError(
+				"not-delegated",
+				`Task ${taskId} is not delegated to you - there is nothing to accept.`,
+			);
+		}
 		throw new TaskAcceptError(
 			"already-accepted",
 			`Task ${taskId} is already accepted.`,

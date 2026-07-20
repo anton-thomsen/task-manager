@@ -1,7 +1,7 @@
 import { parseArgs } from "node:util";
 import { withMcpSession } from "../command.ts";
 import { CliError } from "../config.ts";
-import { printHuman, renderTable } from "../render.ts";
+import { printHuman, renderTable, sanitizeSingleLine } from "../render.ts";
 
 function parseJsonFlag(argv: string[], command: string): boolean {
 	try {
@@ -60,7 +60,7 @@ export async function clientsCommand(argv: string[]): Promise<void> {
 		printHuman("No clients.");
 		return;
 	}
-	printHuman(clients.join("\n"));
+	printHuman(clients.map(sanitizeSingleLine).join("\n"));
 }
 
 export async function labelsCommand(argv: string[]): Promise<void> {

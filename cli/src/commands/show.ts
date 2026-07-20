@@ -7,6 +7,8 @@ import {
 	formatParticipants,
 	type Participant,
 	printHuman,
+	sanitizeMultiline,
+	sanitizeSingleLine,
 } from "../render.ts";
 
 const usage = "Usage: task show <id> [--json]";
@@ -62,12 +64,18 @@ function indent(text: string, prefix: string): string {
 function renderSubtask(subtask: Subtask): string {
 	const box = subtask.status === "Finished" ? "[x]" : "[ ]";
 	const parts = [`est ${formatHours(subtask.estimated_hours)}`];
-	if (subtask.completed_by) parts.push(`completed by ${subtask.completed_by}`);
+	if (subtask.completed_by) {
+		parts.push(`completed by ${sanitizeSingleLine(subtask.completed_by)}`);
+	}
 	const lines = [
-		`  ${box} #${subtask.id} ${subtask.title} (${parts.join(", ")})`,
+		`  ${box} #${subtask.id} ${sanitizeSingleLine(subtask.title)} (${parts.join(", ")})`,
 	];
-	if (subtask.description) lines.push(indent(subtask.description, "      "));
-	for (const link of subtask.reference_links) lines.push(`      ${link}`);
+	if (subtask.description) {
+		lines.push(indent(sanitizeMultiline(subtask.description), "      "));
+	}
+	for (const link of subtask.reference_links) {
+		lines.push(`      ${sanitizeSingleLine(link)}`);
+	}
 	return lines.join("\n");
 }
 
@@ -76,29 +84,41 @@ function renderWorkLog(log: WorkLog): string {
 	const spent = formatHours(log.hours_spent);
 	const estimated = formatHours(log.estimated_hours);
 	const lines = [
-		`  ${date}  ${log.author ?? "-"}  ${spent} spent (est ${estimated})  ${log.note}`,
+		`  ${date}  ${sanitizeSingleLine(log.author ?? "-")}  ${spent} spent (est ${estimated})  ${sanitizeSingleLine(log.note)}`,
 	];
-	if (log.details) lines.push(indent(log.details, "      "));
+	if (log.details) {
+		lines.push(indent(sanitizeMultiline(log.details), "      "));
+	}
 	return lines.join("\n");
 }
 
 function renderDetail(task: TaskDetail): string {
 	const fields: Array<[string, string]> = [
-		["Status", task.archived ? `${task.status} (archived)` : task.status],
-		["Client", task.client === "none" ? "-" : task.client],
-		["Label", task.label === "no label" ? "-" : task.label],
+		[
+			"Status",
+			sanitizeSingleLine(
+				task.archived ? `${task.status} (archived)` : task.status,
+			),
+		],
+		["Client", task.client === "none" ? "-" : sanitizeSingleLine(task.client)],
+		["Label", task.label === "no label" ? "-" : sanitizeSingleLine(task.label)],
 		["Deadline", task.deadline ?? "-"],
 		["Estimate", formatEstimate(task.estimate)],
 		["Participants", formatParticipants(task.participants)],
-		["Created", `${task.created_at.slice(0, 10)} by ${task.created_by ?? "-"}`],
+		[
+			"Created",
+			`${task.created_at.slice(0, 10)} by ${sanitizeSingleLine(task.created_by ?? "-")}`,
+		],
 	];
 	const width = Math.max(...fields.map(([name]) => name.length));
 	const sections = [
-		`#${task.id} ${task.title}`,
+		`#${task.id} ${sanitizeSingleLine(task.title)}`,
 		fields.map(([name, value]) => `${name.padEnd(width)}  ${value}`).join("\n"),
 	];
 	if (task.description) {
-		sections.push(`Description\n${indent(task.description, "  ")}`);
+		sections.push(
+			`Description\n${indent(sanitizeMultiline(task.description), "  ")}`,
+		);
 	}
 	sections.push(
 		`Subtasks\n${task.subtasks.map(renderSubtask).join("\n") || "  -"}`,

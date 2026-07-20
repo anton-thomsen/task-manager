@@ -1,4 +1,12 @@
-import { chmodSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { randomUUID } from "node:crypto";
+import {
+	chmodSync,
+	mkdirSync,
+	readFileSync,
+	renameSync,
+	unlinkSync,
+	writeFileSync,
+} from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
@@ -22,12 +30,30 @@ export function configPath(): string {
 	return join(configDir(), "config.json");
 }
 
+function removeTemporary(path: string): void {
+	try {
+		unlinkSync(path);
+	} catch {
+		return;
+	}
+}
+
 function readStoredCredentials(): Partial<Credentials> {
 	let raw: string;
 	try {
 		raw = readFileSync(configPath(), "utf8");
-	} catch {
-		return {};
+	} catch (error) {
+		const code =
+			typeof error === "object" &&
+			error !== null &&
+			"code" in error &&
+			typeof error.code === "string"
+				? error.code
+				: undefined;
+		if (code === "ENOENT") return {};
+		throw new CliError(
+			`Could not read the config file at ${configPath()}: ${error instanceof Error ? error.message : String(error)}`,
+		);
 	}
 	try {
 		const parsed = JSON.parse(raw) as Record<string, unknown>;
@@ -68,10 +94,24 @@ export function loadCredentials(): Credentials {
 }
 
 export function saveCredentials(credentials: Credentials): void {
-	mkdirSync(configDir(), { mode: 0o700, recursive: true });
-	writeFileSync(configPath(), `${JSON.stringify(credentials, null, "\t")}\n`, {
-		mode: 0o600,
-	});
-	// writeFileSync only applies the mode on creation; tighten pre-existing files.
-	chmodSync(configPath(), 0o600);
+	const directory = configDir();
+	const destination = configPath();
+	const temporary = join(
+		directory,
+		`.config.${process.pid}.${randomUUID()}.tmp`,
+	);
+	try {
+		mkdirSync(directory, { mode: 0o700, recursive: true });
+		chmodSync(directory, 0o700);
+		writeFileSync(temporary, `${JSON.stringify(credentials, null, "\t")}\n`, {
+			mode: 0o600,
+			flag: "wx",
+		});
+		renameSync(temporary, destination);
+	} catch (error) {
+		removeTemporary(temporary);
+		throw new CliError(
+			`Could not save the config file at ${destination}: ${error instanceof Error ? error.message : String(error)}`,
+		);
+	}
 }

@@ -15,7 +15,7 @@ import { moveCommand } from "./commands/move.ts";
 import { showCommand } from "./commands/show.ts";
 import { subtaskCommand } from "./commands/subtask.ts";
 import { CliError } from "./config.ts";
-import { printHuman, sanitizeTerminalText } from "./render.ts";
+import { printHuman, sanitizeMultiline } from "./render.ts";
 
 const usage = `task - terminal client for the task manager
 
@@ -136,13 +136,11 @@ async function main(): Promise<void> {
 
 main().catch((error: unknown) => {
 	if (error instanceof CliError) {
-		console.error(sanitizeTerminalText(error.message));
+		console.error(sanitizeMultiline(error.message));
 		process.exit(error.exitCode);
 	}
 	console.error(
-		sanitizeTerminalText(
-			error instanceof Error ? error.message : String(error),
-		),
+		sanitizeMultiline(error instanceof Error ? error.message : String(error)),
 	);
 	process.exit(1);
 });

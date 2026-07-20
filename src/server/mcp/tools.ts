@@ -412,19 +412,22 @@ export function registerTools(server: McpServer): void {
 				if (args.deadline !== undefined) {
 					changes.deadline = args.deadline === "none" ? null : args.deadline;
 				}
-				if (args.client !== undefined) {
-					changes.clientId = await resolveClientId(member.orgId, args.client);
-				}
 				if (args.estimate !== undefined) {
 					changes.estimateMinHours =
 						args.estimate === "n/a" ? null : args.estimate.min_hours;
 					changes.estimateMaxHours =
 						args.estimate === "n/a" ? null : args.estimate.max_hours;
 				}
-				if (args.label !== undefined) {
-					changes.labelId = await resolveLabelId(member.orgId, args.label);
-				}
-				if (Object.keys(changes).length === 0) {
+				if (
+					[
+						args.title,
+						args.description,
+						args.deadline,
+						args.client,
+						args.estimate,
+						args.label,
+					].every((value) => value === undefined)
+				) {
 					return errorResult(
 						"Pass at least one field to update: title, description, deadline, client, estimate, or label.",
 					);
@@ -432,6 +435,22 @@ export function registerTools(server: McpServer): void {
 				try {
 					const task = await updateTaskFields(member, args.task_id, changes, {
 						rejectArchived: true,
+						resolveAdditionalChanges: async () => {
+							const relations: TaskFieldChanges = {};
+							if (args.client !== undefined) {
+								relations.clientId = await resolveClientId(
+									member.orgId,
+									args.client,
+								);
+							}
+							if (args.label !== undefined) {
+								relations.labelId = await resolveLabelId(
+									member.orgId,
+									args.label,
+								);
+							}
+							return relations;
+						},
 					});
 					const updatedFields = (
 						[

@@ -184,11 +184,6 @@ export async function updateTask(formData: FormData): Promise<ActionResult> {
 			id: field(formData, "id"),
 		});
 		const has = (name: string) => formData.has(name);
-		await verifyRelations(
-			member,
-			has("clientId") ? parsed.clientId : undefined,
-			has("labelId") ? parsed.labelId : undefined,
-		);
 		const changes: TaskFieldChanges = {
 			...(has("title") ? { title: parsed.title } : {}),
 			...(has("description")
@@ -205,7 +200,16 @@ export async function updateTask(formData: FormData): Promise<ActionResult> {
 			...(has("clientId") ? { clientId: parsed.clientId ?? null } : {}),
 			...(has("labelId") ? { labelId: parsed.labelId ?? null } : {}),
 		};
-		const updated = await updateTaskFields(member, parsed.id, changes);
+		const updated = await updateTaskFields(member, parsed.id, changes, {
+			resolveAdditionalChanges: async () => {
+				await verifyRelations(
+					member,
+					has("clientId") ? parsed.clientId : undefined,
+					has("labelId") ? parsed.labelId : undefined,
+				);
+				return {};
+			},
+		});
 		const assigneeIds = assigneeInput(formData);
 		if (assigneeIds) {
 			// An emptied picker mirrors create semantics: the task falls back to

@@ -177,6 +177,25 @@ test("task create captures work in one line and enforces the field contract", as
 	expect(badEstimateRun.status).toBe(2);
 	expect(badEstimateRun.stderr).toContain("not an estimate");
 
+	const oversizedEstimateRun = runCli(
+		[
+			"create",
+			"--title",
+			"A geological project",
+			"--deadline",
+			"none",
+			"--client",
+			"none",
+			"--estimate",
+			"100001",
+			"--label",
+			"no label",
+		],
+		env,
+	);
+	expect(oversizedEstimateRun.status).toBe(2);
+	expect(oversizedEstimateRun.stderr).toContain("100000");
+
 	// Unknown client and label names surface the server's existing options.
 	const badClientRun = runCli(
 		[

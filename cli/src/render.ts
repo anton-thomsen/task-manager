@@ -9,8 +9,8 @@ export function formatParticipants(participants: Participant[]): string {
 		participants
 			.map((participant) =>
 				participant.accepted
-					? participant.name
-					: `${participant.name} (pending)`,
+					? sanitizeSingleLine(participant.name)
+					: `${sanitizeSingleLine(participant.name)} (pending)`,
 			)
 			.join(", ") || "-"
 	);
@@ -26,13 +26,13 @@ export function formatEstimate(estimate: Estimate): string {
 		: `${estimate.min_hours}-${estimate.max_hours}h`;
 }
 
-function skipControlString(text: string, start: number): number {
+function controlStringEnd(text: string, start: number): number | null {
 	for (let index = start; index < text.length; index += 1) {
 		const code = text.charCodeAt(index);
 		if (code === 0x07 || code === 0x9c) return index + 1;
 		if (code === 0x1b && text.charCodeAt(index + 1) === 0x5c) return index + 2;
 	}
-	return text.length;
+	return null;
 }
 
 function skipCsi(text: string, start: number): number {
@@ -54,7 +54,10 @@ function skipEscapeSequence(text: string, start: number): number {
 	return text.length;
 }
 
-export function sanitizeTerminalText(text: string): string {
+function sanitizeTerminalText(
+	text: string,
+	preserveLineFeeds: boolean,
+): string {
 	let clean = "";
 	for (let index = 0; index < text.length; ) {
 		const code = text.charCodeAt(index);
@@ -65,7 +68,7 @@ export function sanitizeTerminalText(text: string): string {
 				continue;
 			}
 			if ([0x50, 0x58, 0x5d, 0x5e, 0x5f].includes(next)) {
-				index = skipControlString(text, index + 2);
+				index = controlStringEnd(text, index + 2) ?? index + 2;
 				continue;
 			}
 			index = skipEscapeSequence(text, index + 1);
@@ -76,11 +79,10 @@ export function sanitizeTerminalText(text: string): string {
 			continue;
 		}
 		if ([0x90, 0x98, 0x9d, 0x9e, 0x9f].includes(code)) {
-			index = skipControlString(text, index + 1);
+			index = controlStringEnd(text, index + 1) ?? index + 1;
 			continue;
 		}
-		if (code === 0x0a) clean += "\n";
-		else if (code === 0x09) clean += " ";
+		if (code === 0x0a && preserveLineFeeds) clean += "\n";
 		else if (!(code <= 0x1f || (code >= 0x7f && code <= 0x9f))) {
 			clean += text[index];
 		}
@@ -89,14 +91,20 @@ export function sanitizeTerminalText(text: string): string {
 	return clean;
 }
 
+export function sanitizeSingleLine(text: string): string {
+	return sanitizeTerminalText(text, false);
+}
+
+export function sanitizeMultiline(text: string): string {
+	return sanitizeTerminalText(text, true);
+}
+
 export function printHuman(text: string): void {
-	console.log(sanitizeTerminalText(text));
+	console.log(sanitizeMultiline(text));
 }
 
 export function renderTable(rows: string[][], header: string[]): string {
-	const all = [header, ...rows].map((row) =>
-		row.map((cell) => sanitizeTerminalText(cell).replaceAll("\n", " ")),
-	);
+	const all = [header, ...rows].map((row) => row.map(sanitizeSingleLine));
 	const widths = header.map((_, column) =>
 		Math.max(...all.map((row) => (row[column] ?? "").length)),
 	);

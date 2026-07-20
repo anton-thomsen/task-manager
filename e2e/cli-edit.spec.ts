@@ -226,12 +226,16 @@ test("task edit corrects a task from the terminal", async ({
 			"edit-outsider@task-manager.local",
 		);
 		const outsiderToken = await mintApiToken(outsiderPage);
-		const outsiderRun = runCli(["edit", String(taskId), "--title", "Hijack"], {
-			TASK_URL: baseURL,
-			TASK_TOKEN: outsiderToken,
-		});
+		const outsiderRun = runCli(
+			["edit", String(taskId), "--client", "Invisible client"],
+			{
+				TASK_URL: baseURL,
+				TASK_TOKEN: outsiderToken,
+			},
+		);
 		expect(outsiderRun.status).toBe(1);
 		expect(outsiderRun.stderr).toContain(`Task ${taskId} not found.`);
+		expect(outsiderRun.stderr).not.toContain("Unknown client");
 	} finally {
 		await outsiderContext.close();
 	}

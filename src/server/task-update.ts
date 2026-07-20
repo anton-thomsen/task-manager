@@ -28,31 +28,12 @@ export type TaskFieldChanges = {
 	labelId?: number | null;
 };
 
-/**
- * Apply a partial field update to a task the member can see. The estimate
- * range is validated against the values left in place, and a calendar sync
- * is scheduled when the deadline or title changes. Throws TaskUpdateError
- * when the task is invisible or unknown, archived (with rejectArchived), or
- * the effective estimate range inverts.
- */
-export async function updateTaskFields(
-	member: SessionMember,
-	id: number,
-	changes: TaskFieldChanges,
-	options: { rejectArchived?: boolean } = {},
-): Promise<Task> {
-	const existing = await db.task.findFirst({
-		where: { id, AND: taskWhereFor(member) },
-	});
-	if (!existing) {
-		throw new TaskUpdateError("not-found", `Task ${id} not found.`);
-	}
-	if (options.rejectArchived && existing.archivedAt) {
-		throw new TaskUpdateError(
-			"archived",
-			`Task ${id} is archived and cannot be edited. Restore it in the web app first.`,
-		);
-	}
+type TaskUpdateOptions = {
+	rejectArchived?: boolean;
+	resolveAdditionalChanges?: () => Promise<TaskFieldChanges>;
+};
+
+function validateEstimate(existing: Task, changes: TaskFieldChanges): void {
 	const effectiveMin =
 		changes.estimateMinHours !== undefined
 			? changes.estimateMinHours
@@ -71,6 +52,39 @@ export async function updateTaskFields(
 			"The minimum estimate cannot exceed the maximum estimate.",
 		);
 	}
+}
+
+/**
+ * Apply a partial field update to a task the member can see. The estimate
+ * range is validated against the values left in place, and a calendar sync
+ * is scheduled when the deadline or title changes. Throws TaskUpdateError
+ * when the task is invisible or unknown, archived (with rejectArchived), or
+ * the effective estimate range inverts.
+ */
+export async function updateTaskFields(
+	member: SessionMember,
+	id: number,
+	initialChanges: TaskFieldChanges,
+	options: TaskUpdateOptions = {},
+): Promise<Task> {
+	const existing = await db.task.findFirst({
+		where: { id, AND: taskWhereFor(member) },
+	});
+	if (!existing) {
+		throw new TaskUpdateError("not-found", `Task ${id} not found.`);
+	}
+	if (options.rejectArchived && existing.archivedAt) {
+		throw new TaskUpdateError(
+			"archived",
+			`Task ${id} is archived and cannot be edited. Restore it in the web app first.`,
+		);
+	}
+	validateEstimate(existing, initialChanges);
+	const additionalChanges = options.resolveAdditionalChanges
+		? await options.resolveAdditionalChanges()
+		: {};
+	const changes = { ...initialChanges, ...additionalChanges };
+	validateEstimate(existing, changes);
 	const updated = await db.task.update({ where: { id }, data: changes });
 	const deadlineChanged =
 		changes.deadline !== undefined &&

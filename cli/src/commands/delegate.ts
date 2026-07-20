@@ -1,7 +1,7 @@
 import { parseArgs } from "node:util";
 import { parseId, withMcpSession } from "../command.ts";
 import { CliError } from "../config.ts";
-import { printHuman } from "../render.ts";
+import { printHuman, sanitizeSingleLine } from "../render.ts";
 
 const usage =
 	"Usage: task delegate <id> <member> | task delegate <id> --to <member>";
@@ -44,7 +44,7 @@ export async function delegateCommand(argv: string[]): Promise<void> {
 			delegated_to: string;
 		}>("delegate_task", { task_id: taskId, assignee: to });
 		printHuman(
-			`Task ${result.id} delegated to ${result.delegated_to}. It appears on their board.`,
+			`Task ${result.id} delegated to ${sanitizeSingleLine(result.delegated_to)}. It appears on their board.`,
 		);
 	});
 }

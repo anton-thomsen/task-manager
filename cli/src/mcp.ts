@@ -1,6 +1,7 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { CliError, type Credentials } from "./config.ts";
+import { sanitizeSingleLine } from "./render.ts";
 
 export type McpSession = {
 	callTool: <T>(name: string, args: Record<string, unknown>) => Promise<T>;
@@ -53,7 +54,9 @@ export async function connect(credentials: Credentials): Promise<McpSession> {
 			const result = await client.callTool({ name, arguments: args });
 			const content = result.content as Array<{ type: string; text?: string }>;
 			const text = content.find((item) => item.type === "text")?.text ?? "";
-			if (result.isError) throw new CliError(text || `${name} failed.`);
+			if (result.isError) {
+				throw new CliError(sanitizeSingleLine(text) || `${name} failed.`);
+			}
 			try {
 				return JSON.parse(text) as T;
 			} catch {

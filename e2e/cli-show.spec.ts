@@ -31,8 +31,11 @@ test("task show renders full detail and the directory commands list the org", as
 	const activeSubtask = "Draft the layout";
 	const doneSubtask = "Ship the renderer";
 	const logNote = "Aligned the columns";
-	const unsafeTitle = "Visible title\u001b]0;owned title\u0007 after";
-	const unsafeDetails = "Visible details\u001b[2J after";
+	const unsafeTitle =
+		"Visible title\nFAKE ROW\u001b]0;owned title\u0007 after\u001b]unterminated title";
+	const unsafeNote = "Visible note\nFAKE HEADING";
+	const unsafeDetails =
+		"Visible details\nSecond line\u001b[2J after\u001b]unterminated details";
 	let unsafeTaskId = 0;
 	const seed = await mcpCaller(baseURL, token);
 	try {
@@ -66,7 +69,7 @@ test("task show renders full detail and the directory commands list the org", as
 		unsafeTaskId = unsafeTask.id;
 		await seed.call("log_work", {
 			task_id: unsafeTaskId,
-			note: "Visible note",
+			note: unsafeNote,
 			hours_spent: 0.25,
 			estimated_hours: "n/a",
 			details: unsafeDetails,
@@ -136,19 +139,31 @@ test("task show renders full detail and the directory commands list the org", as
 	expect(unsafeJsonRun.status).toBe(0);
 	const unsafeDetail = JSON.parse(unsafeJsonRun.stdout) as {
 		title: string;
-		work_logs: Array<{ details: string }>;
+		work_logs: Array<{ note: string; details: string }>;
 	};
 	expect(unsafeDetail.title).toBe(unsafeTitle);
+	expect(unsafeDetail.work_logs[0]?.note).toBe(unsafeNote);
 	expect(unsafeDetail.work_logs[0]?.details).toBe(unsafeDetails);
 	const unsafeHumanRun = runCli(["show", String(unsafeTaskId)], env);
 	expect(unsafeHumanRun.status).toBe(0);
-	expect(unsafeHumanRun.stdout).toContain("Visible title after");
+	expect(unsafeHumanRun.stdout).toContain(
+		"Visible titleFAKE ROW afterunterminated title",
+	);
+	expect(unsafeHumanRun.stdout).not.toContain("\nFAKE ROW");
+	expect(unsafeHumanRun.stdout).toContain("Visible noteFAKE HEADING");
+	expect(unsafeHumanRun.stdout).not.toContain("\nFAKE HEADING");
 	expect(unsafeHumanRun.stdout).toContain("Visible details");
+	expect(unsafeHumanRun.stdout).toContain(
+		"Second line afterunterminated details",
+	);
 	expect(unsafeHumanRun.stdout).not.toContain("\u001b");
 	expect(unsafeHumanRun.stdout).not.toContain("owned title");
 	const unsafeListRun = runCli(["list"], env);
 	expect(unsafeListRun.status).toBe(0);
-	expect(unsafeListRun.stdout).toContain("Visible title after");
+	expect(unsafeListRun.stdout).toContain(
+		"Visible titleFAKE ROW afterunterminated title",
+	);
+	expect(unsafeListRun.stdout).not.toContain("\nFAKE ROW");
 	expect(unsafeListRun.stdout).not.toContain("\u001b");
 	expect(unsafeListRun.stdout).not.toContain("owned title");
 

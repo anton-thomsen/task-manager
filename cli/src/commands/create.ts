@@ -1,8 +1,11 @@
 import { parseArgs } from "node:util";
-import type { EstimateContract } from "../../../src/lib/task-contracts.ts";
+import {
+	estimateContract,
+	type EstimateContract,
+} from "../../../src/lib/task-contracts.ts";
 import { withMcpSession } from "../command.ts";
 import { CliError } from "../config.ts";
-import { printHuman } from "../render.ts";
+import { printHuman, sanitizeSingleLine } from "../render.ts";
 import { canonicalStatus } from "./list.ts";
 
 const usage =
@@ -39,7 +42,14 @@ export function parseEstimate(value: string): EstimateContract {
 			2,
 		);
 	}
-	return { min_hours: min, max_hours: max };
+	const parsed = estimateContract.safeParse({ min_hours: min, max_hours: max });
+	if (!parsed.success) {
+		throw new CliError(
+			parsed.error.issues[0]?.message ?? `"${value}" is not a valid estimate.`,
+			2,
+		);
+	}
+	return parsed.data;
 }
 
 export async function createCommand(argv: string[]): Promise<void> {
@@ -119,7 +129,7 @@ export async function createCommand(argv: string[]): Promise<void> {
 				delegated_to: string;
 			}>("delegate_task", { ...fields, assignee: values.to });
 			printHuman(
-				`Task ${result.id} created and delegated to ${result.delegated_to}.`,
+				`Task ${result.id} created and delegated to ${sanitizeSingleLine(result.delegated_to)}.`,
 			);
 		} else {
 			const result = await session.callTool<{ id: number; status: string }>(
