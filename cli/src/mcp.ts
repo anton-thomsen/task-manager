@@ -57,10 +57,15 @@ export async function connect(credentials: Credentials): Promise<McpSession> {
 			if (result.isError) {
 				throw new CliError(sanitizeSingleLine(text) || `${name} failed.`);
 			}
+			if (text.trim().length === 0) {
+				throw new CliError(`MCP tool "${name}" returned an empty response.`);
+			}
 			try {
 				return JSON.parse(text) as T;
 			} catch {
-				return text as T;
+				throw new CliError(
+					`MCP tool "${name}" returned a response that was not valid JSON.`,
+				);
 			}
 		},
 		close: () => transport.close(),

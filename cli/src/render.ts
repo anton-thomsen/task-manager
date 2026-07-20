@@ -121,7 +121,8 @@ const graphemeSegmenter = new Intl.Segmenter(undefined, {
 });
 const combiningMark = /\p{Mark}/u;
 const emojiPresentation = /\p{Emoji_Presentation}/u;
-const extendedPictographic = /\p{Extended_Pictographic}/u;
+const emojiZwjSequence =
+	/\p{Extended_Pictographic}(?:\p{Mark}|\p{Emoji_Modifier})*\u200d\p{Extended_Pictographic}/u;
 const regionalIndicator = /\p{Regional_Indicator}/u;
 
 function isZeroWidth(character: string, codePoint: number): boolean {
@@ -154,13 +155,11 @@ function isWide(codePoint: number): boolean {
 function displayWidth(text: string): number {
 	let width = 0;
 	for (const { segment } of graphemeSegmenter.segment(text)) {
-		const emojiZwj =
-			segment.includes("\u200d") && extendedPictographic.test(segment);
 		const emojiWide =
 			segment.includes("\ufe0f") ||
 			segment.includes("\u20e3") ||
 			regionalIndicator.test(segment) ||
-			emojiZwj ||
+			emojiZwjSequence.test(segment) ||
 			(!segment.includes("\ufe0e") && emojiPresentation.test(segment));
 		if (emojiWide) {
 			width += 2;
