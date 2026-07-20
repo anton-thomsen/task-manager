@@ -54,6 +54,16 @@ function skipEscapeSequence(text: string, start: number): number {
 	return text.length;
 }
 
+function isBidiControl(code: number): boolean {
+	return (
+		code === 0x061c ||
+		code === 0x200e ||
+		code === 0x200f ||
+		(code >= 0x202a && code <= 0x202e) ||
+		(code >= 0x2066 && code <= 0x2069)
+	);
+}
+
 function sanitizeTerminalText(
 	text: string,
 	preserveLineFeeds: boolean,
@@ -83,7 +93,10 @@ function sanitizeTerminalText(
 			continue;
 		}
 		if (code === 0x0a && preserveLineFeeds) clean += "\n";
-		else if (!(code <= 0x1f || (code >= 0x7f && code <= 0x9f))) {
+		else if (
+			!(code <= 0x1f || (code >= 0x7f && code <= 0x9f)) &&
+			!isBidiControl(code)
+		) {
 			clean += text[index];
 		}
 		index += 1;
@@ -107,14 +120,16 @@ const graphemeSegmenter = new Intl.Segmenter(undefined, {
 	granularity: "grapheme",
 });
 const combiningMark = /\p{Mark}/u;
-const emoji = /\p{Extended_Pictographic}|\p{Regional_Indicator}/u;
+const emojiPresentation = /\p{Emoji_Presentation}/u;
+const extendedPictographic = /\p{Extended_Pictographic}/u;
+const regionalIndicator = /\p{Regional_Indicator}/u;
 
 function isZeroWidth(character: string, codePoint: number): boolean {
 	return (
 		combiningMark.test(character) ||
-		(codePoint >= 0x200b && codePoint <= 0x200f) ||
-		(codePoint >= 0x202a && codePoint <= 0x202e) ||
-		(codePoint >= 0x2060 && codePoint <= 0x206f) ||
+		(codePoint >= 0x200b && codePoint <= 0x200d) ||
+		(codePoint >= 0x2060 && codePoint <= 0x2065) ||
+		(codePoint >= 0x206a && codePoint <= 0x206f) ||
 		codePoint === 0xfeff
 	);
 }
@@ -139,7 +154,15 @@ function isWide(codePoint: number): boolean {
 function displayWidth(text: string): number {
 	let width = 0;
 	for (const { segment } of graphemeSegmenter.segment(text)) {
-		if (emoji.test(segment) || segment.includes("\u20e3")) {
+		const emojiZwj =
+			segment.includes("\u200d") && extendedPictographic.test(segment);
+		const emojiWide =
+			segment.includes("\ufe0f") ||
+			segment.includes("\u20e3") ||
+			regionalIndicator.test(segment) ||
+			emojiZwj ||
+			(!segment.includes("\ufe0e") && emojiPresentation.test(segment));
+		if (emojiWide) {
 			width += 2;
 			continue;
 		}
